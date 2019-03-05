@@ -9,8 +9,8 @@
  */
 
 const
-	{extend} = require('@v4fire/client/config/default');
+	config = include('config/default');
 
-module.exports = extend(
-	require('@v4fire/client/config/production')
-);
+module.exports = config.createConfig({dirs: [__dirname], mod: '@super/config/production'}, {
+	__proto__: config
+});
