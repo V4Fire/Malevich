@@ -1,0 +1,18 @@
+/*!
+ * V4Fire Malevich
+ * https://github.com/V4Fire/Malevich
+ *
+ * Released under the MIT license
+ * https://github.com/V4Fire/Malevich/blob/master/LICENSE
+ */
+
+- namespace [%fileName%]
+
+- include 'super/i-static-page/i-static-page.interface.ss'|b as placeholder
+
+- template index(params) extends ['i-static-page.interface'].index
+	- defineBase = true
+
+	- block meta
+		< meta name = theme-color | content = #000000
+		- super

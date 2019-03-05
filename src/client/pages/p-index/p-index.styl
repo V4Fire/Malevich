@@ -1,0 +1,49 @@
+/*!
+ * V4Fire Malevich
+ * https://github.com/V4Fire/Malevich
+ *
+ * Released under the MIT license
+ * https://github.com/V4Fire/Malevich/blob/master/LICENSE
+ */
+
+@import "super/i-dynamic-page/i-dynamic-page.styl"
+
+$p = {
+	headerBorderColor: c(#F7F7F7)
+}
+
+p-index extends i-dynamic-page
+	&__header
+		display flex
+		align-items center
+		justify-content flex-start
+		height 60px
+		padding 0 16px
+		border-bottom 1px solid $p.headerBorderColor
+
+	&__logo
+		height 40px
+
+	&__content
+		padding 60px 30px 0
+		width 600px
+		margin 0 auto
+
+		text-align center
+
+	&__title
+		font-size 36px
+		font-weight 300
+
+	&__icon
+		width 25px
+		height @width
+
+		img
+			width 100%
+
+	&__ds-publishing
+		padding-top 30px
+
+	&__form
+		padding-top 20px

@@ -1,0 +1,9 @@
+{
+  "projectType": "ts",
+  "blockDir": "",
+  "sourceDir": "src/client",
+  "serverDir": "src/server",
+  "disclaimer": "disclaimer.txt",
+  "dependencies": ["@v4fire/core", "@v4fire/client"],
+  "assets": {"sprite": "svg"}
+}
