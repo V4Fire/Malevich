@@ -5,6 +5,7 @@
   "main": "src/server/index.ts",
   "license": "MIT",
   "version": "0.0.1",
+  "typings": "index.d.ts",
   "author": {
     "name": "dmitrybrovka",
     "email": "dmitrybrovka@yandex.ru",
@@ -26,6 +27,7 @@
     "start": "npx gulp start:watch:server"
   },
   "dependencies": {
+    "@types/express": "^4.16.1",
     "@types/node": "^11.10.4",
     "@v4fire/client": "https://github.com/V4Fire/Client.git#button-improvements",
     "@v4fire/core": "^2.0.0-beta.41",
@@ -43,6 +45,6 @@
     "gulp-nodemon": "^2.4.2",
     "gulp-typescript": "^5.0.0",
     "tslint": "^5.13.1",
-    "typescript": "^3.3.3333"
+    "typescript": "^3.3.3"
   }
 }

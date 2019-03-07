@@ -16,13 +16,14 @@ const
 module.exports = function (gulp = require('gulp')) {
 	require('@v4fire/client/gulpfile')(gulp);
 
-	gulp.task('build:server', (done) => {
+	gulp.task('build:server', () => {
 		const
 			ts = require('gulp-typescript'),
 			tsProject = ts.createProject('tsconfig.json', {noLib: false});
 
-		gulp.src(`${config.serverDir}/**/*.ts`).pipe(tsProject()).pipe(gulp.dest(src.serverOutput()));
-		done();
+		return gulp.src(['*.d.ts', `${config.serverDir}/**/*.ts`])
+			.pipe(tsProject())
+			.pipe(gulp.dest(src.serverOutput()));
 	});
 
 	gulp.task('watch:server.build', (done) => {
@@ -52,8 +53,7 @@ module.exports = function (gulp = require('gulp')) {
 	});
 
 	gulp.task(
-		'start:watch:server',
-		gulp.series(['build:server', 'watch:server.build', 'watch:server'])
+		'start:watch:server', gulp.series(['build:server', 'watch:server.build', 'watch:server'])
 	);
 
 	global.callGulp(module);

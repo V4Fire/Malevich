@@ -6,6 +6,8 @@
  * https://github.com/V4Fire/Malevich/blob/master/LICENSE
  */
 
-/// <reference types="@v4fire/client"/>
-/// <reference types="@types/node"/>
-/// <reference types="@types/express"/>
+export interface Controller {
+	url: string;
+	method: 'get' | 'post' | 'put' | 'patch' | 'head' | 'delete';
+	fn: Function;
+}
