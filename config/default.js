@@ -9,8 +9,18 @@
  */
 
 const
-	config = require('@v4fire/client/config/default');
+	config = require('@v4fire/client/config/default'),
+	o = require('uniconf/options').option;
 
 module.exports = config.createConfig({dirs: [__dirname, 'client']}, {
-	__proto__: config
+	__proto__: config,
+
+	appName: o('app-name', {
+		env: true,
+		default: 'Malevich',
+		coerce(value) {
+			global['APP_NAME'] = value;
+			return value;
+		}
+	})
 });

@@ -11,3 +11,8 @@ export interface Controller {
 	method: 'get' | 'post' | 'put' | 'patch' | 'head' | 'delete';
 	fn: Function;
 }
+
+export interface ControllersKit {
+	namespace: string;
+	routes: Controller[];
+}

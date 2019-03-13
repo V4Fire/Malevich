@@ -6,6 +6,8 @@
  * https://github.com/V4Fire/Malevich/blob/master/LICENSE
  */
 
-package('p-index')
-	.extends('i-dynamic-page')
-	.dependencies('b-remote-provider', 'b-button');
+export interface Meta {
+	name: string;
+	type: string;
+	lvl: number;
+}

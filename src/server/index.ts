@@ -13,22 +13,37 @@ import fs = require('fs');
 import $C = require('collection.js');
 
 import path = require('path');
+import cookieParser = require('cookie-parser');
+import session = require('express-session');
 
 const
 	// @ts-ignore
 	{api, src} = config,
 	app = module.exports = express();
 
-fs.readdir(path.resolve(__dirname, 'controllers'), (err, files) => {
-	if (err) {
-		return;
-	}
+app.use(cookieParser());
+app.use(session({
+	secret: process.env.SESSION_SECRET, // just a long random string
+	resave: false,
+	saveUninitialized: true
+}));
 
-	$C(files).forEach((el) => {
-		const
-			{default: {url, method, fn}} = require(path.resolve(__dirname, 'controllers', el));
+app.use((req, res, next) => {
+	res.header('Access-Control-Allow-Origin', '*');
+	res.header('Access-Control-Allow-Methods', 'GET,POST,DELETE');
+	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested With, Content-Type, Accept');
+	next();
+});
 
-		app[method](url, fn);
+const
+	files = fs.readdirSync(path.resolve(__dirname, 'controllers'), {withFileTypes: false});
+
+$C(files).forEach((el) => {
+	const
+		{default: {namespace, routes}} = require(path.resolve(__dirname, 'controllers', el));
+
+	$C(routes).forEach((r) => {
+		app[r.method](path.join('/', namespace, r.url), r.fn);
 	});
 });
 
