@@ -8,4 +8,4 @@
 
 package('p-index')
 	.extends('i-dynamic-page')
-	.dependencies('b-remote-provider', 'b-button');
+	.dependencies('b-form', 'b-button', 'b-input');

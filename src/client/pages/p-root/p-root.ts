@@ -32,6 +32,12 @@ export default class pRoot<
 		index : {
 			path: '/',
 			page: 'p-index'
+		},
+
+		external: {
+			path: '/ext/:service/:controller',
+			redirect: '/api/:service/:controller',
+			external: true
 		}
 	};
 }

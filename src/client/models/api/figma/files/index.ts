@@ -14,9 +14,9 @@ export {
 };
 
 @provider('API')
-export default class FigmaRights extends API {
+export default class FigmaFiles extends API {
 	/** @override */
-	baseURL: string = '/figma/rights';
+	baseURL: string = '/figma/files/:id';
 
 	/** @override */
 	static request: typeof API.request = API.request({

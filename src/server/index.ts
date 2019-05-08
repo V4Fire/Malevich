@@ -23,17 +23,11 @@ const
 
 app.use(cookieParser());
 app.use(session({
-	secret: process.env.SESSION_SECRET, // just a long random string
-	resave: false,
-	saveUninitialized: true
+	secret: process.env.SESSION_SECRET,
+	cookie: {
+		maxAge: 60000
+	}
 }));
-
-app.use((req, res, next) => {
-	res.header('Access-Control-Allow-Origin', '*');
-	res.header('Access-Control-Allow-Methods', 'GET,POST,DELETE');
-	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested With, Content-Type, Accept');
-	next();
-});
 
 const
 	files = fs.readdirSync(path.resolve(__dirname, 'controllers'), {withFileTypes: false});
