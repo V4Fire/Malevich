@@ -162,6 +162,8 @@ declare namespace Figma {
 	interface TEXT extends VECTOR {
 		characters: string;
 		style: TypeStyle;
+		characterStyleOverrides: number[];
+		styleOverrideTable: Dictionary<number, TypeStyle>;
 	}
 
 	type Transform = number[][];
