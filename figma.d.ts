@@ -32,7 +32,7 @@ declare namespace Figma {
 		GROUP: GROUP;
 		VECTOR: VECTOR;
 		BOOLEAN: BOOLEAN;
-		BOOLEAN_OPERATION: BOOLEAN;
+		BOOLEAN_OPERATION: BOOLEAN_OPERATION;
 		STAR: STAR;
 		LINE: LINE;
 		ELLIPSE: ELLIPSE;
@@ -128,10 +128,16 @@ declare namespace Figma {
 	}
 
 	type GROUP = FRAME;
+	type COMPONENT = FRAME;
 	type STAR = VECTOR;
 	type LINE = VECTOR;
 	type ELLIPSE = VECTOR;
+	type SLICE = NODE_BASE;
 	type REGULAR_POLYGON = VECTOR;
+
+	interface INSTANCE extends FRAME {
+		componentId: string;
+	}
 
 	interface VECTOR extends NODE_BASE {
 		fills: Paint[];

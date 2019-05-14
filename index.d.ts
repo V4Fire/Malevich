@@ -9,3 +9,4 @@
 /// <reference types="@v4fire/client"/>
 /// <reference types="@types/node"/>
 /// <reference types="@types/express"/>
+/// <reference types="figma"/>
