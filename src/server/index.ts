@@ -10,7 +10,7 @@ import express = require('express');
 import config = require('config');
 import $C = require('collection.js');
 
-import path = require('path');
+import path = require('upath');
 import fs = require('fs');
 import cookieParser = require('cookie-parser');
 import session = require('express-session');
