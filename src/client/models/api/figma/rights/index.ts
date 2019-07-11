@@ -6,7 +6,7 @@
  * https://github.com/V4Fire/Malevich/blob/master/LICENSE
  */
 
-import API, { provider, DecodersTable } from 'models/api';
+import API, { provider } from 'models/api';
 import * as _ from 'models/api/figma/meta';
 
 export {
