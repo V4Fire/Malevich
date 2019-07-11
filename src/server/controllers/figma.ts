@@ -6,7 +6,7 @@
  * https://github.com/V4Fire/Malevich/blob/master/LICENSE
  */
 
-import { ControllersKit } from 'interfaces/controllers';
+import { ControllersKit } from '../interfaces/controllers';
 import * as e from 'express';
 
 import querystring = require('querystring');
@@ -63,7 +63,7 @@ async function authorize(req: Dictionary, res: e.Response): Promise<void> {
 				client_id: FIGMA_CLIENT_ID,
 				client_secret: FIGMA_CLIENT_SECRET,
 				redirect_uri: FIGMA_REDIRECT_URI,
-				code: query.code,
+				code: <string>query.code,
 				grant_type: 'authorization_code'
 			});
 
