@@ -15,7 +15,7 @@ import bInput from 'form/b-input/b-input';
 export * from 'super/i-dynamic-page/i-dynamic-page';
 
 @component()
-export default class pIndex extends iDynamicPage {
+export default class pIndex<D extends object = object> extends iDynamicPage<D> {
 	/** @override */
 	readonly pageTitleProp: TitleValue = 'Malevich';
 
@@ -28,7 +28,7 @@ export default class pIndex extends iDynamicPage {
 	protected convertStateToRouter(data?: CanUndef<Dictionary>): Dictionary {
 		if (data) {
 			data = {
-				stage: data.stage || this.stage || 'checks'
+				stage: data.stage || this.stage
 			};
 
 		} else {
@@ -43,8 +43,8 @@ export default class pIndex extends iDynamicPage {
 	/**
 	 * Handler: on figma import approve rights click
 	 */
-	protected onFigmaImportClick(): void {
-		this.router.replace('/ext/figma/rights');
+	protected onFigmaImportClick(): Promise<void> {
+		return this.router.replace('/ext/figma/rights');
 	}
 
 	/**
@@ -55,11 +55,10 @@ export default class pIndex extends iDynamicPage {
 	 */
 	protected onValidationEnd(component: bInput, result: boolean): void {
 		const
-			{isComponent: $is} = this,
-			submit = this.refs.formSubmit;
+			{formSubmit} = this.$refs;
 
-		if (submit && $is(submit, bButton)) {
-			submit.setMod('disabled', !result);
+		if (formSubmit) {
+			formSubmit.setMod('disabled', !result);
 		}
 	}
 }

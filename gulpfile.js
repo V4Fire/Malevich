@@ -36,7 +36,6 @@ module.exports = function (gulp = require('gulp')) {
 			stream = nodemon({
 				script: src.serverOutput(),
 				ext: 'js',
-				tasks: ['compile'],
 				watch: [src.serverOutput()],
 				done
 			});

@@ -6,13 +6,12 @@
  * https://github.com/V4Fire/Malevich/blob/master/LICENSE
  */
 
-import * as express from 'express';
-
+import express = require('express');
 import config = require('config');
-import fs = require('fs');
 import $C = require('collection.js');
 
 import path = require('path');
+import fs = require('fs');
 import cookieParser = require('cookie-parser');
 import session = require('express-session');
 
@@ -24,6 +23,8 @@ const
 app.use(cookieParser());
 app.use(session({
 	secret: process.env.SESSION_SECRET,
+	resave: true,
+	saveUninitialized: false,
 	cookie: {
 		maxAge: 60000
 	}

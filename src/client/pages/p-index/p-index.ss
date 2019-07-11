@@ -13,7 +13,8 @@
 - template index() extends ['i-dynamic-page'].index
 	- block body
 		< header.&__header
-			< img.&__logo :src = require('assets/img/logo-full.svg')
+			< a href = \/
+				< img.&__logo :src = require('assets/img/logo-full.svg')
 
 		< main.&__content
 			< h1.&__title
