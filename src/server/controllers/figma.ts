@@ -6,14 +6,33 @@
  * https://github.com/V4Fire/Malevich/blob/master/LICENSE
  */
 
-import { ControllersKit } from 'interfaces/controllers';
-import * as e from 'express';
+import { ControllersKit } from '../interfaces/controllers';
+import * as ExpressTypes from 'express';
 
+import $C = require('collection.js');
 import querystring = require('querystring');
 import https = require('https');
 
 const
 	{FIGMA_CLIENT_ID, FIGMA_CLIENT_SECRET, FIGMA_REDIRECT_URI} = process.env;
+
+const
+	ERRORS: ContentError[] = [];
+
+const DS = {
+	components: {
+
+	},
+
+	blocks: {
+
+	}
+};
+
+export interface ContentError {
+	name: string;
+	description?: string;
+}
 
 export default {
 	namespace: 'api/figma',
@@ -39,7 +58,7 @@ export default {
 
 } as ControllersKit;
 
-function approveRights(req: Dictionary, res: e.Response): void {
+function approveRights(req: Dictionary, res: ExpressTypes.Response): void {
 	const
 		code = (<Dictionary<string>>req.session).id,
 		query = querystring.stringify({
@@ -53,7 +72,7 @@ function approveRights(req: Dictionary, res: e.Response): void {
 	res.redirect(`https://www.figma.com/oauth?${query}`);
 }
 
-async function authorize(req: Dictionary, res: e.Response): Promise<void> {
+async function authorize(req: Dictionary, res: ExpressTypes.Response): Promise<void> {
 	const
 		query = <Dictionary>req.query;
 
@@ -63,7 +82,7 @@ async function authorize(req: Dictionary, res: e.Response): Promise<void> {
 				client_id: FIGMA_CLIENT_ID,
 				client_secret: FIGMA_CLIENT_SECRET,
 				redirect_uri: FIGMA_REDIRECT_URI,
-				code: query.code,
+				code: <string>query.code,
 				grant_type: 'authorization_code'
 			});
 
@@ -108,7 +127,7 @@ async function authorize(req: Dictionary, res: e.Response): Promise<void> {
 	res.redirect('/?stage=figmaImport');
 }
 
-async function getFiles(req: Dictionary, res: e.Response): Promise<void> {
+async function getFiles(req: Dictionary, res: ExpressTypes.Response): Promise<void> {
 	if (req.session && (<Dictionary>req.session).figma && (<Dictionary>(<Dictionary>req.session).figma).accessToken) {
 		let str = '';
 
@@ -135,10 +154,79 @@ async function getFiles(req: Dictionary, res: e.Response): Promise<void> {
 			}).on('error', reject).end();
 		});
 
-		console.log(str);
+		try {
+			parseFigmaFile(JSON.parse(str));
 
-		res.send(str);
+		} catch {
+			ERRORS.push({name: 'File parsing error'});
+		}
+
+		res.send(DS);
 	}
 
 	res.send();
+}
+
+function parseFigmaFile(data: Figma.File): void {
+	const
+		pages = data.document.children;
+
+	pages.sort((a, b) => a.name < b.name ? 1 : a.name > b.name ? -1 : 0);
+
+	$C(pages).forEach((page) => {
+		if (page.type === 'CANVAS') {
+			findSubjects(page);
+		}
+	});
+}
+
+/**
+ * Finds subjects in pages list
+ * @param canvas
+ */
+function findSubjects(canvas: Figma.Node): void {
+	const
+		interfaceRegExp = /^i[A-Z].*/;
+
+	$C(canvas.children).forEach((p) => {
+		if (interfaceRegExp.test(canvas.name)) {
+			parseNode(p, p.name, 'interface');
+		}
+	});
+}
+
+type PageType = 'interface' | 'block';
+
+function parseNode(data: Figma.Node, name: string, t: PageType): void {
+	$C(data.children).forEach((c) => {
+		if (t === 'interface') {
+			if (c.type === 'COMPONENT') {
+				c.interface = name;
+				DS.components[c.id] = c;
+
+			} else if (c.type === 'GROUP') {
+				parseNode(c, name, t);
+			}
+		}
+
+		// Search components and serve it
+		if (c.type === 'COMPONENT') {
+			switch (c.name) {
+				case c.name.includes('Master'):
+					// Determines master component
+					break;
+
+				case c.name.split(':').length > 1:
+					// This is a mod
+					break;
+
+				default:
+					// Add an error for showing at the interface
+					ERRORS.push({
+						name: 'Component name discrepancy',
+						description: `${c.name} is not allowed name for a component`
+					});
+			}
+		}
+	});
 }
