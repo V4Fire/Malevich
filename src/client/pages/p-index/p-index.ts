@@ -25,7 +25,7 @@ export default class pIndex<D extends object = Dictionary> extends iDynamicPage<
 	};
 
 	/** @override */
-	protected convertStateToRouter(data?: CanUndef<Dictionary>): Dictionary {
+	protected syncRouterState(data?: CanUndef<Dictionary>): Dictionary {
 		if (data) {
 			data = {
 				stage: data.stage || this.stage

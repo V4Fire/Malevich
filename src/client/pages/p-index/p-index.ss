@@ -25,7 +25,7 @@
 					< b-form &
 						v-once |
 						ref = files |
-						:id = getConnectedId('fileForm') |
+						:id = dom.getId('fileForm') |
 						:method = 'get' |
 						:dataProvider = 'API.FigmaFiles'
 					.
