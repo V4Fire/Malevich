@@ -50,5 +50,5 @@
 					< b-button :rounding = 'small' | @click = onFigmaImportClick
 						Import from figma
 
-						< template v-slot:preIcon
+						< template #preIcon
 							< img.&__icon :src = require('assets/img/figma.svg')

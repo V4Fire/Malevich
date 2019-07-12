@@ -15,7 +15,7 @@ import bInput from 'form/b-input/b-input';
 export * from 'super/i-dynamic-page/i-dynamic-page';
 
 @component()
-export default class pIndex<D extends object = object> extends iDynamicPage<D> {
+export default class pIndex<D extends object = Dictionary> extends iDynamicPage<D> {
 	/** @override */
 	readonly pageTitleProp: TitleValue = 'Malevich';
 
