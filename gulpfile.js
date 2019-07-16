@@ -19,7 +19,7 @@ module.exports = function (gulp = require('gulp')) {
 	gulp.task('build:server', () => {
 		const
 			ts = require('gulp-typescript'),
-			tsProject = ts.createProject('tsconfig.json', {noLib: false});
+			tsProject = ts.createProject('tsconfig.server.json', {noLib: false});
 
 		return gulp.src(['*.d.ts', `${config.serverDir}/**/*.ts`])
 			.pipe(tsProject())

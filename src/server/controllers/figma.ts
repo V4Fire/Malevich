@@ -13,6 +13,8 @@ import $C = require('collection.js');
 import querystring = require('querystring');
 import https = require('https');
 
+import scheme from '../schemes/figma';
+
 const
 	{FIGMA_CLIENT_ID, FIGMA_CLIENT_SECRET, FIGMA_REDIRECT_URI} = process.env;
 
@@ -161,7 +163,7 @@ async function getFiles(req: Dictionary, res: ExpressTypes.Response): Promise<vo
 			ERRORS.push({name: 'File parsing error'});
 		}
 
-		res.send(DS);
+		res.send(JSON.parse(str));
 	}
 
 	res.send();
@@ -186,10 +188,15 @@ function parseFigmaFile(data: Figma.File): void {
  */
 function findSubjects(canvas: Figma.Node): void {
 	const
-		interfaceRegExp = /^i[A-Z].*/;
+		interfaceRegExp = /^i([A-Z].*)/;
+
+	let
+		match;
 
 	$C(canvas.children).forEach((p) => {
-		if (interfaceRegExp.test(canvas.name)) {
+		match = canvas.name.match(interfaceRegExp);
+
+		if (match && match[1]) {
 			parseNode(p, p.name, 'interface');
 		}
 	});
@@ -200,12 +207,47 @@ type PageType = 'interface' | 'block';
 function parseNode(data: Figma.Node, name: string, t: PageType): void {
 	$C(data.children).forEach((c) => {
 		if (t === 'interface') {
-			if (c.type === 'COMPONENT') {
-				c.interface = name;
-				DS.components[c.id] = c;
+			switch (c.type) {
+				case 'COMPONENT':
+				case 'INSTANCE':
+				case 'GROUP':
+					parseNode(c, name, t);
+					break;
 
-			} else if (c.type === 'GROUP') {
-				parseNode(c, name, t);
+				case 'TEXT':
+					console.log(c.id, c.name);
+					DS.components[c.id] = {
+						type: c.type
+					};
+
+					$C(scheme.text).forEach((value, key) => {
+						if (c[key]) {
+							if (Object.isObject(value)) {
+								$C(value).forEach((v, k) => {
+									if (Object.isFunction(v)) {
+										Object.assign(DS.components[c.id], v(DS, data, c[key]));
+
+									} else if (v) {
+										DS.components[c.id][k] = c[key][k];
+									}
+								});
+
+							} else if (Object.isFunction(value)) {
+								// @ts-ignore
+								Object.assign(DS.components[c.id], value(DS, data, c[key]));
+							}
+						}
+					});
+
+					break;
+
+				default:
+					ERRORS.push({
+						name: 'Type is not registered',
+						description: `${c.type} is not registered at design system loader`
+					});
+
+					return;
 			}
 		}
 

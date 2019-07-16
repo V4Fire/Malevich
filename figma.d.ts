@@ -99,6 +99,7 @@ declare namespace Figma {
 	}
 
 	interface NODE_BASE {
+		name: string;
 		exportSettings: ExportSetting[];
 		blendMode: BlendMode;
 		preserveRatio: boolean;
