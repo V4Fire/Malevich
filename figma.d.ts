@@ -15,7 +15,7 @@ declare namespace Figma {
 		document: Node;
 		components: Map<string, Component>;
 		schemaVersion: number;
-		styles: Map<string, Style>
+		styles: Styles;
 	}
 
 	type Node<T extends NodeType = NodeType> = {
@@ -68,6 +68,8 @@ declare namespace Figma {
 		b: number;
 		a: number;
 	}
+
+	type Styles = Dictionary<StyleType, string>;
 
 	interface Constrain {
 		type: ConstrainType;
@@ -147,7 +149,7 @@ declare namespace Figma {
 		strokeWeight: number;
 		strokeGeometry: Path[];
 		strokeAlign: StrokeAlign;
-		styles: Dictionary<StyleType, string>;
+		styles: Styles;
 	}
 
 	interface RECTANGLE extends VECTOR {
