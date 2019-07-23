@@ -21,12 +21,21 @@ export default {
 			fontWeight: true,
 			fontSize: true,
 			letterSpacing: true,
-			textDecoration: true,
-			lineHeightPx: true,
+			textDecoration: f(textDecoration),
+			lineHeightPx: f(lineHeight),
 			textCase: f(textTransform)
 		},
 
 		fills: f(fillsToColor)
+	},
+
+	state: {
+		blendMode: true,
+
+		fills: {
+			opacity: true,
+			color: f(calcColor)
+		}
 	},
 
 	radius: f(storeBorderRadius),
@@ -38,7 +47,6 @@ export default {
 
 /**
  * Scheme methods factory
- *
  * @param fn
  */
 export function f(fn: Function): Function {
@@ -67,11 +75,13 @@ function calcColor<T extends Figma.NodeType>(
 
 /**
  * Returns css notation of the specified fills value
+ *
  * @param fills
+ * @param styles
  */
 function fillsToColor<T extends Figma.NodeType>(
 	this: Data<T>,
-	fills: Figma.Paint[]
+	{fills, styles}: {fills: Figma.Paint[]; styles: Figma.Styles}
 ): Declaration {
 	return {[this.targetField || 'color']: calcColor.call(this, fills[0])};
 }
@@ -84,25 +94,27 @@ function fillsToColor<T extends Figma.NodeType>(
  */
 function storeColor<T extends Figma.NodeType>(
 	this: Data<T>,
-	name: string,
 	{color}: {color: Figma.Color}
-): void {
+): string | void {
 	const
-		[hue, num] = name.split('/');
+		[, hue, num] = this.parent.name.split('/');
 
 	if (!this.ds || !this.ds.colors) {
 		return;
 	}
 
 	const
-		{colors} = this.ds;
+		{colors} = this.ds,
+		value = calcColor.call(this, {color});
 
 	if (!colors[hue]) {
-		colors[hue] = [];
+		colors[hue] = [value];
 
 	} else {
-		colors[hue][num] = calcColor.call(this, {color});
+		colors[hue][num - 1] = value;
 	}
+
+	return value;
 }
 
 /**
@@ -126,6 +138,28 @@ function textTransform<T extends Figma.NodeType>(
 }
 
 /**
+ * Transforms text-decoration property
+ * @param value
+ */
+function textDecoration<T extends Figma.NodeType>(
+	this: Data<T>,
+	value: Figma.TypeStyle
+): Declaration {
+	return {textDecoration: value.textDecoration.toLowerCase()};
+}
+
+/**
+ * Transforms line-height property
+ * @param value
+ */
+function lineHeight<T extends Figma.NodeType>(
+	this: Data<T>,
+	value: Figma.TypeStyle
+): Declaration {
+	return {lineHeight: `${value.lineHeightPx}px`};
+}
+
+/**
  * Stores border radius from api rectangle
  * @param rect
  */
@@ -133,21 +167,7 @@ function storeBorderRadius<T extends Figma.NodeType>(
 	this: Data<T>,
 	rect: Figma.RECTANGLE
 ): void {
-	if (rect.cornerRadius) {
-		if (this.ds.borderRadius) {
-			this.ds.borderRadius[parent.name.split('/')[1]] = rect.cornerRadius;
-		}
-
-	} else {
-		const
-			value = parent.name.split('/');
-
-		if (!value[2]) {
-			throw new Error('Error at instance naming');
-		}
-
-		if (this.ds.borderRadius) {
-			this.ds.borderRadius[`${value.slice(0).join('/')}`] = new Array(4).fill(this.ds.borderRadius[value[1]]);
-		}
+	if (rect.cornerRadius && this.ds.rounding) {
+		this.ds.rounding[this.parent.name.split('/')[1]] = rect.cornerRadius;
 	}
 }

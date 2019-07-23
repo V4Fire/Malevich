@@ -16,10 +16,10 @@ interface DesignSystem extends Dictionary {
 		[key: string]: string[];
 	},
 
-	borderRadius?: {
+	rounding?: {
 		[key: string]: number | number[];
 	},
 
-	components: Dictionary<string>;
-	blocks: Dictionary<string>;
+	text: Dictionary<string>;
+	components: Record<string, Dictonary>;
 }

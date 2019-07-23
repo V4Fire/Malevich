@@ -9,32 +9,18 @@
 import { ControllersKit } from '../interfaces/controllers';
 import * as ExpressTypes from 'express';
 
-import $C = require('collection.js');
 import querystring = require('querystring');
 import https = require('https');
+import fs = require('fs');
+import parse from '../engines/figma';
 
-import scheme from '../schemes/figma';
+const {
 
-const
-	{FIGMA_CLIENT_ID, FIGMA_CLIENT_SECRET, FIGMA_REDIRECT_URI} = process.env;
+	FIGMA_CLIENT_ID,
+	FIGMA_CLIENT_SECRET,
+	FIGMA_REDIRECT_URI
 
-const
-	ERRORS: ContentError[] = [];
-
-const DS = {
-	components: {
-
-	},
-
-	blocks: {
-
-	}
-};
-
-export interface ContentError {
-	name: string;
-	description?: string;
-}
+} = process.env;
 
 export default {
 	namespace: 'api/figma',
@@ -57,7 +43,6 @@ export default {
 			fn: approveRights
 		}
 	]
-
 } as ControllersKit;
 
 function approveRights(req: Dictionary, res: ExpressTypes.Response): void {
@@ -157,118 +142,15 @@ async function getFiles(req: Dictionary, res: ExpressTypes.Response): Promise<vo
 		});
 
 		try {
-			parseFigmaFile(JSON.parse(str));
+			fs.writeFile('response.json', str, console.log);
+			parse(JSON.parse(str));
 
 		} catch {
-			ERRORS.push({name: 'File parsing error'});
+			console.warn('Error while parsing JSON from Figma API');
 		}
 
-		res.send(JSON.parse(str));
+		res.send(true);
 	}
 
 	res.send();
-}
-
-function parseFigmaFile(data: Figma.File): void {
-	const
-		pages = data.document.children;
-
-	pages.sort((a, b) => a.name < b.name ? 1 : a.name > b.name ? -1 : 0);
-
-	$C(pages).forEach((page) => {
-		if (page.type === 'CANVAS') {
-			findSubjects(page);
-		}
-	});
-}
-
-/**
- * Finds subjects in pages list
- * @param canvas
- */
-function findSubjects(canvas: Figma.Node): void {
-	const
-		interfaceRegExp = /^i([A-Z].*)/;
-
-	let
-		match;
-
-	$C(canvas.children).forEach((p) => {
-		match = canvas.name.match(interfaceRegExp);
-
-		if (match && match[1]) {
-			parseNode(p, p.name, 'interface');
-		}
-	});
-}
-
-type PageType = 'interface' | 'block';
-
-function parseNode(data: Figma.Node, name: string, t: PageType): void {
-	$C(data.children).forEach((c) => {
-		if (t === 'interface') {
-			switch (c.type) {
-				case 'COMPONENT':
-				case 'INSTANCE':
-				case 'GROUP':
-					parseNode(c, name, t);
-					break;
-
-				case 'TEXT':
-					console.log(c.id, c.name);
-					DS.components[c.id] = {
-						type: c.type
-					};
-
-					$C(scheme.text).forEach((value, key) => {
-						if (c[key]) {
-							if (Object.isObject(value)) {
-								$C(value).forEach((v, k) => {
-									if (Object.isFunction(v)) {
-										Object.assign(DS.components[c.id], v(DS, data, c[key]));
-
-									} else if (v) {
-										DS.components[c.id][k] = c[key][k];
-									}
-								});
-
-							} else if (Object.isFunction(value)) {
-								// @ts-ignore
-								Object.assign(DS.components[c.id], value(DS, data, c[key]));
-							}
-						}
-					});
-
-					break;
-
-				default:
-					ERRORS.push({
-						name: 'Type is not registered',
-						description: `${c.type} is not registered at design system loader`
-					});
-
-					return;
-			}
-		}
-
-		// Search components and serve it
-		if (c.type === 'COMPONENT') {
-			switch (c.name) {
-				case c.name.includes('Master'):
-					// Determines master component
-					break;
-
-				case c.name.split(':').length > 1:
-					// This is a mod
-					break;
-
-				default:
-					// Add an error for showing at the interface
-					ERRORS.push({
-						name: 'Component name discrepancy',
-						description: `${c.name} is not allowed name for a component`
-					});
-			}
-		}
-	});
 }
