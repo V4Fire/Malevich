@@ -62,3 +62,4 @@ Makefile
 /src/client/entries/tmp
 /db
 /synmaster.txt
+/repository
