@@ -6,8 +6,6 @@
  * https://github.com/V4Fire/Malevich/blob/master/LICENSE
  */
 
-import fs = require('fs');
-import path = require('upath');
 import $C = require('collection.js');
 
 import scheme from './scheme';
@@ -28,20 +26,12 @@ const DS: DesignSystem = {
 	rounding: {}
 };
 
-const
-	content = fs.readFileSync(path.resolve(process.cwd(), 'response.json'), {encoding: 'utf-8'});
-
 let
 	STYLES: Figma.Styles;
 
 const
 	RAW_DATA: Record<string, unknown> = {},
 	BLOCK_CHECKER = /^b([A-Z].*)/;
-
-if (content) {
-	const ds = parse(JSON.parse(content));
-	fs.writeFile('ds.json', JSON.stringify(ds), console.log);
-}
 
 /**
  * Parses file for generate DS
