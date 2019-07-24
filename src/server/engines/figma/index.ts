@@ -52,6 +52,7 @@ export default function parse(
 ): {
 	errors: ContentError[];
 	designSystem: DesignSystem;
+	approved: boolean;
 } {
 	const
 		pages = data.document.children;
@@ -68,7 +69,8 @@ export default function parse(
 
 	return {
 		errors: ERRORS,
-		designSystem: DS
+		designSystem: DS,
+		approved: Boolean(DS)
 	};
 }
 

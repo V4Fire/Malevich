@@ -6,8 +6,7 @@
  * https://github.com/V4Fire/Malevich/blob/master/LICENSE
  */
 
-import iStaticPage, { component, system } from 'super/i-static-page/i-static-page';
-import { PageSchema } from 'base/b-router/b-router';
+import iStaticPage, { component } from 'super/i-static-page/i-static-page';
 export * from 'super/i-static-page/i-static-page';
 
 @component({root: true})
@@ -23,21 +22,4 @@ export default class pRoot<
 	get activePage(): CanUndef<string> {
 		return this.route && this.field.get('route.meta.page');
 	}
-
-	/**
-	 * Routes declaration
-	 */
-	@system()
-	readonly routes: PageSchema = {
-		index : {
-			path: '/',
-			page: 'p-index'
-		},
-
-		external: {
-			path: '/ext/:service/:controller',
-			redirect: '/api/:service/:controller',
-			external: true
-		}
-	};
 }

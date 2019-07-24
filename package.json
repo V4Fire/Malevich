@@ -35,19 +35,20 @@
     "cookie-parser": "^1.4.4",
     "express": "^4.17.1",
     "express-session": "^1.15.6",
+    "simple-git": "^1.122.0",
     "upath": "^1.1.2"
   },
   "optionalDependencies": {
     "gulp": "^4.0.2",
-    "webpack": "^4.35.2",
-    "webpack-cli": "^3.3.5"
+    "webpack": "^4.35.2"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.2",
     "eslint": "^6.0.1",
-    "tslint": "^5.18.0",
     "gulp-nodemon": "^2.4.2",
     "gulp-typescript": "^5.0.0",
-    "typescript": "^3.3.3"
+    "tslint": "^5.18.0",
+    "typescript": "^3.3.3",
+    "webpack-cli": "^3.3.6"
   }
 }

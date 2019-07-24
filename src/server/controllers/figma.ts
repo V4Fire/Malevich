@@ -111,7 +111,7 @@ async function authorize(req: Dictionary, res: ExpressTypes.Response): Promise<v
 		});
 	}
 
-	res.redirect('/?stage=figmaImport');
+	res.redirect('/publish');
 }
 
 async function getFiles(req: Dictionary, res: ExpressTypes.Response): Promise<void> {
@@ -141,15 +141,33 @@ async function getFiles(req: Dictionary, res: ExpressTypes.Response): Promise<vo
 			}).on('error', reject).end();
 		});
 
+		let
+			result,
+			response;
+
 		try {
 			fs.writeFile('response.json', str, console.log);
-			parse(JSON.parse(str));
+			response = JSON.parse(str);
+			result = parse(response);
 
 		} catch {
 			console.warn('Error while parsing JSON from Figma API');
+
+			res.send({
+				errors: [{
+					name: 'Cannot parse response from Figma API',
+					description: `I can't parse JSON string for the file with id ${(<Dictionary>req.params).file}`
+				}]
+			});
+
+			return;
 		}
 
-		res.send(true);
+		res.send({
+			errors: result.errors,
+			approved: result.approved,
+			file: Object.select(response, ['thumbnailUrl', 'lastModified', 'version'])
+		});
 	}
 
 	res.send();

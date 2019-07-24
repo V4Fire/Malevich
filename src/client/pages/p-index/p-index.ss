@@ -21,33 +21,11 @@
 				Publish your Design System
 
 			< section.&__ds-publishing
-				< .&__ds-figma-importing v-if = stage === 'figmaImport'
-					< b-form &
-						v-once |
-						ref = files |
-						:id = dom.getId('fileForm') |
-						:method = 'get' |
-						:dataProvider = 'API.FigmaFiles'
+				< form.&__form
+					< b-button &
+						:rounding = 'small' |
+						@click = onFigmaImportClick
 					.
-
-						< b-input &
-							:name = 'id' |
-							:validators = [['required', {showMsg: false}]] |
-							:placeholder = 'Enter file key' |
-							@validationEnd = onValidationEnd
-						.
-
-						< b-button &
-							v-func = false |
-							ref = formSubmit |
-							:type = 'submit' |
-							:name = 'file' |
-							:disabled = true
-						.
-							Find file
-
-				< form.&__form v-else
-					< b-button :rounding = 'small' | @click = onFigmaImportClick
 						Import from figma
 
 						< template #preIcon

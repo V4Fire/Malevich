@@ -1,0 +1,52 @@
+/*!
+ * V4Fire Malevich
+ * https://github.com/V4Fire/Malevich
+ *
+ * Released under the MIT license
+ * https://github.com/V4Fire/Malevich/blob/master/LICENSE
+ */
+
+@import "super/i-dynamic-page/i-dynamic-page.styl"
+
+$p = {
+
+}
+
+p-publish extends i-dynamic-page
+	&__content
+		flex-col center
+		width 600px
+		box-sizing border-box
+
+		padding 60px 30px 0
+		margin 0 auto
+
+		text-align center
+
+	&__thumbnail
+		margin 20px
+
+	&__file-info
+		width 100%
+		text-align left
+
+	&__file-name
+		font-size 20px
+		line-height 1.2
+		font-weight 500
+
+	&__file-version
+		font-size 12px
+		line-height 1.2
+
+	&__file-last-modified
+		font-size 16px
+		line-height 1.2
+
+	&__form
+		flex-col space-around center
+		width 600px
+		min-height 200px
+
+	&__commit-submit
+		align-self flex-start

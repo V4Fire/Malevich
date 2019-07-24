@@ -6,6 +6,6 @@
  * https://github.com/V4Fire/Malevich/blob/master/LICENSE
  */
 
-package('p-index')
+package('p-publish')
 	.extends('i-dynamic-page')
-	.dependencies('b-button');
+	.dependencies('b-form', 'b-input', 'b-image', 'b-textarea', 'b-button');
