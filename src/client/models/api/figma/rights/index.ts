@@ -13,7 +13,7 @@ export {
 	_ as types
 };
 
-@provider('API')
+@provider('adapter')
 export default class FigmaRights extends API {
 	/** @override */
 	baseURL: string = '/figma/rights';

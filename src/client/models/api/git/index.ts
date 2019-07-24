@@ -13,10 +13,10 @@ export {
 	_ as types
 };
 
-@provider('adapter')
-export default class FigmaFiles extends API {
+@provider('publish')
+export default class Git extends API {
 	/** @override */
-	baseURL: string = '/figma/files/:id';
+	baseURL: string = '/git/:endpoint';
 
 	/** @override */
 	static request: typeof API.request = API.request({

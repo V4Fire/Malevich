@@ -14,8 +14,6 @@
 	- block body
 		< .&__content
 			< template v-if = stage === 'commit'
-				< b-image.&__thumbnail :src = fileInfo('thumbnailUrl')
-
 				< .&__file-info
 					< .&__file-name v-if = fileInfo('name')
 						{{ field.get('dsInfo.file.name') }}
@@ -26,14 +24,22 @@
 					< .&__file-version v-if = fileInfo('version')
 						File version {{ fileInfo('version') }}
 
-				< b-form :classes = provide.classes({form: true})
-					< b-input &
-						:name = 'tag' |
-						:width = 'full' |
-						:placeholder = field.get('repo.tag') || 'Type tag version'
+				< b-image.&__thumbnail :src = fileInfo('thumbnailUrl')
+
+				< h3.&__form-title
+					Update package
+
+				< b-form &
+					:classes = provide.classes({form: true}) |
+					:dataProvider = 'publish.Git' |
+					:method = 'post'
+				.
+					< b-input-hidden &
+						:name = 'endpoint' |
+						:value = 'commit'
 					.
 
-					< b-textarea &
+					< b-input &
 						:name = 'message' |
 						:placeholder = 'Type a commit message' |
 						:width = 'full' |
@@ -44,11 +50,9 @@
 					< b-button.&__commit-submit &
 						ref = formSubmit |
 						:type = 'submit' |
-						:name = 'file' |
 						:disabled = true
 					.
 						Save changes
-
 
 			< template v-else
 				< b-form &
@@ -56,7 +60,7 @@
 					ref = files |
 					:id = dom.getId('fileForm') |
 					:method = 'get' |
-					:dataProvider = 'API.FigmaFiles' |
+					:dataProvider = 'adapter.FigmaFiles' |
 					@onSubmitSuccess = onPublishSuccess
 				.
 

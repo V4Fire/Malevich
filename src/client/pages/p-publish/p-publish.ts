@@ -7,6 +7,7 @@
  */
 
 import 'models/api/figma/files';
+import 'models/api/git';
 
 import iDynamicPage, { component, field, TitleValue } from 'super/i-dynamic-page/i-dynamic-page';
 import bButton from 'form/b-button/b-button';
@@ -15,6 +16,9 @@ export * from 'super/i-dynamic-page/i-dynamic-page';
 
 @component()
 export default class pPublish<D extends object = Dictionary> extends iDynamicPage<D> {
+	/** @override */
+	readonly dataProvider: string = 'publish.Git';
+
 	/** @override */
 	readonly pageTitleProp: TitleValue = 'Malevich: Commit Changes';
 

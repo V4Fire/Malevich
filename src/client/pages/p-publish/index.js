@@ -8,4 +8,4 @@
 
 package('p-publish')
 	.extends('i-dynamic-page')
-	.dependencies('b-form', 'b-input', 'b-image', 'b-textarea', 'b-button');
+	.dependencies('b-form', 'b-input-hidden', 'b-input', 'b-image', 'b-button');

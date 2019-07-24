@@ -13,6 +13,7 @@ import $C = require('collection.js');
 import path = require('upath');
 import fs = require('fs');
 import cookieParser = require('cookie-parser');
+import bodyParser = require('body-parser');
 import session = require('express-session');
 
 const
@@ -21,6 +22,7 @@ const
 	app = module.exports = express();
 
 app.use(cookieParser());
+app.use(bodyParser.json());
 app.use(session({
 	secret: process.env.SESSION_SECRET,
 	resave: true,

@@ -12,6 +12,8 @@ import * as ExpressTypes from 'express';
 import querystring = require('querystring');
 import https = require('https');
 import fs = require('fs');
+import path = require('upath');
+
 import parse from '../engines/figma';
 
 const {
@@ -114,6 +116,11 @@ async function authorize(req: Dictionary, res: ExpressTypes.Response): Promise<v
 	res.redirect('/publish');
 }
 
+async function writeDsFile(data: Dictionary): Promise<void> {
+	const str = `module.exports = ${JSON.stringify(data)}`;
+	return fs.promises.writeFile(path.resolve(process.cwd(), 'repository', 'index.js'), str);
+}
+
 async function getFiles(req: Dictionary, res: ExpressTypes.Response): Promise<void> {
 	if (req.session && (<Dictionary>req.session).figma && (<Dictionary>(<Dictionary>req.session).figma).accessToken) {
 		let str = '';
@@ -146,13 +153,14 @@ async function getFiles(req: Dictionary, res: ExpressTypes.Response): Promise<vo
 			response;
 
 		try {
-			fs.writeFile('response.json', str, console.log);
 			response = JSON.parse(str);
 			result = parse(response);
 
-		} catch {
-			console.warn('Error while parsing JSON from Figma API');
+			if (result && result.approved) {
+				await writeDsFile(result.designSystem);
+			}
 
+		} catch {
 			res.send({
 				errors: [{
 					name: 'Cannot parse response from Figma API',
