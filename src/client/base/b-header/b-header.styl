@@ -1,0 +1,25 @@
+/*!
+ * V4Fire Malevich
+ * https://github.com/V4Fire/Malevich
+ *
+ * Released under the MIT license
+ * https://github.com/V4Fire/Malevich/blob/master/LICENSE
+ */
+
+@import "super/i-block/i-block.styl"
+
+$p = {
+	headerBorderColor: #F7F7F7
+}
+
+b-header extends i-block
+	&__header
+		display flex
+		align-items center
+		justify-content flex-start
+		height 60px
+		padding 0 16px
+		border-bottom 1px solid $p.headerBorderColor
+
+	&__logo
+		height 40px

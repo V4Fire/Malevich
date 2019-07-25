@@ -9,12 +9,11 @@
 - namespace [%fileName%]
 
 - include 'super/i-dynamic-page'|b as placeholder
+- include 'base/b-header/b-header.mono.ss'|b
 
 - template index() extends ['i-dynamic-page'].index
 	- block body
-		< header.&__header
-			< a href = \/
-				< img.&__logo :src = require('assets/img/logo-full.svg')
+		+= self.getTpl('b-header/')()
 
 		< main.&__content
 			< h1.&__title

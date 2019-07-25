@@ -8,10 +8,13 @@
 
 - namespace [%fileName%]
 
+- include 'base/b-header/b-header.mono.ss'|b
 - include 'super/i-dynamic-page'|b as placeholder
 
 - template index() extends ['i-dynamic-page'].index
 	- block body
+		+= self.getTpl('b-header/')()
+
 		< .&__content
 			< template v-if = stage === 'commit'
 				< .&__file-info
