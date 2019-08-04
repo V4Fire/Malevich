@@ -22,7 +22,7 @@
 						{{ field.get('dsInfo.file.name') }}
 
 					< .&__file-last-modified v-if = fileInfo('lastModified')
-						Last Modified {{ fileInfo('lastModified').format('d;M:2-digit;Y h;m;s') }}
+						Last Modified {{ fileInfo('lastModified') }}
 
 					< .&__file-version v-if = fileInfo('version')
 						File version {{ fileInfo('version') }}

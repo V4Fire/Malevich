@@ -13,6 +13,7 @@ import querystring = require('querystring');
 import https = require('https');
 import fs = require('fs');
 import path = require('upath');
+import prettier = require('prettier');
 
 import parse from '../engines/figma';
 
@@ -117,8 +118,11 @@ async function authorize(req: Dictionary, res: ExpressTypes.Response): Promise<v
 }
 
 async function writeDsFile(data: Dictionary): Promise<void> {
-	const str = `module.exports = ${JSON.stringify(data)}`;
-	return fs.promises.writeFile(path.resolve(process.cwd(), 'repository', 'index.js'), str);
+	const
+		filePath = path.resolve(process.cwd(), 'repository', 'index.js'),
+		str = `module.exports = ${JSON.stringify(data)}`;
+
+	return fs.promises.writeFile(filePath, prettier.format(str));
 }
 
 async function getFiles(req: Dictionary, res: ExpressTypes.Response): Promise<void> {
