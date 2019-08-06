@@ -8,29 +8,11 @@
 
 import $C = require('collection.js');
 
-import scheme from './scheme';
+import scheme, { DS, RAW, writeComponent } from './scheme';
 import * as h from './helpers';
 
 const
-	ERRORS: ContentError[] = [];
-
-export interface ContentError {
-	name: string;
-	description?: string;
-}
-
-const DS: DesignSystem = {
-	components: {},
-	colors: {},
-	text: {},
-	rounding: {}
-};
-
-let
-	STYLES: Figma.Styles;
-
-const
-	RAW_DATA: Record<string, unknown> = {},
+	ERRORS: ContentError[] = [],
 	BLOCK_CHECKER = /^b([A-Z].*)/;
 
 /**
@@ -45,15 +27,16 @@ export default function parse(
 	approved: boolean;
 } {
 	const
-		pages = data.document.children;
+		pages = data.document.children,
+		ds = pages.find((p) => p.name === 'DS');
 
-	pages.sort((a, b) => a.name < b.name ? 1 : a.name > b.name ? -1 : 0);
+	ds.children.sort((a, b) => a.name < b.name ? 1 : a.name > b.name ? -1 : 0);
 
-	STYLES = data.styles;
+	RAW.styles = data.styles;
 
-	$C(pages).forEach((page) => {
-		if (page.type === 'CANVAS') {
-			findSubjects(page);
+	$C(ds.children).forEach((el) => {
+		if (el.type === 'FRAME') {
+			findSubjects(el);
 		}
 	});
 
@@ -109,10 +92,10 @@ function parseNode(data: Figma.Node, t: PageType, name: string): void {
 							break;
 						}
 
-						RAW_DATA[c.id] = {
+						RAW.data[c.id] = {
 							type: c.type,
 							name: c.name,
-							value: scheme.color(DS, c, rect.fills[0])
+							value: scheme.color(c, rect.fills[0])
 						};
 
 						break;
@@ -124,8 +107,8 @@ function parseNode(data: Figma.Node, t: PageType, name: string): void {
 				case 'RECTANGLE':
 				case 'VECTOR':
 					if (h.checkFieldName(data.name, '@Radius')) {
-						scheme.radius(DS, data, c);
-						RAW_DATA[c.id] = {
+						scheme.radius(data, c);
+						RAW.data[c.id] = {
 							type: c.type,
 							name: data.name,
 							value: DS.rounding && DS.rounding[data.name.split('/').slice(0)]
@@ -135,7 +118,7 @@ function parseNode(data: Figma.Node, t: PageType, name: string): void {
 					break;
 
 				case 'TEXT':
-					RAW_DATA[c.id] = {
+					RAW.data[c.id] = {
 						type: c.type,
 						name: data.name
 					};
@@ -149,23 +132,23 @@ function parseNode(data: Figma.Node, t: PageType, name: string): void {
 								$C(value).forEach((v, k) => {
 									if (Object.isFunction(v)) {
 										if (c[key][k]) {
-											Object.assign(RAW_DATA[c.id], v(DS, data, c[key]));
+											Object.assign(RAW.data[c.id], v(data, c[key]));
 										}
 
 									} else if (v) {
-										(<Dictionary>RAW_DATA[c.id])[k] = c[key][k];
+										(<Dictionary>RAW.data[c.id])[k] = c[key][k];
 									}
 								});
 
 							} else if (Object.isFunction(value)) {
-								Object.assign(RAW_DATA[c.id], (<Function>value)(DS, data, c));
+								Object.assign(RAW.data[c.id], (<Function>value)(data, c));
 							}
 
 							if (
 								!data.name.match(/@/) &&
 								(chunks.length === 1 || parseInt(chunks[chunks.length - 1], 10))
 							) {
-								h.set(chunks.join('.'), RAW_DATA[c.id], DS.text);
+								h.set(chunks.join('.'), RAW.data[c.id], DS.text);
 							}
 						}
 					});
@@ -184,105 +167,20 @@ function parseNode(data: Figma.Node, t: PageType, name: string): void {
 		}
 
 		if (t === 'block') {
-			switch (c.type) {
-				case 'GROUP':
-					parseNode(c, t, name);
-					break;
-
-				case 'COMPONENT':
-				case 'INSTANCE':
-					if (BLOCK_CHECKER.test(c.name)) {
-						name = c.name;
-					}
-
-					if (/^Master/.test(c.name)) {
-						if (c.type === 'INSTANCE') {
-							parseNode(c, t, name);
-						}
-
-						break;
-					}
-
-					const
-						[blockName, exterior] = (<string>name).split('/');
-
-					let target;
-
-					if (exterior && DS.components) {
-						if (!DS.components[blockName]) {
-							DS.components[blockName] = {
-								exterior: {
-									[exterior]: {}
-								}
-							};
-
-							target = DS.components[blockName].exterior[exterior];
-
-						} else {
-							if (!DS.components[blockName].exterior[exterior]) {
-								DS.components[blockName].exterior[exterior] = {};
-							}
-
-							target = DS.components[blockName].exterior[exterior];
-						}
-
-					} else {
-						if (!DS.components[blockName]) {
-							DS.components[blockName] = {exterior: {}};
-						}
-
-						target = DS.components[blockName];
-					}
-
-					if (c.name === 'color') {
-						const
-							colorRect = c.children[0];
-
-						if (colorRect.styles) {
-							const
-								styleLink = STYLES[colorRect.styles.fill],
-								[hue, num] = styleLink.name.split('/');
-
-							if (DS.colors) {
-								target.backgroundColor = DS.colors[hue][num - 1];
-							}
-
-							break;
-						}
-					}
-
-					if (/s:/.test(c.name)) {
-						if (!target.state) {
-							target.state = {};
-						}
-
-						target.state[c.name] = {};
-
-						const
-							rect = c.children[0];
-
-						$C(scheme.state).forEach((state, key) => {
-							if (Object.isObject(state)) {
-								$C(state).forEach((s, k) => {
-									if (Object.isFunction(s)) {
-										Object.assign(target.state[c.name], {[k]: s(DS, c, rect[key][0])});
-
-									} else {
-										target.state[c.name][k] = rect[key][0][k];
-									}
-								});
-
-							} else if (Object.isFunction(state)) {
-								Object.assign(target.state[c.name], (<Function>state)(rect));
-
-							} else if (state) {
-								target.state[c.name][key] = rect[key];
-							}
-						});
-					}
-
-					parseNode(c, t, name);
+			if (c.type === 'TEXT') {
+				return;
 			}
+
+			if (
+				c.type === 'GROUP' &&
+				!new RegExp('Master|^m:').test(c.name)
+			) {
+				parseNode(c, t, name);
+
+			} else {
+				writeComponent(name, c);
+			}
+
 		}
 	});
 }

@@ -6,13 +6,29 @@
  * https://github.com/V4Fire/Malevich/blob/master/LICENSE
  */
 
+import $C = require('collection.js');
+
 interface Data<T extends Figma.NodeType> {
-	ds: DesignSystem;
 	parent: Figma.Node;
 	targetField?: string;
 }
 
 type Declaration = Partial<CSSStyleDeclaration> | void;
+
+export const DS: DesignSystem = {
+	components: {},
+	colors: {},
+	text: {},
+	rounding: {}
+};
+
+export const RAW: {styles: Dictionary; data: Record<string, unknown>} = {
+	styles: {},
+	data: {}
+};
+
+const
+	WARNINGS: ContentError[] = [];
 
 export default {
 	text: {
@@ -45,17 +61,192 @@ export default {
 	color: f(storeColor)
 };
 
+const adapters = {
+	bButton: {
+		size: (el: Figma.Node) => {
+			const
+				background = $C(el.children).one.get((c) => c.name === 'background'),
+				text = $C(el.children).one.get((c) => c.name.toLowerCase() === 'text');
+
+			if (!background || !text) {
+				WARNINGS.push({
+					name: `No text or background for ${el.name}`
+				});
+			}
+
+			const
+				b = background.absoluteBoundingBox,
+				t = text.absoluteBoundingBox;
+
+			return {
+				horOffset: Math.abs(b.y - t.y),
+				vertOffset: Math.abs(b.x - t.x),
+				textHeight: t.height,
+				height: b.height,
+				fontSize: text.styles.fontSize
+			};
+		},
+
+		hover: buttonState,
+		active: buttonState,
+		disabled: buttonState,
+
+		exterior(el: Figma.Node): Dictionary {
+			const
+				background = el.children.find((c) => c.name === 'background'),
+				text = el.children.find((c) => c.name.toLowerCase() === 'text');
+
+			let bg;
+
+			if ($C(background).get('fills.0')) {
+				bg = calcColor(background.fills[0]);
+
+			} else if ($C(background).get('children.0.children.0.fills.0')) {
+				bg = calcColor($C(background).get('children.0.children.0.fills.0'));
+			}
+
+			return {
+				color: calcColor(text.fills[0]),
+				backgroundColor: bg || 'none'
+			};
+		},
+
+		preIcon: withIcon,
+		postIcon: (el: Figma.Node) => withIcon(el, 'post')
+	}
+};
+
+function withIcon(el: Figma.Node, pos: 'pre' | 'post' = 'pre'): Dictionary {
+	const
+		icon = $C(el.children).one.get((c) => c.name === 'icon'),
+		text = $C(el.children).one.get((c) => c.name === 'text');
+
+	if (!icon || !text) {
+		WARNINGS.push({
+			name: `No text or icon for ${el.name}`
+		});
+	}
+
+	const
+		{absoluteBoundingBox: i} = icon,
+		{absoluteBoundingBox: t} = text;
+
+	return {
+		iconSize: i.width,
+		offset: Math.abs(i.x - t.x) - (pos === 'post' ? t.width : i.width)
+	};
+}
+
+function buttonState(el: Figma.Node): Dictionary {
+	const
+		layer = el.children[0];
+
+	return {
+		blendMode: layer.blendMode,
+		opacity: $C(layer).get('fills.0.opacity'),
+		backgroundColor: calcColor(layer.fills[0])
+	};
+}
+
+/**
+ * Writes component to Design System
+ *
+ * @param name
+ * @param el
+ */
+export function writeComponent(name: string, el: Figma.Node): void {
+	const
+		[prefix, ...componentArgs] = el.name.split('/');
+
+	if (!DS.components[name]) {
+		DS.components[name] = {
+			mods: {}
+		};
+	}
+
+	const
+		link = DS.components[name];
+
+	if (prefix === 'Master') {
+		// For blocks with Master component
+		const
+			modReg = /(\w+):(\w+)/;
+
+		$C(el.children).forEach((c) => {
+			const
+				[prefix] = c.name.split('/');
+
+			// Nested Master component
+			if (prefix !== 'Master' && modReg.test(c.name)) {
+				const
+					[, , mod] = c.name.match(modReg),
+					adapter = $C(adapters).get(`${name}.${mod}`);
+
+				if (mod && Object.isFunction(adapter)) {
+					link.mods[mod] = adapters[name][mod](c);
+				}
+			}
+		});
+
+		if (componentArgs && modReg.test(componentArgs[componentArgs.length - 1])) {
+			const
+				[, mod, value] = componentArgs[componentArgs.length - 1].match(modReg),
+				adapter = $C(adapters).get(`${name}.${mod}`);
+
+			if (Object.isFunction(adapter)) {
+				if (!link.mods[mod]) {
+					link.mods[mod] = {};
+				}
+
+				let
+					target = el;
+
+				if (
+					el.children.length === 1 &&
+					el.children[0].name.includes(prefix)
+				) {
+					target = el.children[0];
+				}
+
+				link.mods[mod][value] = adapter(target);
+
+			} else {
+				WARNINGS.push({
+					name: 'Adapter didn\'t created',
+					description: `Please declare an adapter for component ${name}, ${prefix}, mod ${mod}`
+				});
+			}
+		}
+
+	} else if (prefix === name) {
+		// For blocks with Exterior
+		if (componentArgs.length === 1) {
+			const
+				adapter = $C(adapters).get(`${name}.exterior`);
+
+			if (Object.isFunction(adapter)) {
+
+				if (!link.exterior) {
+					link.exterior = {};
+				}
+
+				// Calculates exterior from nested Master component
+				link.exterior[componentArgs[0].toLowerCase()] = adapter(el.children[0]);
+			}
+		}
+	}
+}
+
 /**
  * Scheme methods factory
  * @param fn
  */
 export function f(fn: Function): Function {
 	return (
-		ds: DesignSystem,
 		parent: Figma.Node,
 		value: Figma.NodeType | string | number,
 		targetField?: string
-	) => fn.call({ds, parent, targetField}, value);
+	) => fn.call({parent, targetField}, value);
 }
 
 /**
@@ -67,7 +258,6 @@ export function f(fn: Function): Function {
  * @param a
  */
 function calcColor<T extends Figma.NodeType>(
-	this: Data<T>,
 	{color: {r, g, b, a}}: {color: Figma.Color}
 ): string {
 	return `rgba(${(r * 255).toFixed()}, ${(g * 255).toFixed()}, ${(b * 255).toFixed()}, ${a})`;
@@ -99,12 +289,12 @@ function storeColor<T extends Figma.NodeType>(
 	const
 		[, hue, num] = this.parent.name.split('/');
 
-	if (!this.ds || !this.ds.colors) {
+	if (!DS || !DS.colors) {
 		return;
 	}
 
 	const
-		{colors} = this.ds,
+		{colors} = DS,
 		value = calcColor.call(this, {color});
 
 	if (!colors[hue]) {
@@ -167,7 +357,7 @@ function storeBorderRadius<T extends Figma.NodeType>(
 	this: Data<T>,
 	rect: Figma.RECTANGLE
 ): void {
-	if (rect.cornerRadius && this.ds.rounding) {
-		this.ds.rounding[this.parent.name.split('/')[1]] = rect.cornerRadius;
+	if (rect.cornerRadius && DS.rounding) {
+		DS.rounding[this.parent.name.split('/')[1]] = rect.cornerRadius;
 	}
 }

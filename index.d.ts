@@ -23,3 +23,8 @@ interface DesignSystem extends Dictionary {
 	text: Dictionary<string>;
 	components: Record<string, Dictonary>;
 }
+
+interface ContentError {
+	name: string;
+	description?: string;
+}
