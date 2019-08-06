@@ -8,7 +8,8 @@
 
 import $C = require('collection.js');
 
-import scheme, { DS, RAW, writeComponent } from './scheme';
+import scheme, { DS, writeComponent } from './scheme';
+import { RAW } from './converters';
 import * as h from './helpers';
 
 const
@@ -103,7 +104,7 @@ function parseNode(data: Figma.Node, t: PageType, name: string): void {
 						RAW.data[c.id] = {
 							type: c.type,
 							name: c.name,
-							value: scheme.color(c, rect.fills[0])
+							value: scheme.color(rect.fills[0], c)
 						};
 
 						break;
@@ -115,7 +116,7 @@ function parseNode(data: Figma.Node, t: PageType, name: string): void {
 				case 'RECTANGLE':
 				case 'VECTOR':
 					if (h.checkFieldName(data.name, '@Radius')) {
-						scheme.radius(data, c);
+						scheme.radius(c, data);
 						RAW.data[c.id] = {
 							type: c.type,
 							name: data.name,
@@ -140,7 +141,7 @@ function parseNode(data: Figma.Node, t: PageType, name: string): void {
 								$C(value).forEach((v, k) => {
 									if (Object.isFunction(v)) {
 										if (c[key][k]) {
-											Object.assign(RAW.data[c.id], v(data, c[key]));
+											Object.assign(RAW.data[c.id], v(c[key], data));
 										}
 
 									} else if (v) {
@@ -149,7 +150,7 @@ function parseNode(data: Figma.Node, t: PageType, name: string): void {
 								});
 
 							} else if (Object.isFunction(value)) {
-								Object.assign(RAW.data[c.id], (<Function>value)(data, c));
+								Object.assign(RAW.data[c.id], (<Function>value)(c, data));
 							}
 
 							if (
@@ -188,7 +189,6 @@ function parseNode(data: Figma.Node, t: PageType, name: string): void {
 			} else {
 				writeComponent(name, c);
 			}
-
 		}
 	});
 }
