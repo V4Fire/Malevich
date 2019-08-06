@@ -73,6 +73,14 @@ function parseNode(data: Figma.Node, t: PageType, name: string): void {
 		return;
 	}
 
+	const
+		master = /^Master(?:$|\/)/;
+
+	if (t === 'block' && master.test(data.name)) {
+		writeComponent(name, data);
+		return;
+	}
+
 	$C(data.children).forEach((c) => {
 		if (t === 'interface') {
 			switch (c.type) {

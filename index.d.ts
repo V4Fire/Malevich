@@ -21,7 +21,7 @@ interface DesignSystem extends Dictionary {
 	},
 
 	text: Dictionary<string>;
-	components: Record<string, Dictonary>;
+	components: Record<string, Dictonary<string>>;
 }
 
 interface ContentError {
