@@ -9,11 +9,10 @@
 import $C = require('collection.js');
 
 import scheme, { DS, writeComponent } from './scheme';
-import { RAW } from './converters';
+import { RAW, ERRORS } from './converters';
 import * as h from './helpers';
 
 const
-	ERRORS: ContentError[] = [],
 	BLOCK_CHECKER = /^b([A-Z].*)/;
 
 /**
@@ -141,7 +140,7 @@ function parseNode(data: Figma.Node, t: PageType, name: string): void {
 								$C(value).forEach((v, k) => {
 									if (Object.isFunction(v)) {
 										if (c[key][k]) {
-											Object.assign(RAW.data[c.id], v(c[key], data));
+											Object.assign(RAW.data[c.id], v(c[key]));
 										}
 
 									} else if (v) {

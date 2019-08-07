@@ -18,6 +18,7 @@ export const RAW: {
 };
 
 export const
+	ERRORS: ContentError[] = [],
 	WARNINGS: ContentError[] = [];
 
 const CONVERTERS = {
@@ -100,7 +101,31 @@ const CONVERTERS = {
 				baseBorderColor
 			};
 		},
-		focus: () => ({foo: 1}),
+		focus: (el: Figma.Node): CanUndef<Dictionary> => {
+			const
+				ch = $C(el).get('children.0.children.0');
+
+			if (!ch) {
+				ERRORS.push({
+					name: 'Wrong structure',
+					description: 'Group has no needed layer for calculating focus state'
+				});
+
+				return;
+			}
+
+			const
+				effect = $C(ch).get('effects.0');
+
+			return {
+				shadowColor: effect && mixins.calcColor(effect),
+				shadowOffset: $C(effect).get('offset'),
+				shadowBlur: $C(effect).get('radius'),
+
+				borderWidth: ch.strokeWeight,
+				borderColor: mixins.calcColor(ch.strokes[0])
+			};
+		},
 		valid(el: Figma.Node): Dictionary {
 			const result = {
 				valid: {},
@@ -108,7 +133,7 @@ const CONVERTERS = {
 			};
 
 			const
-				callAdaptersForMod = (mod, m) => {
+				convertMod = (mod, m) => {
 					const
 						adapter = CONVERTERS.bInput[mod];
 
@@ -121,13 +146,76 @@ const CONVERTERS = {
 				state = {true: 'valid', false: 'invalid'};
 
 			$C(el.children).forEach((valueGroup) => {
-				// true false group if layers
+				// 'true' 'false' groups
+				const
+					store = result[state[valueGroup.name]],
+					full = valueGroup.absoluteBoundingBox,
+					back = $C(valueGroup.children).one.get(({name}) => name === 'background');
+
+				if (!back) {
+					ERRORS.push({
+						name: 'No background layer',
+						description: `${el.name} has no background layer for state '${valueGroup.name}'`
+					});
+
+					return;
+				}
+
+				const
+					b = back.absoluteBoundingBox;
+
+				if (back.children[0]) {
+					const
+						ch = back.children[0];
+
+					Object.assign(store, {
+						borderWidth: ch.strokeWeight,
+						borderColor: mixins.calcColor(ch.strokes[0])
+					});
+				}
+
 				$C(valueGroup.children).forEach((layer) => {
+					const
+						l = layer.absoluteBoundingBox;
+
 					if (/m:\w+/.test(layer.name)) {
 						const
 							name = layer.name.replace('m:', '');
 
-						return result[state[valueGroup.name]][name] = callAdaptersForMod(name, layer);
+						store[name] = convertMod(name, layer);
+						return;
+					}
+
+					// validation icon
+					if (layer.type === 'VECTOR') {
+						store.icon = {
+							name: layer.name,
+							offset: {
+								top: l.y - full.y,
+								right: (full.x + full.width) - (l.x + l.width)
+							},
+							width: l.width,
+							height: l.height,
+							color: mixins.calcColor(layer.fills[0])
+						};
+
+						return;
+					}
+
+					if (layer.name === 'info') {
+						const
+							fontOptions = RAW.styles[layer.styles.text];
+
+						store.info = {
+							textStyle: fontOptions && (<Figma.Style>fontOptions).name,
+							color: mixins.calcColor(layer.fills[0]),
+							offset: {
+								top: l.y - (b.y + b.height),
+								left: l.x - b.x
+							}
+						};
+
+						return;
 					}
 				});
 			});
