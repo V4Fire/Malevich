@@ -13,13 +13,8 @@ import gitPromise = require('simple-git/promise');
 import fs = require('fs');
 import path = require('upath');
 
-const {
-
-	DS_PACKAGE,
-	DS_PACKAGE_USERNAME,
-	DS_PACKAGE_PASSWORD
-
-} = process.env;
+const
+	{DS_PACKAGE} = process.env;
 
 const
 	dsRepoLocalPath = path.resolve(process.cwd(), 'repository');
@@ -35,9 +30,9 @@ if (!fs.existsSync(dsRepoLocalPath)) {
 const
 	git = gitPromise(dsRepoLocalPath);
 
-if (needInit) {
+if (needInit && DS_PACKAGE) {
 	git
-		.clone(`https://${DS_PACKAGE_USERNAME}:${DS_PACKAGE_PASSWORD}@${DS_PACKAGE}`, dsRepoLocalPath)
+		.clone(DS_PACKAGE, dsRepoLocalPath)
 		.catch(console.log);
 
 } else {
@@ -76,7 +71,8 @@ async function push(req: ExpressTypes.Request, res: ExpressTypes.Response): Prom
 			}
 		});
 
-		await git.commit(req.body.message, 'index.js');
+		await git.add(['index.js']);
+		await git.commit(req.body.message);
 		await git.addAnnotatedTag(`v.${next}`, req.body.message);
 		await git.pushTags();
 		await git.push();

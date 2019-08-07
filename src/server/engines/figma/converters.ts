@@ -315,8 +315,12 @@ function buttonState(el: Figma.Node): Dictionary {
 		layer = el.children[0];
 
 	return {
-		blendMode: layer.blendMode,
+		blendMode: toDashCase(layer.blendMode),
 		opacity: $C(layer).get('fills.0.opacity'),
 		backgroundColor: mixins.calcColor(layer.fills[0])
 	};
+}
+
+function toDashCase(value: string): string {
+	return value.toLowerCase().dasherize();
 }
