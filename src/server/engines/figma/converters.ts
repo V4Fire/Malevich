@@ -253,8 +253,8 @@ function inputWithIcon(el: Figma.Node): Dictionary {
 		offset: Math.abs(i.x - b.x),
 
 		baseBgColor: mixins.calcColor(fill),
-		baseStrokeWeight: strokeWeight,
-		baseStrokeColor: mixins.calcColor(stroke)
+		baseBorderWidth: strokeWeight,
+		baseBorderColor: mixins.calcColor(stroke)
 	};
 }
 
