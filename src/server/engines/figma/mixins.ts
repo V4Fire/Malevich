@@ -16,7 +16,7 @@ type Declaration = Partial<CSSStyleDeclaration> | void;
  * @param b
  * @param a
  */
-export function calcColor<T extends Figma.NodeType>(
+export function calcColor(
 	{color: {r, g, b, a}}: {color: Figma.Color}
 ): string {
 	return `rgba(${(r * 255).toFixed()}, ${(g * 255).toFixed()}, ${(b * 255).toFixed()}, ${a})`;
@@ -26,7 +26,7 @@ export function calcColor<T extends Figma.NodeType>(
  * Transforms line-height property
  * @param value
  */
-export function lineHeight<T extends Figma.NodeType>(
+export function lineHeight(
 	value: Figma.TypeStyle
 ): Declaration {
 	return {lineHeight: `${value.lineHeightPx}px`};
@@ -36,17 +36,17 @@ export function lineHeight<T extends Figma.NodeType>(
  * Transforms text-decoration property
  * @param value
  */
-export function textDecoration<T extends Figma.NodeType>(
+export function textDecoration(
 	value: Figma.TypeStyle
 ): Declaration {
 	return {textDecoration: value.textDecoration.toLowerCase()};
 }
 
 /**
- * Creates text-transform style
+ * Transforms text-transform property
  * @param value
  */
-export function textTransform<T extends Figma.NodeType>(
+export function textTransform(
 	value: Figma.TypeStyle
 ): Declaration {
 	if (!value.textCase) {
