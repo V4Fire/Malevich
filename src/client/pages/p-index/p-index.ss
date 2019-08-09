@@ -21,10 +21,7 @@
 
 			< section.&__ds-publishing
 				< form.&__form
-					< b-button &
-						:rounding = 'small' |
-						@click = onFigmaImportClick
-					.
+					< b-button @click = onFigmaImportClick
 						Import from figma
 
 						< template #preIcon

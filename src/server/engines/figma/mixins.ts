@@ -9,17 +9,19 @@
 type Declaration = Partial<CSSStyleDeclaration> | void;
 
 /**
- * Transforms figma color to CSS rgba notation
+ * Transforms color with optional opacity
+ * to CSS rgba notation
  *
  * @param r
  * @param g
  * @param b
- * @param a
+ * @param a,
+ * @param [opacity]
  */
 export function calcColor(
-	{color: {r, g, b, a}}: {color: Figma.Color}
+	{color: {r, g, b, a}, opacity}: {color: Figma.Color; opacity?: number}
 ): string {
-	return `rgba(${(r * 255).toFixed()}, ${(g * 255).toFixed()}, ${(b * 255).toFixed()}, ${a})`;
+	return `rgba(${(r * 255).toFixed()}, ${(g * 255).toFixed()}, ${(b * 255).toFixed()}, ${opacity || a})`;
 }
 
 /**

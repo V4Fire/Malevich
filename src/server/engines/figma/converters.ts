@@ -313,7 +313,7 @@ function buttonWithIcon(el: Figma.Node, pos: 'pre' | 'post' = 'pre'): Dictionary
 function buttonState(el: Figma.Node): Dictionary {
 	const
 		layer = el.children[0],
-		ignoreBlend = {PASS_THROUGH: true, NORMAL: true};
+		ignoreBlend = {PASS_THROUGH: true};
 
 	return {
 		blendMode: !ignoreBlend[layer.blendMode] ? toDashCase(layer.blendMode) : undefined,
