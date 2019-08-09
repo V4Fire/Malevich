@@ -31,22 +31,35 @@ const CONVERTERS = {
 
 		exterior(el: Figma.Node): Dictionary {
 			const
-				background = el.children.find((c) => c.name === 'background'),
-				text = el.children.find((c) => c.name.toLowerCase() === 'text');
+				result: Dictionary = {};
 
-			let bg;
+			$C(el.children).forEach((c) => {
+				if (c.name === 'background') {
+					if ($C(c).get('fills.0')) {
+						result.backgroundColor = mixins.calcColor(c.fills[0]);
 
-			if ($C(background).get('fills.0')) {
-				bg = mixins.calcColor(background.fills[0]);
+					} else if ($C(c).get('children.0.children.0.fills.0')) {
+						result.backgroundColor = mixins.calcColor($C(c).get('children.0.children.0.fills.0'));
+					}
 
-			} else if ($C(background).get('children.0.children.0.fills.0')) {
-				bg = mixins.calcColor($C(background).get('children.0.children.0.fills.0'));
-			}
+					return;
+				}
 
-			return {
-				color: mixins.calcColor(text.fills[0]),
-				backgroundColor: bg || 'none'
-			};
+				if (c.name.toLowerCase() === 'text') {
+					result.color = mixins.calcColor(c.fills[0]);
+					return;
+				}
+
+				if (/m:\w+/.test(c.name)) {
+					const
+						name = c.name.replace('m:', '');
+
+					result[name] = convertMod(name, c, 'bButton');
+					return;
+				}
+			});
+
+			return result;
 		},
 		preIcon: buttonWithIcon,
 		postIcon: (el: Figma.Node) => buttonWithIcon(el, 'post')
@@ -133,16 +146,6 @@ const CONVERTERS = {
 			};
 
 			const
-				convertMod = (mod, m) => {
-					const
-						adapter = CONVERTERS.bInput[mod];
-
-					if (Object.isFunction(adapter)) {
-						return adapter(m);
-					}
-				};
-
-			const
 				state = {true: 'valid', false: 'invalid'};
 
 			$C(el.children).forEach((valueGroup) => {
@@ -182,7 +185,7 @@ const CONVERTERS = {
 						const
 							name = layer.name.replace('m:', '');
 
-						store[name] = convertMod(name, layer);
+						store[name] = convertMod(name, layer, 'bInput');
 						return;
 					}
 
@@ -256,6 +259,15 @@ function inputWithIcon(el: Figma.Node): Dictionary {
 		baseBorderWidth: strokeWeight,
 		baseBorderColor: mixins.calcColor(stroke)
 	};
+}
+
+function convertMod(mod: string, el: Figma.Node, block: string): unknown {
+	const
+		adapter = CONVERTERS[block][mod];
+
+	if (Object.isFunction(adapter)) {
+		return adapter(el);
+	}
 }
 
 function simpleSize(el: Figma.Node): Dictionary {
