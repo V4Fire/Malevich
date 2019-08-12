@@ -26,6 +26,7 @@ const CONVERTERS = {
 		size: simpleSize,
 
 		hover: buttonState,
+		focus: buttonState,
 		active: buttonState,
 		disabled: buttonState,
 
@@ -80,6 +81,7 @@ const CONVERTERS = {
 
 		preIcon: inputWithIcon,
 		postIcon: inputWithIcon,
+
 		readonly(el: Figma.Node): Dictionary {
 			const
 				value = $C(el.children).one.get((c) => c.name === 'value'),
@@ -114,6 +116,7 @@ const CONVERTERS = {
 				baseBorderColor
 			};
 		},
+
 		focus: (el: Figma.Node): CanUndef<Dictionary> => {
 			const
 				ch = $C(el).get('children.0.children.0');
@@ -131,14 +134,19 @@ const CONVERTERS = {
 				effect = $C(ch).get('effects.0');
 
 			return {
-				shadowColor: effect && mixins.calcColor(effect),
-				shadowOffset: $C(effect).get('offset'),
-				shadowBlur: $C(effect).get('radius'),
+				shadow: {
+					color: effect && mixins.calcColor(effect),
+					offset: $C(effect).get('offset'),
+					radius: $C(effect).get('radius')
+				},
 
-				borderWidth: ch.strokeWeight,
-				borderColor: mixins.calcColor(ch.strokes[0])
+				border: {
+					width: ch.strokeWeight,
+					color: mixins.calcColor(ch.strokes[0])
+				}
 			};
 		},
+
 		valid(el: Figma.Node): Dictionary {
 			const result = {
 				valid: {},
@@ -255,9 +263,13 @@ function inputWithIcon(el: Figma.Node): Dictionary {
 		iconSize: i.width,
 		offset: Math.abs(i.x - b.x),
 
-		baseBgColor: mixins.calcColor(fill),
-		baseBorderWidth: strokeWeight,
-		baseBorderColor: mixins.calcColor(stroke)
+		base: {
+			bgColor: mixins.calcColor(fill),
+			border: {
+				width: strokeWeight,
+				color: mixins.calcColor(stroke)
+			}
+		}
 	};
 }
 
