@@ -12,12 +12,12 @@
 /// <reference types="figma"/>
 
 interface DesignSystem extends Dictionary {
-	colors?: {
+	colors: {
 		[key: string]: string[];
 	},
 
 	rounding?: {
-		[key: string]: number | number[];
+		[key: string]: string;
 	},
 
 	text: Dictionary<string>;

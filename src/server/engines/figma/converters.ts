@@ -9,9 +9,16 @@
 import $C = require('collection.js');
 import * as mixins from './mixins';
 
+export interface RawData {
+	name: string;
+	type: string;
+	style?: Dictionary;
+	value?: number | string;
+}
+
 export const RAW: {
 	styles: Dictionary;
-	data: Record<string, unknown>;
+	data: Record<string, RawData>;
 } = {
 	styles: {},
 	data: {}
@@ -131,19 +138,21 @@ const CONVERTERS = {
 			}
 
 			const
-				effect = $C(ch).get('effects.0');
+				effect = $C(ch).get('effects.0'),
+				offset = $C(effect).get('offset');
+
+			let shadow;
+
+			const
+				px = mixins.px;
+
+			if (effect && offset) {
+				shadow = `${px(offset.x)} ${px(offset.y)} ${px($C(effect).get('radius'))} ${mixins.calcColor(effect)}`;
+			}
 
 			return {
-				shadow: {
-					color: effect && mixins.calcColor(effect),
-					offset: $C(effect).get('offset'),
-					radius: $C(effect).get('radius')
-				},
-
-				border: {
-					width: ch.strokeWeight,
-					color: mixins.calcColor(ch.strokes[0])
-				}
+				boxShadow: shadow,
+				border: `${px(ch.strokeWeight)} solid ${mixins.calcColor(ch.strokes[0])}`
 			};
 		},
 
@@ -180,8 +189,7 @@ const CONVERTERS = {
 						ch = back.children[0];
 
 					Object.assign(store, {
-						borderWidth: ch.strokeWeight,
-						borderColor: mixins.calcColor(ch.strokes[0])
+						border: `${mixins.px(ch.strokeWeight)} solid ${mixins.calcColor(ch.strokes[0])}`
 					});
 				}
 
@@ -202,11 +210,11 @@ const CONVERTERS = {
 						store.icon = {
 							name: layer.name,
 							offset: {
-								top: l.y - full.y,
-								right: (full.x + full.width) - (l.x + l.width)
+								top: mixins.px(l.y - full.y),
+								right: mixins.px((full.x + full.width) - (l.x + l.width))
 							},
-							width: l.width,
-							height: l.height,
+							width: mixins.px(l.width),
+							height: mixins.px(l.height),
 							color: mixins.calcColor(layer.fills[0])
 						};
 
@@ -221,8 +229,8 @@ const CONVERTERS = {
 							textStyle: fontOptions && (<Figma.Style>fontOptions).name,
 							color: mixins.calcColor(layer.fills[0]),
 							offset: {
-								top: l.y - (b.y + b.height),
-								left: l.x - b.x
+								top: mixins.px(l.y - (b.y + b.height)),
+								left: mixins.px(l.x - b.x)
 							}
 						};
 
@@ -260,8 +268,8 @@ function inputWithIcon(el: Figma.Node): Dictionary {
 		strokeWeight = $C(bgLayer).get('strokeWeight');
 
 	return {
-		iconSize: i.width,
-		offset: Math.abs(i.x - b.x),
+		iconSize: mixins.px(i.width),
+		offset: mixins.px(Math.abs(i.x - b.x)),
 
 		base: {
 			bgColor: mixins.calcColor(fill),
@@ -305,10 +313,10 @@ function simpleSize(el: Figma.Node): Dictionary {
 	}
 
 	return {
-		horOffset: Math.abs(b.y - t.y),
-		vertOffset: Math.abs(b.x - t.x),
-		textHeight: t.height,
-		height: b.height,
+		horOffset: mixins.px(Math.abs(b.y - t.y)),
+		vertOffset: mixins.px(Math.abs(b.x - t.x)),
+		textHeight: mixins.px(t.height),
+		height: mixins.px(b.height),
 		textStyle
 	};
 }
@@ -329,8 +337,8 @@ function buttonWithIcon(el: Figma.Node, pos: 'pre' | 'post' = 'pre'): Dictionary
 		{absoluteBoundingBox: t} = text;
 
 	return {
-		iconSize: i.width,
-		offset: Math.abs(i.x - t.x) - (pos === 'post' ? t.width : i.width)
+		iconSize: mixins.px(i.width),
+		offset: mixins.px(Math.abs(i.x - t.x) - (pos === 'post' ? t.width : i.width))
 	};
 }
 

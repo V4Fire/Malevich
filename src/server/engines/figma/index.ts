@@ -103,7 +103,7 @@ function parseNode(data: Figma.Node, t: PageType, name: string): void {
 						RAW.data[c.id] = {
 							type: c.type,
 							name: c.name,
-							value: scheme.color(rect.fills[0], c)
+							value: <string>scheme.color(rect.fills[0], c)
 						};
 
 						break;
@@ -128,7 +128,8 @@ function parseNode(data: Figma.Node, t: PageType, name: string): void {
 				case 'TEXT':
 					RAW.data[c.id] = {
 						type: c.type,
-						name: data.name
+						name: data.name,
+						style: {}
 					};
 
 					const
@@ -140,11 +141,16 @@ function parseNode(data: Figma.Node, t: PageType, name: string): void {
 								$C(value).forEach((v, k) => {
 									if (Object.isFunction(v)) {
 										if (c[key][k]) {
-											Object.assign(RAW.data[c.id], v(c[key]));
+											const
+												result = v(c[key]);
+
+											Object.assign(
+												RAW.data[c.id].style,
+												Object.isObject(result) ? result : {[k]: result});
 										}
 
 									} else if (v) {
-										(<Dictionary>RAW.data[c.id])[k] = c[key][k];
+										(<Dictionary>RAW.data[c.id].style)[k] = c[key][k];
 									}
 								});
 

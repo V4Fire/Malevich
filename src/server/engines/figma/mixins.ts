@@ -62,3 +62,11 @@ export function textTransform(
 
 	return {textTransform: types[value.textCase] || null};
 }
+
+/**
+ * Returns value with pixels
+ * @param value
+ */
+export function px(value: number): string | void {
+	return Object.isNumber(value) ? `${value}px` : undefined;
+}

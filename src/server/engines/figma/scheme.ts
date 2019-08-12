@@ -24,8 +24,8 @@ export default {
 		style: {
 			fontFamily: true,
 			fontWeight: true,
-			fontSize: true,
-			letterSpacing: true,
+			fontSize: ({fontSize}) => mixins.px(fontSize),
+			letterSpacing: ({letterSpacing}) => mixins.px(letterSpacing),
 			textDecoration: mixins.textDecoration,
 			lineHeightPx: mixins.lineHeight,
 			textCase: mixins.textTransform
@@ -154,13 +154,9 @@ function fillsToColor<T extends Figma.NodeType>(
 function storeColor<T extends Figma.NodeType>(
 	{color}: {color: Figma.Color},
 	parent: Figma.Node
-): string | void {
+): string {
 	const
 		[, hue, num] = parent.name.split('/');
-
-	if (!DS || !DS.colors) {
-		return;
-	}
 
 	const
 		{colors} = DS,
@@ -186,7 +182,7 @@ function storeBorderRadius<T extends Figma.NodeType>(
 	rect: Figma.RECTANGLE,
 	parent: Figma.Node
 ): void {
-	if (rect.cornerRadius && DS.rounding) {
-		DS.rounding[parent.name.split('/')[1]] = rect.cornerRadius;
+	if (Object.isNumber(rect.cornerRadius) && DS.rounding) {
+		DS.rounding[parent.name.split('/')[1]] = <string>mixins.px(rect.cornerRadius);
 	}
 }
