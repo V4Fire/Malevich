@@ -24,8 +24,8 @@ export default {
 		style: {
 			fontFamily: true,
 			fontWeight: true,
-			fontSize: ({fontSize}) => mixins.px(fontSize),
-			letterSpacing: ({letterSpacing}) => mixins.px(letterSpacing),
+			fontSize: ({fontSize}) => fontSize.px,
+			letterSpacing: ({letterSpacing}) => letterSpacing.px,
 			textDecoration: mixins.textDecoration,
 			lineHeightPx: mixins.lineHeight,
 			textCase: mixins.textTransform
@@ -183,6 +183,6 @@ function storeBorderRadius<T extends Figma.NodeType>(
 	parent: Figma.Node
 ): void {
 	if (Object.isNumber(rect.cornerRadius) && DS.rounding) {
-		DS.rounding[parent.name.split('/')[1]] = <string>mixins.px(rect.cornerRadius);
+		DS.rounding[parent.name.split('/')[1]] = <string>rect.cornerRadius.px;
 	}
 }

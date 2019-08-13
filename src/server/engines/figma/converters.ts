@@ -143,16 +143,13 @@ const CONVERTERS = {
 
 			let shadow;
 
-			const
-				px = mixins.px;
-
 			if (effect && offset) {
-				shadow = `${px(offset.x)} ${px(offset.y)} ${px($C(effect).get('radius'))} ${mixins.calcColor(effect)}`;
+				shadow = `${offset.x.px} ${offset.y.px} ${($C(effect).get('radius') || 0).px} ${mixins.calcColor(effect)}`;
 			}
 
 			return {
 				boxShadow: shadow,
-				border: `${px(ch.strokeWeight)} solid ${mixins.calcColor(ch.strokes[0])}`
+				border: `${ch.strokeWeight.px} solid ${mixins.calcColor(ch.strokes[0])}`
 			};
 		},
 
@@ -189,7 +186,7 @@ const CONVERTERS = {
 						ch = back.children[0];
 
 					Object.assign(store, {
-						border: `${mixins.px(ch.strokeWeight)} solid ${mixins.calcColor(ch.strokes[0])}`
+						border: `${ch.strokeWeight.px} solid ${mixins.calcColor(ch.strokes[0])}`
 					});
 				}
 
@@ -210,11 +207,11 @@ const CONVERTERS = {
 						store.icon = {
 							name: layer.name,
 							offset: {
-								top: mixins.px(l.y - full.y),
-								right: mixins.px((full.x + full.width) - (l.x + l.width))
+								top: (l.y - full.y).px,
+								right: ((full.x + full.width) - (l.x + l.width)).px
 							},
-							width: mixins.px(l.width),
-							height: mixins.px(l.height),
+							width: l.width.px,
+							height: l.height.px,
 							color: mixins.calcColor(layer.fills[0])
 						};
 
@@ -229,8 +226,8 @@ const CONVERTERS = {
 							textStyle: fontOptions && (<Figma.Style>fontOptions).name,
 							color: mixins.calcColor(layer.fills[0]),
 							offset: {
-								top: mixins.px(l.y - (b.y + b.height)),
-								left: mixins.px(l.x - b.x)
+								top: (l.y - (b.y + b.height)).px,
+								left: (l.x - b.x).px
 							}
 						};
 
@@ -268,8 +265,8 @@ function inputWithIcon(el: Figma.Node): Dictionary {
 		strokeWeight = $C(bgLayer).get('strokeWeight');
 
 	return {
-		iconSize: mixins.px(i.width),
-		offset: mixins.px(Math.abs(i.x - b.x)),
+		iconSize: i.width.px,
+		offset: Math.abs(i.x - b.x).px,
 
 		base: {
 			bgColor: mixins.calcColor(fill),
@@ -313,10 +310,10 @@ function simpleSize(el: Figma.Node): Dictionary {
 	}
 
 	return {
-		horOffset: mixins.px(Math.abs(b.y - t.y)),
-		vertOffset: mixins.px(Math.abs(b.x - t.x)),
-		textHeight: mixins.px(t.height),
-		height: mixins.px(b.height),
+		horOffset: Math.abs(b.y - t.y).px,
+		vertOffset: Math.abs(b.x - t.x).px,
+		textHeight: t.height.px,
+		height: b.height.px,
 		textStyle
 	};
 }
@@ -337,8 +334,8 @@ function buttonWithIcon(el: Figma.Node, pos: 'pre' | 'post' = 'pre'): Dictionary
 		{absoluteBoundingBox: t} = text;
 
 	return {
-		iconSize: mixins.px(i.width),
-		offset: mixins.px(Math.abs(i.x - t.x) - (pos === 'post' ? t.width : i.width))
+		iconSize: i.width.px,
+		offset: (Math.abs(i.x - t.x) - (pos === 'post' ? t.width : i.width)).px
 	};
 }
 
