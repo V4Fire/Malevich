@@ -19,6 +19,11 @@ export default <PageSchema>{
 		page: 'p-publish'
 	},
 
+	demo: {
+		path: '/demo',
+		page: 'p-demo'
+	},
+
 	external: {
 		path: '/ext/:service/:controller',
 		redirect: '/api/:service/:controller',

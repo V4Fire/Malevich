@@ -35,7 +35,8 @@
 				< b-form &
 					:classes = provide.classes({form: true}) |
 					:dataProvider = 'publish.Git' |
-					:method = 'post'
+					:method = 'post' |
+					@onSubmitSuccess = router.push('/')
 				.
 					< b-input-hidden &
 						:name = 'endpoint' |
