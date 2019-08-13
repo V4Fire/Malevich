@@ -101,26 +101,26 @@ const CONVERTERS = {
 			}
 
 			let
-				textColor = $C(value).get('fills.0'),
-				baseBgColor = $C(base).get('children.0.fills.0'),
-				baseBorderColor = $C(base).get('children.0.strokes.0');
+				color = $C(value).get('fills.0'),
+				backgroundColor = $C(base).get('children.0.fills.0'),
+				borderColor = $C(base).get('children.0.strokes.0');
 
-			if (textColor) {
-				textColor = mixins.calcColor(textColor);
+			if (color) {
+				color = mixins.calcColor(color);
 			}
 
-			if (baseBgColor) {
-				baseBgColor = mixins.calcColor(baseBgColor);
+			if (backgroundColor) {
+				backgroundColor = mixins.calcColor(backgroundColor);
 			}
 
-			if (baseBorderColor) {
-				baseBorderColor = mixins.calcColor(baseBorderColor);
+			if (borderColor) {
+				borderColor = mixins.calcColor(borderColor);
 			}
 
 			return {
-				textColor,
-				baseBgColor,
-				baseBorderColor
+				color,
+				backgroundColor,
+				borderColor
 			};
 		},
 
@@ -269,11 +269,8 @@ function inputWithIcon(el: Figma.Node): Dictionary {
 		offset: Math.abs(i.x - b.x).px,
 
 		base: {
-			bgColor: mixins.calcColor(fill),
-			border: {
-				width: strokeWeight,
-				color: mixins.calcColor(stroke)
-			}
+			backgroundColor: mixins.calcColor(fill),
+			border: `${strokeWeight.px} solid ${mixins.calcColor(stroke)}`
 		}
 	};
 }
