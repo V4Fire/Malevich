@@ -54,6 +54,7 @@
 					< b-button.&__commit-submit &
 						ref = formSubmit |
 						:type = 'submit' |
+						:exterior = 'dark' |
 						:disabled = true
 					.
 						Save changes
@@ -78,6 +79,7 @@
 					< b-button &
 						ref = formSubmit |
 						:type = 'submit' |
+						:exterior = 'dark' |
 						:name = 'file' |
 						:disabled = true
 					.

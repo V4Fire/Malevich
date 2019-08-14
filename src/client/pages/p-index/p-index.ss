@@ -21,7 +21,7 @@
 
 			< section.&__ds-publishing
 				< form.&__form
-					< b-button @click = onFigmaImportClick
+					< b-button :exterior = 'dark' | @click = onFigmaImportClick
 						Import from figma
 
 						< template #preIcon
