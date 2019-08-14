@@ -78,6 +78,23 @@ export function writeComponent(name: string, el: Figma.Node): void {
 				if (mod && Object.isFunction(adapter)) {
 					link.mods[mod] = adapter(c);
 				}
+
+			} else if (prefix !== 'Master') {
+				const
+					adapter = $C(converters).get(`${name}.selfLayer`);
+
+				if (Object.isFunction(adapter)) {
+					const res = {
+						[c.name]: adapter(c)
+					};
+
+					if (!link.block) {
+						link.block = res;
+
+					} else {
+						Object.assign(link.block, res);
+					}
+				}
 			}
 		});
 

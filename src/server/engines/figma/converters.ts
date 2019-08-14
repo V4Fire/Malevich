@@ -74,6 +74,26 @@ const CONVERTERS = {
 	},
 
 	bInput: {
+		selfLayer(el: Figma.Node): Dictionary | void {
+			if (el.name === 'background') {
+				const
+					res = {},
+					layer = $C(el).get('children.0');
+
+				if (layer) {
+					const
+						borderColor = $C(layer).get('strokes.0'),
+						backgroundFill = $C(layer).get('fills.0');
+
+					Object.assign(res, {
+						border: `${layer.strokeWeight.px} solid ${mixins.calcColor(borderColor)}`,
+						backgroundColor: mixins.calcColor(backgroundFill)
+					});
+				}
+
+				return res;
+			}
+		},
 		size(el: Figma.Node): Dictionary {
 			const
 				placeholder = $C(el.children).one.get((c) => c.name === 'placeholder'),
@@ -155,12 +175,16 @@ const CONVERTERS = {
 
 		valid(el: Figma.Node): Dictionary {
 			const result = {
-				valid: {},
-				invalid: {}
+				true: {
+					style: {}
+				},
+				false: {
+					style: {}
+				}
 			};
 
 			const
-				state = {true: 'valid', false: 'invalid'};
+				state = {true: 'true', false: 'false'};
 
 			$C(el.children).forEach((valueGroup) => {
 				// 'true' 'false' groups
@@ -185,7 +209,7 @@ const CONVERTERS = {
 					const
 						ch = back.children[0];
 
-					Object.assign(store, {
+					Object.assign(store.style, {
 						border: `${ch.strokeWeight.px} solid ${mixins.calcColor(ch.strokes[0])}`
 					});
 				}
