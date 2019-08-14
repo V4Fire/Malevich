@@ -74,25 +74,31 @@ const CONVERTERS = {
 	},
 
 	bInput: {
-		selfLayer(el: Figma.Node): Dictionary | void {
-			if (el.name === 'background') {
-				const
-					res = {},
-					layer = $C(el).get('children.0');
+		selfLayer(els: Figma.Node[]): Dictionary | void {
+			const
+				res = {};
 
-				if (layer) {
+			$C(els).forEach((el) => {
+				if (el.name === 'background') {
 					const
-						borderColor = $C(layer).get('strokes.0'),
-						backgroundFill = $C(layer).get('fills.0');
+						layer = $C(el).get('children.0');
 
-					Object.assign(res, {
-						border: `${layer.strokeWeight.px} solid ${mixins.calcColor(borderColor)}`,
-						backgroundColor: mixins.calcColor(backgroundFill)
-					});
+					if (layer) {
+						const
+							borderColor = $C(layer).get('strokes.0'),
+							backgroundFill = $C(layer).get('fills.0');
+
+						Object.assign(res, {
+							border: `${layer.strokeWeight.px} solid ${mixins.calcColor(borderColor)}`,
+							backgroundColor: mixins.calcColor(backgroundFill)
+						});
+					}
+
+					return res;
 				}
+			});
 
-				return res;
-			}
+			return res;
 		},
 		size(el: Figma.Node): Dictionary {
 			const
@@ -265,10 +271,79 @@ const CONVERTERS = {
 
 			return result;
 		}
+	},
+
+	bCheckbox: {
+		selfLayer(els: Figma.Node[]): Dictionary {
+			const
+				common = checkboxCommon(els);
+
+			let
+				labelBound, checkboxBound;
+
+			$C(els).forEach((el) => {
+				if (el.name === 'label') {
+					labelBound = $C(el).get('absoluteBoundingBox');
+					common.textStyle = $C(RAW.styles).get(`${el.styles.text}.name`);
+				}
+
+				if (el.name === 'checkerBack') {
+					checkboxBound = $C(el).get('absoluteBoundingBox');
+				}
+			});
+
+			if (common.label && checkboxBound && labelBound) {
+				(<Dictionary>common.label).marginLeft = Math.abs(checkboxBound.x + checkboxBound.width - labelBound.x).px;
+			}
+
+			return common;
+		},
+
+		disabled: (el: Figma.Node) => checkboxCommon(el.children)
 	}
 } as Record<string, Record<string, Function>>;
 
 export default CONVERTERS;
+
+function checkboxCommon(els: Figma.Node[]): Dictionary {
+	return els.reduce((res, ch) => {
+		if (ch.name === 'label') {
+			const
+				color = $C(ch).get('fills.0');
+
+			if (color) {
+				res.label = {
+					color: mixins.calcColor(color)
+				};
+			}
+		}
+
+		if (ch.name === 'checkerBack') {
+			const
+				layer = $C(ch).get('children.0');
+
+			let
+				strokeColor = $C(layer).get('strokes.0'),
+				backgroundColor = $C(layer).get('fills.0');
+
+			if (backgroundColor) {
+				backgroundColor = mixins.calcColor(backgroundColor);
+			}
+
+			if (strokeColor) {
+				strokeColor = mixins.calcColor(strokeColor);
+			}
+
+			res.checkbox = {
+				backgroundColor,
+				border: layer.strokeWeight && `${layer.strokeWeight.px} solid ${strokeColor}` || undefined,
+				borderRadius: layer.cornerRadius && layer.cornerRadius.px || undefined
+			};
+		}
+
+		return res;
+	}, <Dictionary>{});
+}
 
 function inputWithIcon(el: Figma.Node): Dictionary {
 	const

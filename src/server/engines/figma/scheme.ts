@@ -63,6 +63,7 @@ export function writeComponent(name: string, el: Figma.Node): void {
 	if (prefix === 'Master') {
 		// For blocks with Master component
 		const
+			selfLayers = <Figma.Node[]>[],
 			modReg = /(\w+):(\w+)/;
 
 		$C(el.children).forEach((c) => {
@@ -80,23 +81,19 @@ export function writeComponent(name: string, el: Figma.Node): void {
 				}
 
 			} else if (prefix !== 'Master') {
-				const
-					adapter = $C(converters).get(`${name}.selfLayer`);
 
-				if (Object.isFunction(adapter)) {
-					const res = {
-						[c.name]: adapter(c)
-					};
-
-					if (!link.block) {
-						link.block = res;
-
-					} else {
-						Object.assign(link.block, res);
-					}
-				}
+				selfLayers.push(c);
 			}
 		});
+
+		if (selfLayers.length) {
+			const
+				adapter = $C(converters).get(`${name}.selfLayer`);
+
+			if (Object.isFunction(adapter)) {
+				link.block = adapter(selfLayers);
+			}
+		}
 
 		if (componentArgs && modReg.test(componentArgs[componentArgs.length - 1])) {
 			const
