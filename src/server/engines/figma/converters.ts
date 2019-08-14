@@ -164,7 +164,10 @@ const CONVERTERS = {
 			let shadow;
 
 			if (effect && offset) {
-				shadow = `${offset.x.px} ${offset.y.px} ${($C(effect).get('radius') || 0).px} ${mixins.calcColor(effect)}`;
+				const
+					radius = Math.round($C(effect).get('radius') || 0);
+
+				shadow = `${offset.x.px} ${offset.y.px} ${radius.px} ${mixins.calcColor(effect)}`;
 			}
 
 			return {
@@ -363,11 +366,12 @@ function buttonWithIcon(el: Figma.Node, pos: 'pre' | 'post' = 'pre'): Dictionary
 function buttonState(el: Figma.Node): Dictionary {
 	const
 		layer = el.children[0],
-		ignoreBlend = {PASS_THROUGH: true};
+		ignoreBlend = {PASS_THROUGH: true},
+		opacity = $C(layer).get('fills.0.opacity');
 
 	return {
 		blendMode: !ignoreBlend[layer.blendMode] ? toDashCase(layer.blendMode) : undefined,
-		opacity: $C(layer).get('fills.0.opacity'),
+		opacity: opacity && opacity.round(2) || undefined,
 		backgroundColor: mixins.calcColor(layer.fills[0])
 	};
 }

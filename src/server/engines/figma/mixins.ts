@@ -21,7 +21,7 @@ type Declaration = Partial<CSSStyleDeclaration> | void;
 export function calcColor(
 	{color: {r, g, b, a}, opacity}: {color: Figma.Color; opacity?: number}
 ): string {
-	return `rgba(${(r * 255).toFixed()}, ${(g * 255).toFixed()}, ${(b * 255).toFixed()}, ${opacity || a})`;
+	return `rgba(${(r * 255).toFixed()}, ${(g * 255).toFixed()}, ${(b * 255).toFixed()}, ${(opacity || a).round(2)})`;
 }
 
 /**
@@ -31,7 +31,7 @@ export function calcColor(
 export function lineHeight(
 	value: Figma.TypeStyle
 ): Declaration {
-	return {lineHeight: `${value.lineHeightPx}px`};
+	return {lineHeight: value.lineHeightPx.round().px};
 }
 
 /**
