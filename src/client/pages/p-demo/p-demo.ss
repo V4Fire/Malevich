@@ -23,7 +23,7 @@
 
 		< main.&__content
 			< h1.&__header
-				Typography | iText frame
+				Typography
 
 			< .&__text-container v-for = s in textStyles
 				< .&__label
@@ -36,6 +36,33 @@
 					< .&__props[.&_style_base]
 						< p v-for = value, prop in s.style
 							{{ prop }}: {{ value }}
+
+			< h1.&__header
+				Colors
+
+			< .&__colors-container
+				< .&__kit-wrap v-for = kit, name in colors
+					< .&__color-wrap v-for = c, index in kit
+						< .&__color &
+							:style = {backgroundColor: c} |
+							:title = name
+						.
+
+						< .&__color-description
+							< .&__color-name
+								{{ name + '/' + index }}
+
+							< .&__color-value
+								{{ c }}
+
+			< h1.&__header
+				Rounding
+
+			< .&__rounding-wrap v-for = val, key in rounding
+				< .&__rounding :style = {borderRadius: val}
+
+				< .&__rounding-name
+					{{ key }}
 
 			< h1.&__header
 				Components
