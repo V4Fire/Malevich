@@ -41,7 +41,7 @@
 				Colors
 
 			< .&__colors-container
-				< .&__kit-wrap v-for = kit, name in colors
+				< template v-for = kit, name in colors
 					< .&__color-wrap v-for = c, index in kit
 						< .&__color &
 							:style = {backgroundColor: c} |

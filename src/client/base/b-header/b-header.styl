@@ -9,17 +9,32 @@
 @import "super/i-block/i-block.styl"
 
 $p = {
-	headerBorderColor: #F7F7F7
+	headerBorderColor: getDSOptions("colors.grey.4")
 }
 
 b-header extends i-block
 	&__header
 		display flex
 		align-items center
-		justify-content flex-start
+		justify-content space-between
 		height 60px
 		padding 0 16px
 		border-bottom 1px solid $p.headerBorderColor
 
 	&__logo
 		height 40px
+
+	&__nav
+		display flex
+		padding 16px
+
+	&__nav-item
+		color getDSOptions("colors.grey.0")
+		interpolate-props(getDSOptions("text.base.style"))
+
+		text-transform uppercase
+		text-decoration none
+		transition 0.2s ease-in color
+
+		&:hover
+			color getDSOptions("colors.grey.2")

@@ -18,7 +18,7 @@ p-demo extends i-dynamic-page
 		color getDSOptions("colors.grey.0")
 
 	&__header
-		padding 24px 0 16px
+		padding 56px 0
 		font-size 36px
 		color getDSOptions("colors.grey.1")
 
@@ -59,10 +59,13 @@ p-demo extends i-dynamic-page
 								interpolate-props(getField($opts, style))
 
 	&__colors-container
-		flex-col flex-start
+		flex-row flex-start space-between
+		flex-wrap wrap
+		width 600px
 
 	&__color-wrap
 		flex-row flex-start center
+		flex 1 0 260px
 
 	&__color-value
 		margin-top 8px
@@ -71,6 +74,9 @@ p-demo extends i-dynamic-page
 		size 60px
 		margin 16px
 		border-radius getDSOptions("rounding.small")
+
+	&__color-name
+		font-weight 600
 
 	&__rounding
 		margin 16px

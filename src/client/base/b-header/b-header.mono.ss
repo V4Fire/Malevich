@@ -17,3 +17,7 @@
 			< header.&__header
 				< a href = \/
 					< img.&__logo :src = require('assets/img/logo-full.svg')
+
+				< nav.&__nav
+					< a.&__nav-item href = \/demo
+						Demo
