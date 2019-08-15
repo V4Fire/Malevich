@@ -74,9 +74,10 @@ function parseNode(data: Figma.Node, t: PageType, name: string): void {
 	}
 
 	const
-		master = /^Master(?:$|\/)/;
+		master = /^Master(?:$|\/)/,
+		isComponent = master.test(data.name) || (BLOCK_CHECKER.test(data.name) && data.type === 'COMPONENT');
 
-	if (t === 'block' && master.test(data.name)) {
+	if (t === 'block' && isComponent) {
 		writeComponent(name, data);
 		return;
 	}

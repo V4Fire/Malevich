@@ -10,8 +10,6 @@ import $C = require('collection.js');
 import converters, { WARNINGS } from './converters';
 import * as mixins from './mixins';
 
-type Declaration = Partial<CSSStyleDeclaration> | void;
-
 export const DS: DesignSystem = {
 	components: {},
 	colors: {},
@@ -135,7 +133,10 @@ export function writeComponent(name: string, el: Figma.Node): void {
 				}
 
 				// Calculates exterior from nested Master component
-				link.exterior[componentArgs[0].toLowerCase()] = adapter(el.children[0]);
+				const
+					component = el.children.length === 1 ? el.children[0] : el;
+
+				link.exterior[componentArgs[0].toLowerCase()] = adapter(component);
 			}
 		}
 	}
