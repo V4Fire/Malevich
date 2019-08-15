@@ -55,6 +55,7 @@
 						ref = formSubmit |
 						:type = 'submit' |
 						:exterior = 'dark' |
+						:rounding = 'small' |
 						:disabled = true
 					.
 						Save changes
@@ -80,6 +81,7 @@
 						ref = formSubmit |
 						:type = 'submit' |
 						:exterior = 'dark' |
+						:rounding = 'small' |
 						:name = 'file' |
 						:disabled = true
 					.

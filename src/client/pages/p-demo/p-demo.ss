@@ -22,6 +22,27 @@
 		} .
 
 		< main.&__content
+			< h1.&__header
+				Typography | iText frame
+
+			< .&__text-container v-for = s in textStyles
+				< .&__label
+					{{ s.name }}
+
+				< . :class = provide.elClasses({text: {style: s.id}})
+					The quick brown fox jumps over the lazy dog
+
+				< .&__text-additional
+					< .&__props[.&_style_base]
+						< p v-for = value, prop in s.style
+							{{ prop }}: {{ value }}
+
+			< h1.&__header
+				Components
+
+			< h2.&__text[.&_style_heading4]
+				Button
+
 			< b-v4-component-demo
 				< b-button &
 					v-func = false |
@@ -31,6 +52,9 @@
 				.
 					Some text
 
+			< h2.&__text[.&_style_heading3]
+				Input
+
 			< b-v4-component-demo
 				< b-input &
 					v-func = false |
@@ -39,4 +63,3 @@
 					@statusReady = ctx.debug |
 					${defAttrs}
 				.
-					Some text

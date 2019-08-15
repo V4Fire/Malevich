@@ -29,9 +29,7 @@ export default {
 			textDecoration: mixins.textDecoration,
 			lineHeightPx: mixins.lineHeight,
 			textCase: mixins.textTransform
-		},
-
-		fills: fillsToColor
+		}
 	},
 
 	radius: storeBorderRadius,
@@ -141,22 +139,6 @@ export function writeComponent(name: string, el: Figma.Node): void {
 			}
 		}
 	}
-}
-
-/**
- * Returns css notation of the specified fills value
- *
- * @param fills
- * @param styles
- * @param parent
- * @param [targetField]
- */
-function fillsToColor<T extends Figma.NodeType>(
-	{fills, styles}: {fills: Figma.Paint[]; styles: Figma.Styles},
-	parent: Figma.Node,
-	targetField: string = 'color'
-): Declaration {
-	return {[targetField]: mixins.calcColor(fills[0])};
 }
 
 /**

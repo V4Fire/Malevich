@@ -155,7 +155,7 @@ function parseNode(data: Figma.Node, t: PageType, name: string): void {
 								});
 
 							} else if (Object.isFunction(value)) {
-								Object.assign(RAW.data[c.id], (<Function>value)(c, data));
+								Object.assign(RAW.data[c.id].style, (<Function>value)(c, data));
 							}
 
 							if (
