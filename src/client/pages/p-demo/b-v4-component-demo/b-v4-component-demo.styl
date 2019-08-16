@@ -13,15 +13,34 @@ $p = {
 }
 
 b-v4-component-demo
+	border none
+
+	&__buttons
+		display inline-block
+		margin-left 16px
+		border 1px solid getDSOptions('colors.grey.5')
+		border-radius getDSOptions("rounding.small")
+		padding @border-radius
+
 	&
 	&__mods
-		border none
 		background none
 
+	&__mods
+		padding 16px
+		border 1px solid getDSOptions('colors.grey.5')
+		border-radius getDSOptions("rounding.small")
+		box-shadow 0px -2px 3px inset getDSOptions('colors.grey.4')
+
 	&__mod-value
+		padding 4px 8px
+		font-weight 400
+		background none
+
 		&_selected_true
+			border-radius getDSOptions("rounding.small")
 			color getDSOptions('colors.white.0')
-			background-color getDSOptions('colors.green.0')
+			background-color getDSOptions('colors.blue.0')
 
 	&__title
 		display none
