@@ -9,7 +9,12 @@
 @import "@super/p-v4-components-demo/b-v4-component-demo/b-v4-component-demo.styl"
 
 $p = {
+	borderColor: c(grey 6)
+	shadowColor: c(grey 5)
+	selectedModColor: c(white 1)
+	selectedModBgColor: c(blue 1)
 
+	rounding: getDSOptions("rounding.small")
 }
 
 b-v4-component-demo
@@ -18,8 +23,8 @@ b-v4-component-demo
 	&__buttons
 		display inline-block
 		margin-left 16px
-		border 1px solid getDSOptions('colors.grey.5')
-		border-radius getDSOptions("rounding.small")
+		border 1px solid $p.borderColor
+		border-radius $p.rounding
 		padding @border-radius
 
 	&
@@ -28,9 +33,9 @@ b-v4-component-demo
 
 	&__mods
 		padding 16px
-		border 1px solid getDSOptions('colors.grey.5')
-		border-radius getDSOptions("rounding.small")
-		box-shadow 0px -2px 3px inset getDSOptions('colors.grey.4')
+		border 1px solid $p.borderColor
+		border-radius $p.rounding
+		box-shadow 0px -2px 3px inset $p.shadowColor
 
 	&__mod-value
 		padding 4px 8px
@@ -38,9 +43,9 @@ b-v4-component-demo
 		background none
 
 		&_selected_true
-			border-radius getDSOptions("rounding.small")
-			color getDSOptions('colors.white.0')
-			background-color getDSOptions('colors.blue.0')
+			border-radius $p.rounding
+			color $p.selectedModColor
+			background-color $p.selectedModBgColor
 
 	&__title
 		display none

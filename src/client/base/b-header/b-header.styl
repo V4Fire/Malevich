@@ -9,7 +9,8 @@
 @import "super/i-block/i-block.styl"
 
 $p = {
-
+	navItemColor: c(grey 1)
+	navItemHoverColor: c(grey 3)
 }
 
 b-header extends i-block
@@ -28,7 +29,7 @@ b-header extends i-block
 		padding 16px
 
 	&__nav-item
-		color getDSOptions("colors.grey.0")
+		color $p.navItemColor
 		interpolate-props(getDSOptions("text.base.style"))
 
 		text-transform uppercase
@@ -36,4 +37,4 @@ b-header extends i-block
 		transition 0.2s ease-in color
 
 		&:hover
-			color getDSOptions("colors.grey.2")
+			color $p.navItemHoverColor
