@@ -20,11 +20,25 @@
 				Publish your Design System
 
 			< section.&__ds-publishing
-				< form.&__form
-					< b-button &
+				< b-form &
+					v-once |
+					ref = files |
+					:id = dom.getId('fileForm') |
+					:delegateAction = onFigmaImport
+				.
+					< b-input.&__form-item &
+						:name = 'id' |
+						:validators = [['required', {showMsg: false}]] |
+						:placeholder = 'Enter a file key' |
+						@onValidationEnd = onValidationEnd
+					.
+
+					< b-button.&__form-item &
+						ref = formSubmit |
 						:exterior = 'dark' |
-						:rounding = 'small' |
-						@click = onFigmaImportClick
+						:type = 'submit' |
+						:disabled = true |
+						:rounding = 'small'
 					.
 						Import from figma
 
