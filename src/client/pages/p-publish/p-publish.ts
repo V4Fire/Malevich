@@ -25,14 +25,14 @@ export default class pPublish<D extends object = Dictionary> extends iDynamicPag
 	 * Info about design system conversion result
 	 */
 	@field()
-	protected dsInfo?: Dictionary;
+	protected dsMeta?: Dictionary;
 
 	/**
 	 * Returns info value from the design system base file
 	 * @param [field]
 	 */
 	protected fileInfo(field?: string): CanUndef<string> {
-		return this.field.get(`dsInfo.file${field ? `.${field}` : ''}`);
+		return this.field.get(`dsMeta.file${field ? `.${field}` : ''}`);
 	}
 
 	/**
@@ -41,6 +41,6 @@ export default class pPublish<D extends object = Dictionary> extends iDynamicPag
 	 */
 	protected onPublishSuccess(res: Dictionary): void {
 		this.stage = 'commit';
-		this.field.set('dsInfo', res);
+		this.field.set('dsMeta', res);
 	}
 }

@@ -18,7 +18,7 @@
 		< .&__content
 			< .&__file-info
 				< .&__file-name v-if = fileInfo('name')
-					{{ field.get('dsInfo.file.name') }}
+					{{ fileInfo('name') }}
 
 				< .&__file-last-modified v-if = fileInfo('lastModified')
 					Last Modified {{ fileInfo('lastModified') }}
