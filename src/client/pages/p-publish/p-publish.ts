@@ -6,9 +6,7 @@
  * https://github.com/V4Fire/Malevich/blob/master/LICENSE
  */
 
-import 'models/api/figma/files';
 import 'models/api/git';
-
 import iDynamicPage, { component, field, TitleValue } from 'super/i-dynamic-page/i-dynamic-page';
 
 export * from 'super/i-dynamic-page/i-dynamic-page';

@@ -9,7 +9,7 @@
 import $C = require('collection.js');
 
 import scheme, { DS, writeComponent } from './scheme';
-import { RAW, ERRORS } from './converters';
+import { RAW, ERRORS, WARNINGS } from './converters';
 import * as h from './helpers';
 
 const
@@ -23,6 +23,7 @@ export default function parse(
 	data: Figma.File
 ): {
 	errors: ContentError[];
+	warnings: ContentError[];
 	designSystem: DesignSystem;
 	approved: boolean;
 } {
@@ -42,8 +43,9 @@ export default function parse(
 
 	return {
 		errors: ERRORS,
+		warnings: WARNINGS,
 		designSystem: DS,
-		approved: Boolean(DS)
+		approved: !Boolean(ERRORS.length)
 	};
 }
 

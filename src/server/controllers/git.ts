@@ -14,9 +14,7 @@ import fs = require('fs');
 import path = require('upath');
 
 const
-	{DS_PACKAGE} = process.env;
-
-const
+	{DS_PACKAGE} = process.env,
 	dsRepoLocalPath = path.resolve(process.cwd(), 'repository');
 
 let

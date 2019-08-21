@@ -7,6 +7,8 @@
  */
 
 import { ControllersKit } from '../interfaces/controllers';
+import { get } from './git';
+
 import * as ExpressTypes from 'express';
 
 import querystring = require('querystring');
@@ -14,6 +16,7 @@ import https = require('https');
 import fs = require('fs');
 import path = require('upath');
 import prettier = require('prettier');
+import $C = require('collection.js');
 
 import parse from '../engines/figma';
 
@@ -41,7 +44,7 @@ export default {
 		},
 
 		{
-			url: 'rights',
+			url: 'rights/:key',
 			method: 'get',
 			fn: approveRights
 		}
@@ -50,7 +53,8 @@ export default {
 
 function approveRights(req: Dictionary, res: ExpressTypes.Response): void {
 	const
-		code = (<Dictionary<string>>req.session).id,
+		session = (<Dictionary<string>>req.session),
+		code = session.id,
 		query = querystring.stringify({
 			client_id: FIGMA_CLIENT_ID,
 			redirect_uri: FIGMA_REDIRECT_URI,
@@ -59,11 +63,13 @@ function approveRights(req: Dictionary, res: ExpressTypes.Response): void {
 			state: code
 		});
 
+	session.key = (<Dictionary<string>>req.params).key;
 	res.redirect(`https://www.figma.com/oauth?${query}`);
 }
 
 async function authorize(req: Dictionary, res: ExpressTypes.Response): Promise<void> {
 	const
+		session = (<Dictionary<string>>req.session),
 		query = <Dictionary>req.query;
 
 	if (query && query.code && query.state) {
@@ -84,7 +90,7 @@ async function authorize(req: Dictionary, res: ExpressTypes.Response): Promise<v
 				},
 				(r) => {
 					r.setEncoding('utf8');
-					r.on('data', (rr) => {
+					r.on('data', async (rr) => {
 						try {
 							if (rr) {
 								rr = JSON.parse(rr);
@@ -94,6 +100,13 @@ async function authorize(req: Dictionary, res: ExpressTypes.Response): Promise<v
 									expiresIn: rr.expires_in,
 									refreshToken: rr.refresh_token
 								};
+
+								const
+									data = await getFigmaDesignSystem(<string>session.key, rr.access_token);
+
+								if (data && data.designSystem) {
+									writeDsFile(<DesignSystem>data.designSystem).catch(console.log);
+								}
 							}
 
 						} catch (e) {
@@ -125,16 +138,11 @@ async function writeDsFile(data: Dictionary): Promise<void> {
 	return fs.promises.writeFile(filePath, prettier.format(str));
 }
 
-async function getFiles(req: Dictionary, res: ExpressTypes.Response): Promise<void> {
-	if (req.session && (<Dictionary>req.session).figma && (<Dictionary>(<Dictionary>req.session).figma).accessToken) {
-		let str = '';
+async function getFigmaDesignSystem(file: string, token: string): Promise<CanUndef<Dictionary>> {
+	let str = '';
 
-		await new Promise((resolve, reject) => {
-			const
-				token = <string>(<Dictionary>(<Dictionary>req.session).figma).accessToken,
-				file = (<Dictionary>req.params).file;
-
-			https.request({
+	await new Promise((resolve, reject) => {
+		https.request({
 				method: 'GET',
 				host: 'api.figma.com',
 				path: `/v1/files/${file}`,
@@ -150,37 +158,56 @@ async function getFiles(req: Dictionary, res: ExpressTypes.Response): Promise<vo
 
 				res.on('end', resolve);
 			}).on('error', reject).end();
-		});
+	});
 
-		let
-			result,
-			response;
+	let
+		result,
+		response;
 
-		try {
-			response = JSON.parse(str);
-			result = parse(response);
+	try {
+		response = JSON.parse(str);
+		result = parse(response);
 
-			if (result && result.approved) {
-				await writeDsFile(result.designSystem);
-			}
-
-		} catch {
-			res.send({
-				errors: [{
-					name: 'Cannot parse response from Figma API',
-					description: `I can't parse JSON string for the file with id ${(<Dictionary>req.params).file}`
-				}]
-			});
-
-			return;
+		if (result && result.approved) {
+			return {
+				...result,
+				meta: Object.select(response, ['thumbnailUrl', 'lastModified', 'version'])
+			};
 		}
 
-		res.send({
-			errors: result.errors,
-			approved: result.approved,
-			file: Object.select(response, ['thumbnailUrl', 'lastModified', 'version'])
-		});
+	} catch {
+		return {
+			errors: [{
+				name: 'Cannot parse response from Figma API',
+				description: `I can't parse JSON string for the file with id ${file}`
+			}]
+		};
 	}
 
-	res.send();
+	return;
+}
+
+async function getFiles(req: Dictionary, res: ExpressTypes.Response): Promise<void> {
+	const
+		fileName = <string>$C(req).get('params.file'),
+		token = <string>$C(req).get('session.accessToken');
+
+	if (token && fileName) {
+		const
+			data = await getFigmaDesignSystem(fileName, token);
+
+		if (data && data.designSystem) {
+			writeDsFile(<DesignSystem>data.designSystem).catch(console.log);
+			return get(req, res);
+		}
+
+		res.send(data);
+	}
+
+	res.send({
+		errors: [{
+			name: 'Error while getting file by name from Figma',
+			description: 'I can\'t find token or filename'
+		}]
+	});
 }

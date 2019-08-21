@@ -90,7 +90,6 @@ export default {
 	disabled: (el: Figma.Node) => checkboxCommon(el.children),
 	valid: (el: Figma.Node) => validState(el, 'bCheckbox', 'checkerBack'),
 	exterior(el: Figma.Node): Dictionary {
-		console.log(111, el.name);
 		return {};
 	}
 };

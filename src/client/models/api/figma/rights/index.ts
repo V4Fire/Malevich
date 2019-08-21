@@ -16,7 +16,7 @@ export {
 @provider('adapter')
 export default class FigmaRights extends API {
 	/** @override */
-	baseURL: string = '/figma/rights';
+	baseURL: string = '/figma/rights/:key';
 
 	/** @override */
 	static request: typeof API.request = API.request({
