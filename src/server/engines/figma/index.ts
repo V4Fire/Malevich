@@ -8,7 +8,7 @@
 
 import $C = require('collection.js');
 
-import scheme, { DS, writeComponent } from './scheme';
+import scheme, { DS, DIFFS, writeComponent } from './scheme';
 import { RAW, ERRORS, WARNINGS } from './converters';
 import * as h from './helpers';
 
@@ -25,6 +25,7 @@ export default function parse(
 	errors: ContentError[];
 	warnings: ContentError[];
 	designSystem: DesignSystem;
+	diff: Record<string, Dictionary | true>;
 	approved: boolean;
 } {
 	const
@@ -45,6 +46,7 @@ export default function parse(
 		errors: ERRORS,
 		warnings: WARNINGS,
 		designSystem: DS,
+		diff: DIFFS,
 		approved: !Boolean(ERRORS.length)
 	};
 }

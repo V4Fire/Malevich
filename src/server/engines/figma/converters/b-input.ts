@@ -76,10 +76,26 @@ export default {
 			placeholder = $C(el.children).one.get((c) => c.name === 'placeholder'),
 			pFill = $C(placeholder).get('fills.0');
 
+		const
+			result: Dictionary = {};
+
+		if (placeholder) {
+			const
+				styleName = $C(RAW.styles).get(`${placeholder.styles.text}.name`);
+
+			if (styleName) {
+				result.placeholderStyle = styleName;
+			}
+
+			if (pFill) {
+				result.placeholderColor = mixins.calcColor(pFill);
+			}
+		}
+
 		return {
-			placeholderColor: pFill && mixins.calcColor(pFill),
+			...result,
+			...simpleSize(el),
 			placeholderStyle: placeholder && $C(RAW.styles).get(`${placeholder.styles.text}.name`),
-			...simpleSize(el)
 		};
 	},
 

@@ -7,3 +7,4 @@
  */
 
 import './number';
+import './object';

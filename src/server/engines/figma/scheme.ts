@@ -8,7 +8,10 @@
 
 import $C = require('collection.js');
 import converters, { WARNINGS } from './converters';
+import latestStableDS from '../../../../repository';
+
 import * as mixins from './mixins';
+import * as h from './helpers';
 
 export const DS: DesignSystem = {
 	components: {},
@@ -16,6 +19,8 @@ export const DS: DesignSystem = {
 	text: {},
 	rounding: {}
 };
+
+export const DIFFS = {};
 
 export default {
 	text: {
@@ -74,6 +79,7 @@ export function writeComponent(name: string, el: Figma.Node): void {
 
 				if (mod && Object.isFunction(adapter)) {
 					link.mods[mod] = adapter(c);
+					setDiff(`components.${name}.mods.${mod}`, link.mods[mod]);
 				}
 
 			} else if (prefix !== 'Master') {
@@ -88,6 +94,7 @@ export function writeComponent(name: string, el: Figma.Node): void {
 
 			if (Object.isFunction(adapter)) {
 				link.block = adapter(selfLayers);
+				setDiff(`components.${name}.block`, link.block);
 			}
 		}
 
@@ -112,6 +119,7 @@ export function writeComponent(name: string, el: Figma.Node): void {
 				}
 
 				link.mods[mod][value] = adapter(target);
+				setDiff(`components.${name}.mods.${mod}.${value}`, link.mods[mod][value]);
 
 			} else {
 				WARNINGS.push({
@@ -134,12 +142,34 @@ export function writeComponent(name: string, el: Figma.Node): void {
 
 				// Calculates exterior from nested Master component
 				const
-					component = el.children.length === 1 ? el.children[0] : el;
+					component = el.children.length === 1 ? el.children[0] : el,
+					calculated = adapter(component),
+					value = componentArgs[0].toLowerCase();
 
-				link.exterior[componentArgs[0].toLowerCase()] = adapter(component);
+				link.exterior[name] = calculated;
+				setDiff(`components.${name}.exterior.${value}`, calculated);
 			}
 		}
 	}
+}
+
+function setDiff(pathToField: string, value: Dictionary): void {
+	const
+		latest = $C(latestStableDS).get(pathToField);
+
+	let
+		result;
+
+	if (latest) {
+		if (!Object.fastCompare(latest, value)) {
+			result = latest;
+		}
+
+	} else {
+		result = true;
+	}
+
+	h.set(pathToField, result, DIFFS);
 }
 
 /**

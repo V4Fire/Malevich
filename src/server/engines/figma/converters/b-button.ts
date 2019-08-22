@@ -18,9 +18,16 @@ function buttonState(el: Figma.Node): Dictionary {
 		ignoreBlend = {PASS_THROUGH: true},
 		opacity = $C(layer).get('fills.0.opacity');
 
+	const
+		result: Dictionary = {};
+
+	if (opacity) {
+		result.opacity = opacity.round(2);
+	}
+
 	return {
+		...result,
 		blendMode: !ignoreBlend[layer.blendMode] ? layer.blendMode.dasherize() : undefined,
-		opacity: opacity && opacity.round(2) || undefined,
 		backgroundColor: mixins.calcColor(layer.fills[0])
 	};
 }
