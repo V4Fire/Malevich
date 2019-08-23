@@ -146,7 +146,7 @@ export function writeComponent(name: string, el: Figma.Node): void {
 					calculated = adapter(component),
 					value = componentArgs[0].toLowerCase();
 
-				link.exterior[name] = calculated;
+				link.exterior[value] = calculated;
 				setDiff(`components.${name}.exterior.${value}`, calculated);
 			}
 		}
