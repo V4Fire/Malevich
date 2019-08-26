@@ -1,0 +1,38 @@
+/*!
+ * V4Fire Malevich
+ * https://github.com/V4Fire/Malevich
+ *
+ * Released under the MIT license
+ * https://github.com/V4Fire/Malevich/blob/master/LICENSE
+ */
+
+@import "@super/global/g-def/funcs.styl"
+
+ds-styles-vars($field)
+	$vars = getDSOptions($field, true)
+
+	if $field == "rounding"
+		for $key, $val in $vars
+			&_size_{$key}
+				border-radius $val
+
+	if $field == "colors"
+		for $key, $val in $vars
+			for $index, $option in $val
+				&_{$key}_{$index}
+					color $option
+
+	if $field == "text"
+		for $key, $val in $vars
+			$styles = getField($val, style)
+
+			if $styles
+				&_style_{$key}
+					interpolate-props($styles)
+
+			else
+				for $index, $option in $val
+					$styles = getField($option, style)
+
+					&_style_{$key + $index}
+						interpolate-props($styles)
