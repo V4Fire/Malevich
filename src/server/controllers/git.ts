@@ -79,7 +79,29 @@ async function push(req: ExpressTypes.Request, res: ExpressTypes.Response): Prom
 	res.send({error: {name: 'Please enter the commit message for your changes'}});
 }
 
-async function get(req: Dictionary, res: ExpressTypes.Response): Promise<void> {
-	const tags = await git.tags();
-	res.send({tags});
+/**
+ * Sends actual info about the design system repo
+ *
+ * @param req
+ * @param res
+ */
+export async function get(req: Dictionary, res: ExpressTypes.Response): Promise<void> {
+	const
+		tags = await git.tags(),
+		diff = await git.diff();
+
+	let
+		show = await git.show([`${tags.latest}:./index.js`]);
+
+	try {
+		show = show.replace(/({.+})/g, (str, group) => group);
+		show = JSON.parse(show);
+
+	} catch {}
+
+	res.send({
+		tags,
+		diff,
+		show
+	});
 }
