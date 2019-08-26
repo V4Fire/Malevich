@@ -15,6 +15,13 @@ const
 module.exports = config.createConfig({dirs: [__dirname, 'client']}, {
 	__proto__: config,
 
+	runtime() {
+		return {
+			...super.runtime(),
+			'ds-diff': true
+		};
+	},
+
 	appName: o('app-name', {
 		env: true,
 		default: 'Malevich',
