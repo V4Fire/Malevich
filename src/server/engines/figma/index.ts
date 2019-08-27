@@ -167,7 +167,7 @@ function parseNode(data: Figma.Node, t: PageType, name: string): void {
 								!data.name.match(/@/) &&
 								(chunks.length === 1 || parseInt(chunks[chunks.length - 1], 10))
 							) {
-								h.set(chunks.join('.'), RAW.data[c.id], DS.text);
+								h.set(chunks.join('.'), RAW.data[c.id].style, DS.text);
 							}
 						}
 					});

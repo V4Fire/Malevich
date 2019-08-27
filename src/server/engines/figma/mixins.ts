@@ -6,6 +6,7 @@
  * https://github.com/V4Fire/Malevich/blob/master/LICENSE
  */
 
+import { createRGBA } from '../helpers/blend-modes';
 type Declaration = Partial<CSSStyleDeclaration> | void;
 
 /**
@@ -21,7 +22,11 @@ type Declaration = Partial<CSSStyleDeclaration> | void;
 export function calcColor(
 	{color: {r, g, b, a}, opacity}: {color: Figma.Color; opacity?: number}
 ): string {
-	return `rgba(${(r * 255).toFixed()}, ${(g * 255).toFixed()}, ${(b * 255).toFixed()}, ${(opacity || a).round(2)})`;
+	if (a === 1 && opacity) {
+		a = opacity;
+	}
+
+	return createRGBA(r, g, b, a);
 }
 
 /**

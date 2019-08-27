@@ -6,6 +6,7 @@
  * https://github.com/V4Fire/Malevich/blob/master/LICENSE
  */
 
+import blend from '../../helpers/blend-modes';
 import { simpleSize, convertMod } from './helpers';
 import { WARNINGS } from './const';
 import * as mixins from '../mixins';
@@ -25,11 +26,13 @@ function buttonState(el: Figma.Node): Dictionary {
 		result.opacity = opacity.round(2);
 	}
 
-	return {
-		...result,
-		blendMode: !ignoreBlend[layer.blendMode] ? layer.blendMode.dasherize() : undefined,
-		backgroundColor: mixins.calcColor(layer.fills[0])
-	};
+	const
+		blendMode = layer.blendMode.camelize(false),
+		color = mixins.calcColor(layer.fills[0]);
+
+	result.backgroundColor = !ignoreBlend[layer.blendMode] ? blend(color, color, blendMode) : color;
+
+	return result;
 }
 
 function buttonWithIcon(el: Figma.Node, pos: 'pre' | 'post' = 'pre'): Dictionary {
