@@ -74,6 +74,7 @@
 				< b-button &
 					v-func = false |
 					slot-scope = {ctx} |
+					:exterior = 'primary' |
 					@statusReady = ctx.debug |
 					${defAttrs}
 				.
