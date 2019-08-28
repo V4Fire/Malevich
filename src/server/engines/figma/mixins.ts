@@ -6,7 +6,7 @@
  * https://github.com/V4Fire/Malevich/blob/master/LICENSE
  */
 
-import { createRGBA } from '../helpers/blend-modes';
+import { createRGBAString, convertFloatColor } from '../helpers/blend-modes';
 type Declaration = Partial<CSSStyleDeclaration> | void;
 
 /**
@@ -16,7 +16,7 @@ type Declaration = Partial<CSSStyleDeclaration> | void;
  * @param r
  * @param g
  * @param b
- * @param a,
+ * @param a
  * @param [opacity]
  */
 export function calcColor(
@@ -26,7 +26,10 @@ export function calcColor(
 		a = opacity;
 	}
 
-	return createRGBA(r, g, b, a);
+	const
+		{r: red, g: green, b: blue, a: alpha} = convertFloatColor({r, g, b, a});
+
+	return createRGBAString(red, green, blue, alpha);
 }
 
 /**

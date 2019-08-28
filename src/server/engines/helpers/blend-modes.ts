@@ -32,7 +32,7 @@ const blendModes = {
 				f = tmp;
 			}
 
-			return f;
+			return f.round();
 		};
 
 		const
@@ -45,11 +45,11 @@ const blendModes = {
 
 	normal(top: RGBA, bottom: RGBA): string {
 		const
-			red = top.r * top.a + bottom.r * bottom.a * (1 - top.a),
-			green = top.g * top.a + bottom.g * bottom.a * (1 - top.a),
-			blue = top.b * top.a + bottom.b * bottom.a * (1 - top.a);
+			red = (top.r * top.a + bottom.r * bottom.a * (1 - top.a)).round(),
+			green = (top.g * top.a + bottom.g * bottom.a * (1 - top.a)).round(),
+			blue = (top.b * top.a + bottom.b * bottom.a * (1 - top.a)).round();
 
-		return createRGBA(red, green, blue);
+		return createRGBAString(red, green, blue);
 	}
 };
 
@@ -61,8 +61,8 @@ const blendModes = {
  * @param b
  * @param [a]
  */
-export function createRGBA(r: number, g: number, b: number, a: number = 1): string {
-	return `rgba(${(r * 255).toFixed()}, ${(g * 255).toFixed()}, ${(b * 255).toFixed()}, ${a.round(2)})`;
+export function createRGBAString(r: number, g: number, b: number, a: number = 1): string {
+	return `rgba(${[r, g, b, a].join(',')})`;
 }
 
 /**
@@ -73,10 +73,37 @@ export function createRGBA(r: number, g: number, b: number, a: number = 1): stri
  * @param [mode]
  * @see https://en.wikipedia.org/wiki/Blend_modes
  */
-export default function blend(top: string, bottom: string, mode: string = 'normal'): CanUndef<string> {
+export default function blend(top: RGBA, bottom: RGBA, mode: string = 'normal'): CanUndef<string> {
 	if (!blendModes[mode]) {
 		return;
 	}
 
-	return blendModes[mode](top, bottom);
+	const
+		t = convertFloatColor(top),
+		b = convertFloatColor(bottom);
+
+	return blendModes[mode](t, b);
+}
+
+/**
+ * Returns color converted from fractional-style RGBA to 255-styled
+ * @param color
+ */
+export function convertFloatColor(color: RGBA): RGBA {
+	const
+		keys = ['r', 'g', 'b'];
+
+	const result = keys.reduce((res, channel) => {
+		const
+			value = (color[channel] * 255).round();
+
+		res[channel] = Number(value);
+		return res;
+	}, <RGBA>{});
+
+	if (color.hasOwnProperty('a')) {
+		result.a = color.a.round(2);
+	}
+
+	return result;
 }

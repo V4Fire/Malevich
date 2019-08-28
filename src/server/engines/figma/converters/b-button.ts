@@ -8,54 +8,41 @@
 
 import blend from '../../helpers/blend-modes';
 import { simpleSize, convertMod } from './helpers';
-import { WARNINGS } from './const';
+import { WARNINGS, IGNORE_BLEND } from './const';
 import * as mixins from '../mixins';
 
 import $C = require('collection.js');
 
 function buttonState(el: Figma.Node, parent: Figma.Node): Dictionary {
 	const
-		layer = el.children[0],
-		ignoreBlend = {PASS_THROUGH: true},
-		opacity = $C(layer).get('fills.0.opacity');
+		childLayer = el.children[0],
+		mode = childLayer.blendMode.camelize(false),
+		childFill = $C(childLayer).get('fills.0');
+
+	const
+		parentLayer = $C(parent.children).one.get((c) => c.name === 'background'),
+		parentFill = $C(parentLayer).get('children.0.children.0.fills.0');
+
+	let
+		childColor;
+
+	if (childFill) {
+		childColor = childFill.color;
+		childColor.a = Math.min(childFill.opacity || 1, childColor.a);
+	}
+
+	let
+		parentColor;
+
+	if (parentFill) {
+		parentColor = parentFill.color;
+		parentColor.a = Math.min(parentFill.opacity || 1, parentColor.a);
+	}
 
 	const
 		result: Dictionary = {};
 
-	if (opacity) {
-		result.opacity = opacity.round(2);
-	}
-
-	const
-		background = $C(parent.children).one.get((c) => c.name === 'background'),
-		blendMode = layer.blendMode.camelize(false),
-		layerFill = layer.fills[0],
-		top = layerFill.color;
-
-	let bottom;
-
-	if (background && layerFill) {
-		const
-			fill = $C(background).get('children.0.children.0.fills.0');
-
-		const
-			{color, opacity} = fill || layerFill;
-
-		if (opacity && color.a && opacity !== color.a) {
-			color.a = Math.min(opacity, color.a);
-		}
-
-		if (layerFill.opacity && top.a && layerFill.opacity !== top.a) {
-			top.a = Math.min(layerFill.opacity, top.a);
-		}
-
-		bottom = color;
-	}
-
-	result.backgroundColor = !ignoreBlend[layer.blendMode] ?
-		blend(top, bottom, blendMode) :
-		top;
-
+	result.backgroundColor = !IGNORE_BLEND.has[mode] ? blend(childColor, parentColor, mode) : mixins.calcColor(childColor);
 	return result;
 }
 

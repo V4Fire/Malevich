@@ -24,3 +24,6 @@ export const RAW: {
 export const
 	ERRORS: ContentError[] = [],
 	WARNINGS: ContentError[] = [];
+
+export const
+	IGNORE_BLEND = new Set(['PASS_THROUGH']);
