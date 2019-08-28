@@ -24,15 +24,5 @@ ds-styles-vars($field)
 
 	if $field == "text"
 		for $key, $val in $vars
-			$styles = getField($val, style)
-
-			if $styles
-				&_style_{$key}
-					interpolate-props($styles)
-
-			else
-				for $index, $option in $val
-					$styles = getField($option, style)
-
-					&_style_{$key + $index}
-						interpolate-props($styles)
+			&_style_{$key}
+				interpolate-props($val)

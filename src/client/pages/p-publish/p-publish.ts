@@ -8,6 +8,7 @@
 
 import 'models/api/git';
 import iDynamicPage, { component, field, TitleValue } from 'super/i-dynamic-page/i-dynamic-page';
+import bButton from 'form/b-button/b-button';
 
 export * from 'super/i-dynamic-page/i-dynamic-page';
 
@@ -18,6 +19,11 @@ export default class pPublish<D extends object = Dictionary> extends iDynamicPag
 
 	/** @override */
 	readonly pageTitleProp: TitleValue = 'Malevich: Commit Changes';
+
+	/** @override */
+	protected readonly $refs!: {
+		formSubmit: bButton;
+	};
 
 	/**
 	 * Info about design system conversion result
@@ -40,5 +46,18 @@ export default class pPublish<D extends object = Dictionary> extends iDynamicPag
 	protected onPublishSuccess(res: Dictionary): void {
 		this.stage = 'commit';
 		this.field.set('dsMeta', res);
+	}
+
+	/**
+	 * Handler: form field validation end
+	 * @param result
+	 */
+	protected onValidationEnd(result: boolean): void {
+		const
+			{formSubmit} = this.$refs;
+
+		if (formSubmit) {
+			formSubmit.setMod('disabled', !result);
+		}
 	}
 }
