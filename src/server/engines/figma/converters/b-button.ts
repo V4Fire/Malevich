@@ -13,7 +13,7 @@ import * as mixins from '../mixins';
 
 import $C = require('collection.js');
 
-function buttonState(el: Figma.Node): Dictionary {
+function buttonState(el: Figma.Node, parent: Figma.Node): Dictionary {
 	const
 		layer = el.children[0],
 		ignoreBlend = {PASS_THROUGH: true},
@@ -27,10 +27,34 @@ function buttonState(el: Figma.Node): Dictionary {
 	}
 
 	const
+		background = $C(parent.children).one.get((c) => c.name === 'background'),
 		blendMode = layer.blendMode.camelize(false),
-		color = mixins.calcColor(layer.fills[0]);
+		layerFill = layer.fills[0],
+		top = layerFill.color;
 
-	result.backgroundColor = !ignoreBlend[layer.blendMode] ? blend(color, color, blendMode) : color;
+	let bottom;
+
+	if (background && layerFill) {
+		const
+			fill = $C(background).get('children.0.children.0.fills.0');
+
+		const
+			{color, opacity} = fill || layerFill;
+
+		if (opacity && color.a && opacity !== color.a) {
+			color.a = Math.min(opacity, color.a);
+		}
+
+		if (layerFill.opacity && top.a && layerFill.opacity !== top.a) {
+			top.a = Math.min(layerFill.opacity, top.a);
+		}
+
+		bottom = color;
+	}
+
+	result.backgroundColor = !ignoreBlend[layer.blendMode] ?
+		blend(top, bottom, blendMode) :
+		top;
 
 	return result;
 }
@@ -89,7 +113,7 @@ export default {
 				const
 					name = c.name.replace('m:', '');
 
-				result[name] = convertMod(name, c, 'bButton');
+				result[name] = convertMod(name, c, 'bButton', el);
 				return;
 			}
 		});

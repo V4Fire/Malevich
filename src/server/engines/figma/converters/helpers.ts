@@ -53,14 +53,15 @@ export function simpleSize(el: Figma.Node): Dictionary {
  * @param mod
  * @param el
  * @param block
+ * @param parent
  */
-export function convertMod(mod: string, el: Figma.Node, block: string): CanUndef<unknown> {
+export function convertMod(mod: string, el: Figma.Node, block: string, parent?: Figma.Node): CanUndef<unknown> {
 	const
 		converters = require(path.resolve(__dirname, block.dasherize())).default,
 		adapter = converters[mod];
 
 	if (Object.isFunction(adapter)) {
-		return adapter(el);
+		return adapter(el, parent);
 	}
 }
 

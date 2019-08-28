@@ -78,7 +78,7 @@ export function writeComponent(name: string, el: Figma.Node): void {
 					adapter = $C(converters).get(`${name}.${mod}`);
 
 				if (mod && Object.isFunction(adapter)) {
-					link.mods[mod] = adapter(c);
+					link.mods[mod] = adapter(c, el);
 					setDiff(`components.${name}.mods.${mod}`, link.mods[mod]);
 				}
 
@@ -93,7 +93,7 @@ export function writeComponent(name: string, el: Figma.Node): void {
 				adapter = $C(converters).get(`${name}.selfLayer`);
 
 			if (Object.isFunction(adapter)) {
-				link.block = adapter(selfLayers);
+				link.block = adapter(selfLayers, el);
 				setDiff(`components.${name}.block`, link.block);
 			}
 		}
@@ -118,7 +118,7 @@ export function writeComponent(name: string, el: Figma.Node): void {
 					target = el.children[0];
 				}
 
-				link.mods[mod][value] = adapter(target);
+				link.mods[mod][value] = adapter(target, el);
 				setDiff(`components.${name}.mods.${mod}.${value}`, link.mods[mod][value]);
 
 			} else {
@@ -143,7 +143,7 @@ export function writeComponent(name: string, el: Figma.Node): void {
 				// Calculates exterior from nested Master component
 				const
 					component = el.children.length === 1 ? el.children[0] : el,
-					calculated = adapter(component),
+					calculated = adapter(component, el),
 					value = componentArgs[0].toLowerCase();
 
 				link.exterior[value] = calculated;
