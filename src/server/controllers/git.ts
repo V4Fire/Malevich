@@ -10,32 +10,13 @@ import * as ExpressTypes from 'express';
 import { ControllersKit } from '../interfaces/controllers';
 
 import gitPromise = require('simple-git/promise');
-import fs = require('fs');
 import path = require('upath');
 
 const
-	{DS_PACKAGE} = process.env,
 	dsRepoLocalPath = path.resolve(process.cwd(), 'repository');
-
-let
-	needInit = false;
-
-if (!fs.existsSync(dsRepoLocalPath)) {
-	needInit = true;
-	fs.mkdirSync(dsRepoLocalPath);
-}
 
 const
 	git = gitPromise(dsRepoLocalPath);
-
-if (needInit && DS_PACKAGE) {
-	git
-		.clone(DS_PACKAGE, dsRepoLocalPath)
-		.catch(console.log);
-
-} else {
-	git.pull().catch(console.log);
-}
 
 export default {
 	namespace: 'api/git',

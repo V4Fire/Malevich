@@ -52,24 +52,25 @@
 
 			< .&__row
 				- block colors(lib)
-					< template v-for = kit, name in ${lib}
-						< .&__color-wrap v-for = c, index in kit
-							< .&__color &
-								:style = {backgroundColor: c} |
-								:title = name
-							.
+					< .&__colors-over-wrapper
+						< template v-for = kit, name in ${lib}
+							< .&__color-wrap v-for = c, index in kit
+								< .&__color &
+									:style = {backgroundColor: c} |
+									:title = name
+								.
 
-							< .&__color-description
-								< .&__color-name
-									{{ name + '/' + index }}
+								< .&__color-description
+									< .&__color-name
+										{{ name + '/' + index }}
 
-								< .&__color-value
-									{{ c }}
+									< .&__color-value
+										{{ c }}
 
 				< .&__container[.&_type_colors]
 					+= self.colors('colors')
 
-				< .&__container[.&_type_text] v-if = field.get('diff.colors')
+				< .&__container[.&_type_colors] v-if = field.get('diff.colors')
 					+= self.colors('diff.colors')
 
 			< h1.&__header

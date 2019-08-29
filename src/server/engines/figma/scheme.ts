@@ -8,7 +8,7 @@
 
 import $C = require('collection.js');
 import converters, { WARNINGS } from './converters';
-import latestStableDS from '../../../../repository';
+import path = require('upath');
 
 import * as mixins from './mixins';
 import * as h from './helpers';
@@ -161,6 +161,7 @@ export function writeComponent(name: string, el: Figma.Node): void {
  */
 export function setDiff(pathToField: string, value: unknown): void {
 	const
+		latestStableDS = require(path.resolve(process.cwd(), 'repository')),
 		latest = $C(latestStableDS).get(pathToField);
 
 	let

@@ -11,11 +11,37 @@ import express = require('express');
 import config = require('config');
 import $C = require('collection.js');
 
-import path = require('upath');
-import fs = require('fs');
 import cookieParser = require('cookie-parser');
 import bodyParser = require('body-parser');
 import session = require('express-session');
+
+import path = require('upath');
+import fs = require('fs');
+import gitPromise = require('simple-git/promise');
+
+const
+	{DS_PACKAGE} = process.env,
+	dsRepoLocalPath = path.resolve(process.cwd(), 'repository');
+
+let
+	needInit = false;
+
+if (!fs.existsSync(dsRepoLocalPath)) {
+	needInit = true;
+	fs.mkdirSync(dsRepoLocalPath);
+}
+
+const
+	git = gitPromise(dsRepoLocalPath);
+
+if (needInit && DS_PACKAGE) {
+	git
+		.clone(DS_PACKAGE, dsRepoLocalPath)
+		.catch(console.log);
+
+} else {
+	git.pull().catch(console.log);
+}
 
 const
 	// @ts-ignore

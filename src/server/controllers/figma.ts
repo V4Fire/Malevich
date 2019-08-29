@@ -188,7 +188,7 @@ async function getFiles(req: Dictionary, res: ExpressTypes.Response): Promise<vo
 			data = await getFigmaDesignSystem(fileName, token);
 
 		if (data && data.designSystem) {
-			writeDsFile(<DesignSystem>data.designSystem).catch(console.log);
+			//writeDsFile(<DesignSystem>data.designSystem).catch(console.log);
 		}
 
 		res.send(data);
