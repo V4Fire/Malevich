@@ -19,28 +19,13 @@
 			< h1.&__title
 				Publish your Design System
 
-			< section.&__ds-publishing
-				< b-form &
-					v-once |
-					ref = files |
-					:id = dom.getId('fileForm') |
-					:delegateAction = onFigmaImport
+			< form.&__form
+				< b-button &
+					:exterior = 'dark' |
+					:rounding = 'small' |
+					@click = onFigmaImportClick
 				.
-					< b-input.&__form-item &
-						:name = 'id' |
-						:validators = [['required', {showMsg: false}]] |
-						:placeholder = 'Enter a file key' |
-						@onValidationEnd = onValidationEnd
-					.
+					Import from figma
 
-					< b-button.&__form-item &
-						ref = formSubmit |
-						:exterior = 'dark' |
-						:type = 'submit' |
-						:disabled = true |
-						:rounding = 'small'
-					.
-						Import from figma
-
-						< template #preIcon
-							< img.&__icon :src = require('assets/img/figma.svg')
+					< template #preIcon
+						< img.&__icon :src = require('assets/img/figma.svg')

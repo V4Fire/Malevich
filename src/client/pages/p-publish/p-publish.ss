@@ -15,46 +15,80 @@
 	- block body
 		+= self.getTpl('b-header/')()
 
-		< .&__content
-			< .&__file-info
-				< .&__file-name v-if = fileInfo('name')
-					{{ fileInfo('name') }}
+		< template v-if = stage === 'preview'
+			< template v-if = data
+				< .&__errors v-if = Boolean(field.get('data.errors.length'))
+					< .&__error v-for = el in data.errors
+						{{ el.name }}, {{ el.description }}
 
-				< .&__file-last-modified v-if = fileInfo('lastModified')
-					Last Modified {{ fileInfo('lastModified') }}
-
-				< .&__file-version v-if = fileInfo('version')
-					File version {{ fileInfo('version') }}
-
-			< b-image.&__thumbnail :src = fileInfo('thumbnailUrl')
-
-			< h3.&__form-title
-				Update package
-
-			< b-form &
-				:classes = provide.classes({form: true}) |
-				:dataProvider = 'publish.Git' |
-				:method = 'post' |
-				@onSubmitSuccess = router.push('/')
-			.
-				< b-input-hidden &
-					:name = 'endpoint' |
-					:value = 'commit'
+				< b-showcase &
+					v-else |
+					:diff = data.diff |
+					:data = data.designSystem
 				.
 
-				< b-input &
-					:name = 'message' |
-					:placeholder = 'Type a commit message' |
-					:width = 'full' |
-					:validators = [['required', {showMsg: false}]] |
-					@onValidationEnd = onValidationEnd
-				.
+				{{ console.log(data.designSystem) }}
 
-				< b-button.&__commit-submit &
-					ref = formSubmit |
-					:type = 'submit' |
-					:exterior = 'dark' |
-					:rounding = 'small' |
-					:disabled = true
+		< template v-else-if = stage === 'commit'
+			< .&__content
+				< h3.&__form-title
+					Update package
+
+				< b-form &
+					:classes = provide.classes({form: true}) |
+					:dataProvider = 'publish.Git' |
+					:method = 'post' |
+					@onSubmitSuccess = router.push('/')
 				.
-					Save changes
+					< b-input-hidden &
+						:name = 'endpoint' |
+						:value = 'commit'
+					.
+
+					< b-input &
+						:name = 'message' |
+						:placeholder = 'Type a commit message' |
+						:width = 'full' |
+						:validators = [['required', {showMsg: false}]] |
+						@onValidationEnd = onValidationEnd
+					.
+
+					< b-button.&__commit-submit &
+						ref = formSubmit |
+						:type = 'submit' |
+						:exterior = 'dark' |
+						:rounding = 'small' |
+						:disabled = true
+					.
+						Save changes
+
+		< template v-else
+			< .&__content
+				< b-form &
+					v-once |
+					ref = files |
+					:id = dom.getId('fileForm') |
+					:method = 'get' |
+					:dataProvider = 'convert.Adapters' |
+					@onSubmitSuccess = onPublishSuccess
+				.
+					< b-input-hidden &
+						:name = 'service' |
+						:value = 'figma'
+					.
+
+					< b-input &
+						:name = 'file' |
+						:validators = [['required', {showMsg: false}]] |
+						:placeholder = 'Enter a file key' |
+						@onValidationEnd = onValidationEnd
+					.
+
+					< b-button &
+						ref = formSubmit |
+						:type = 'submit' |
+						:exterior = 'dark' |
+						:rounding = 'small' |
+						:disabled = true
+					.
+						Create Design System

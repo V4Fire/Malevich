@@ -14,5 +14,6 @@ package('p-publish')
 		'b-input',
 		'b-image',
 		'b-button',
-		'b-header'
+		'b-header',
+		'b-showcase'
 	);

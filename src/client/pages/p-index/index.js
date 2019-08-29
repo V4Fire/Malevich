@@ -8,4 +8,4 @@
 
 package('p-index')
 	.extends('i-dynamic-page')
-	.dependencies('b-form', 'b-input', 'b-button', 'b-header');
+	.dependencies('b-button', 'b-header');

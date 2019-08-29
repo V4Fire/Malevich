@@ -87,21 +87,9 @@ async function push(req: ExpressTypes.Request, res: ExpressTypes.Response): Prom
  */
 export async function get(req: Dictionary, res: ExpressTypes.Response): Promise<void> {
 	const
-		tags = await git.tags(),
-		diff = await git.diff();
-
-	let
-		show = await git.show([`${tags.latest}:./index.js`]);
-
-	try {
-		show = show.replace(/({.+})/g, (str, group) => group);
-		show = JSON.parse(show);
-
-	} catch {}
+		tags = await git.tags();
 
 	res.send({
-		tags,
-		diff,
-		show
+		tags
 	});
 }

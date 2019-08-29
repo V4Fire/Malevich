@@ -6,7 +6,9 @@
  * https://github.com/V4Fire/Malevich/blob/master/LICENSE
  */
 
+import 'models/api/adapters';
 import 'models/api/git';
+
 import iDynamicPage, { component, field, TitleValue } from 'super/i-dynamic-page/i-dynamic-page';
 import bButton from 'form/b-button/b-button';
 
@@ -29,23 +31,14 @@ export default class pPublish<D extends object = Dictionary> extends iDynamicPag
 	 * Info about design system conversion result
 	 */
 	@field()
-	protected dsMeta?: Dictionary;
+	protected data?: Dictionary;
 
 	/**
 	 * Returns info value from the design system base file
 	 * @param [field]
 	 */
 	protected fileInfo(field?: string): CanUndef<string> {
-		return this.field.get(`dsMeta.file${field ? `.${field}` : ''}`);
-	}
-
-	/**
-	 * Handler: form load success
-	 * @param res
-	 */
-	protected onPublishSuccess(res: Dictionary): void {
-		this.stage = 'commit';
-		this.field.set('dsMeta', res);
+		return this.field.get(`data.meta${field ? `.${field}` : ''}`);
 	}
 
 	/**
@@ -59,5 +52,14 @@ export default class pPublish<D extends object = Dictionary> extends iDynamicPag
 		if (formSubmit) {
 			formSubmit.setMod('disabled', !result);
 		}
+	}
+
+	/**
+	 * Handler: form load success
+	 * @param res
+	 */
+	protected onPublishSuccess(res: Dictionary): void {
+		this.field.set('data', res);
+		this.stage = 'preview';
 	}
 }

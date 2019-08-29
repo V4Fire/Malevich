@@ -8,8 +8,6 @@
 
 import 'models/api/figma/rights';
 import iDynamicPage, { component, TitleValue } from 'super/i-dynamic-page/i-dynamic-page';
-import bButton from 'form/b-button/b-button';
-import bForm from 'form/b-form/b-form';
 
 export * from 'super/i-dynamic-page/i-dynamic-page';
 
@@ -18,31 +16,10 @@ export default class pIndex<D extends object = Dictionary> extends iDynamicPage<
 	/** @override */
 	readonly pageTitleProp: TitleValue = 'Malevich';
 
-	/** @override */
-	protected readonly $refs!: {
-		formSubmit: bButton;
-	};
-
-	/**
-	 * Handler: form field validation end
-	 * @param result
-	 */
-	protected onValidationEnd(result: boolean): void {
-		const
-			{formSubmit} = this.$refs;
-
-		if (formSubmit) {
-			formSubmit.setMod('disabled', !result);
-		}
-	}
-
 	/**
 	 * Handler: on figma import approve rights click
-	 *
-	 * @param form
-	 * @param body
 	 */
-	protected onFigmaImport(form: bForm, body: Dictionary): Promise<void> {
-		return this.router.replace(`/ext/figma/rights/${body.id}`);
+	protected onFigmaImportClick(): Promise<void> {
+		return this.router.replace('/ext/figma/rights');
 	}
 }

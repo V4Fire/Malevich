@@ -6,8 +6,4 @@
  * https://github.com/V4Fire/Malevich/blob/master/LICENSE
  */
 
-export interface Meta {
-	name: string;
-	type: string;
-	lvl: number;
-}
+import './compare';

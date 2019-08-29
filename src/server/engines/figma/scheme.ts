@@ -153,7 +153,13 @@ export function writeComponent(name: string, el: Figma.Node): void {
 	}
 }
 
-function setDiff(pathToField: string, value: Dictionary): void {
+/**
+ * Check diff changes and writes to storage
+ *
+ * @param pathToField
+ * @param value
+ */
+export function setDiff(pathToField: string, value: unknown): void {
 	const
 		latest = $C(latestStableDS).get(pathToField);
 
@@ -166,14 +172,16 @@ function setDiff(pathToField: string, value: Dictionary): void {
 		}
 
 	} else {
-		result = true;
+		result = value;
 	}
 
-	h.set(pathToField, result, DIFFS);
+	if (result) {
+		h.set(pathToField, result, DIFFS);
+	}
 }
 
 /**
- * Stores color to kit with key specified at name
+ * Stores color to kit with a key that specified at the name
  *
  * @param name
  * @param parent
@@ -196,6 +204,7 @@ function storeColor<T extends Figma.NodeType>(
 		colors[hue][num - 1] = value;
 	}
 
+	setDiff(`colors.${hue}.${num - 1}`, value);
 	return value;
 }
 

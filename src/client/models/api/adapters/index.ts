@@ -8,10 +8,10 @@
 
 import API, { provider } from 'models/api';
 
-@provider('auth')
-export default class FigmaRights extends API {
+@provider('convert')
+export default class Adapters extends API {
 	/** @override */
-	baseURL: string = '/figma/rights/:key';
+	baseURL: string = '/:service/files/:file';
 
 	/** @override */
 	static request: typeof API.request = API.request({

@@ -7,11 +7,6 @@
  */
 
 import API, { provider } from 'models/api';
-import * as _ from 'models/api/figma/meta';
-
-export {
-	_ as types
-};
 
 @provider('publish')
 export default class Git extends API {

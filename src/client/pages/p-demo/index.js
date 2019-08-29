@@ -9,8 +9,6 @@
 package('p-demo')
 	.extends('i-dynamic-page')
 	.dependencies(
-		'b-v4-component-demo',
-		'b-header',
-		'b-button',
-		'b-input'
+		'b-showcase',
+		'b-header'
 	);

@@ -8,7 +8,7 @@
 
 import $C = require('collection.js');
 
-import scheme, { DS, DIFFS, writeComponent } from './scheme';
+import scheme, { DS, DIFFS, setDiff, writeComponent } from './scheme';
 import { RAW, ERRORS, WARNINGS } from './converters';
 import * as h from './helpers';
 
@@ -165,9 +165,11 @@ function parseNode(data: Figma.Node, t: PageType, name: string): void {
 
 							if (
 								!data.name.match(/@/) &&
-								(chunks.length === 1 || parseInt(chunks[chunks.length - 1], 10))
+								(chunks.length === 1 || parseInt(chunks[chunks.length - 1], 10)) &&
+								RAW.data[c.id].style
 							) {
-								h.set(chunks.join('.'), RAW.data[c.id].style, DS.text);
+								h.set(chunks.join(''), RAW.data[c.id].style, DS.text);
+								setDiff('text', <Dictionary>RAW.data[c.id].style);
 							}
 						}
 					});

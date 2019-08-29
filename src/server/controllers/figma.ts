@@ -44,7 +44,7 @@ export default {
 		},
 
 		{
-			url: 'rights/:key',
+			url: 'rights',
 			method: 'get',
 			fn: approveRights
 		}
@@ -63,13 +63,11 @@ function approveRights(req: Dictionary, res: ExpressTypes.Response): void {
 			state: code
 		});
 
-	session.key = (<Dictionary<string>>req.params).key;
 	res.redirect(`https://www.figma.com/oauth?${query}`);
 }
 
 async function authorize(req: Dictionary, res: ExpressTypes.Response): Promise<void> {
 	const
-		session = (<Dictionary<string>>req.session),
 		query = <Dictionary>req.query;
 
 	if (query && query.code && query.state) {
@@ -90,7 +88,7 @@ async function authorize(req: Dictionary, res: ExpressTypes.Response): Promise<v
 				},
 				(r) => {
 					r.setEncoding('utf8');
-					r.on('data', async (rr) => {
+					r.on('data', (rr) => {
 						try {
 							if (rr) {
 								rr = JSON.parse(rr);
@@ -100,13 +98,6 @@ async function authorize(req: Dictionary, res: ExpressTypes.Response): Promise<v
 									expiresIn: rr.expires_in,
 									refreshToken: rr.refresh_token
 								};
-
-								const
-									data = await getFigmaDesignSystem(<string>session.key, rr.access_token);
-
-								if (data && data.designSystem) {
-									writeDsFile(<DesignSystem>data.designSystem).catch(console.log);
-								}
 							}
 
 						} catch (e) {
@@ -190,7 +181,7 @@ async function getFigmaDesignSystem(file: string, token: string): Promise<CanUnd
 async function getFiles(req: Dictionary, res: ExpressTypes.Response): Promise<void> {
 	const
 		fileName = <string>$C(req).get('params.file'),
-		token = <string>$C(req).get('session.accessToken');
+		token = <string>$C(req).get('session.figma.accessToken');
 
 	if (token && fileName) {
 		const
@@ -198,10 +189,10 @@ async function getFiles(req: Dictionary, res: ExpressTypes.Response): Promise<vo
 
 		if (data && data.designSystem) {
 			writeDsFile(<DesignSystem>data.designSystem).catch(console.log);
-			return get(req, res);
 		}
 
 		res.send(data);
+		return;
 	}
 
 	res.send({

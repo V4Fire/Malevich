@@ -9,70 +9,7 @@
 @import "super/i-dynamic-page/i-dynamic-page.styl"
 
 $p = {
-	roundingsBgColor: c(grey 2)
-	contentColor: c(grey 1)
-	headerColor: c(grey 2)
-	labelColor: c(grey 3)
-	additionalColor: c(grey 2)
-	additionalBorderColor: c(grey 6)
-	rounding: getDSOptions("rounding.small")
+
 }
 
 p-demo extends i-dynamic-page
-	&__content
-		padding 0 32px
-		color $p.contentColor
-
-	&__header
-		padding 56px 0
-		font-size 36px
-		color $p.headerColor
-
-	&__label
-		margin-bottom 8px
-		font-size 12px
-		text-transform uppercase
-		color $p.labelColor
-
-	&__text-container
-		margin-top 16px
-
-	&__text-additional
-		padding 16px
-		border-radius $p.rounding
-		border 1px solid $p.additionalBorderColor
-		color $p.additionalColor
-
-	&__text
-		margin 16px
-
-	&__props p
-		margin 8px
-
-	&__colors-container
-		flex-row flex-start space-between
-		flex-wrap wrap
-		width 600px
-
-	&__color-wrap
-		flex-row flex-start center
-		flex 1 0 260px
-
-	&__color-value
-		margin-top 8px
-
-	&__color
-		size 60px
-		margin 16px
-		border-radius $p.rounding
-
-	&__color-name
-		font-weight 600
-
-	&__rounding
-		margin 16px
-		size 60px
-		background-color $p.roundingsBgColor
-
-	&__rounding-wrap
-		flex-row flex-start center

@@ -25,8 +25,8 @@ export default <PageSchema>{
 	},
 
 	external: {
-		path: '/ext/:service/:controller/:key',
-		redirect: '/api/:service/:controller/:key',
+		path: '/ext/:service/:controller',
+		redirect: '/api/:service/:controller',
 		external: true
 	}
 };
