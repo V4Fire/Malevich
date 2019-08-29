@@ -183,7 +183,7 @@ export function setDiff(pathToField: string, value: unknown): void {
 /**
  * Stores color to kit with a key that specified at the name
  *
- * @param name
+ * @param color
  * @param parent
  */
 function storeColor<T extends Figma.NodeType>(
