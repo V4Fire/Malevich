@@ -77,7 +77,9 @@ export default {
 
 	exterior(el: Figma.Node): Dictionary {
 		const
-			result: Dictionary = {};
+			result: Dictionary = {
+				mods: {}
+			};
 
 		$C(el.children).forEach((c) => {
 			if (c.name === 'background') {
@@ -100,7 +102,7 @@ export default {
 				const
 					name = c.name.replace('m:', '');
 
-				result[name] = convertMod(name, c, 'bButton', el);
+				(<Dictionary>result.mods)[name] = convertMod(name, c, 'bButton', el);
 				return;
 			}
 		});
