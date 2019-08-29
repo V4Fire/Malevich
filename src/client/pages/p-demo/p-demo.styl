@@ -29,6 +29,7 @@ p-demo extends i-dynamic-page
 		color $p.headerColor
 
 	&__label
+		margin-bottom 8px
 		font-size 12px
 		text-transform uppercase
 		color $p.labelColor
@@ -47,22 +48,6 @@ p-demo extends i-dynamic-page
 
 	&__props p
 		margin 8px
-
-	&__props
-	&__text
-		$textStyles = getDSOptions(text)
-
-		if $textStyles
-			for $key, $val in $textStyles
-				if $key != "heading"
-					&_style_{$key}
-						interpolate-props($val)
-
-				else
-					for $opts, $index in $val
-						if $opts
-							&_style_{$key + $index}
-								interpolate-props($opts)
 
 	&__colors-container
 		flex-row flex-start space-between

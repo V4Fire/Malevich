@@ -56,4 +56,18 @@ export default class pDemo extends iDynamicPage {
 			return res;
 		}, <Dictionary<string>[]>[]);
 	}
+
+	/**
+	 * Returns text classes
+	 * with common text styles for the specified style name
+	 *
+	 * @param name
+	 */
+	protected createTextClasses(name: string): ReadonlyArray<string> {
+		const
+			commonClass = `text_style_${name}`,
+			componentClasses = this.provide.elClasses({text: {style: name}});
+
+		return Object.freeze([...componentClasses, commonClass]);
+	}
 }

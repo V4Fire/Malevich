@@ -27,14 +27,14 @@
 
 			< .&__text-container v-for = s in textStyles
 				< .&__label
-					{{ s.name }}
+					{{ s.id }}
 
-				< . :class = provide.elClasses({text: {style: s.id}})
+				< . :class = createTextClasses(s.id)
 					The quick brown fox jumps over the lazy dog
 
 				< .&__text-additional
-					< .&__props[.&_style_base]
-						< p v-for = value, prop in s.style
+					< .&__props[.text_style_base]
+						< p v-for = value, prop in s
 							{{ prop }}: {{ value }}
 
 			< h1.&__header
@@ -67,7 +67,7 @@
 			< h1.&__header
 				Components
 
-			< h2.&__text[.&_style_heading4]
+			< h2.&__text[.text_style_heading4]
 				Button
 
 			< b-v4-component-demo
@@ -80,7 +80,7 @@
 				.
 					Some text
 
-			< h2.&__text[.&_style_heading3]
+			< h2.&__text[.text_style_heading3]
 				Input
 
 			< b-v4-component-demo
