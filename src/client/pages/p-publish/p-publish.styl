@@ -9,10 +9,14 @@
 @import "super/i-dynamic-page/i-dynamic-page.styl"
 
 $p = {
-
+	panelHeight: 64px
+	panelBgColor: c(white 1)
+	panelShadow: 0 -2px 2px alpha(c(grey 1), 0.2)
 }
 
 p-publish extends i-dynamic-page
+	padding-bottom $p.panelHeight
+
 	&__content
 		flex-col center
 		width 600px
@@ -44,15 +48,24 @@ p-publish extends i-dynamic-page
 		line-height 1.2
 
 	&__form
-		flex-col center
-		width 600px
-		margin-top 12px
+		display flex
 
-	&__form-title
+	&__form-component
+		display inline-block
+
+	&__control-panel
+		position fixed
+		bottom 0
+		left 0
+
 		width 100%
+		height $p.panelHeight
+		padding 16px
+		box-sizing border-box
 
-		text-align left
+		background-color $p.panelBgColor
+		box-shadow $p.panelShadow
 
-	&__commit-submit
-		align-self flex-start
-		margin-top 12px
+	&__control-panel-btn
+		& + &
+			margin-left 16px

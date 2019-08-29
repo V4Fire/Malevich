@@ -13,9 +13,6 @@ import * as ExpressTypes from 'express';
 
 import querystring = require('querystring');
 import https = require('https');
-import fs = require('fs');
-import path = require('upath');
-import prettier = require('prettier');
 import $C = require('collection.js');
 
 import parse from '../engines/figma';
@@ -121,14 +118,6 @@ async function authorize(req: Dictionary, res: ExpressTypes.Response): Promise<v
 	res.redirect('/publish');
 }
 
-async function writeDsFile(data: Dictionary): Promise<void> {
-	const
-		filePath = path.resolve(process.cwd(), 'repository', 'index.js'),
-		str = `module.exports = ${JSON.stringify(data)}`;
-
-	return fs.promises.writeFile(filePath, prettier.format(str));
-}
-
 async function getFigmaDesignSystem(file: string, token: string): Promise<CanUndef<Dictionary>> {
 	let str = '';
 
@@ -181,16 +170,14 @@ async function getFigmaDesignSystem(file: string, token: string): Promise<CanUnd
 async function getFiles(req: Dictionary, res: ExpressTypes.Response): Promise<void> {
 	const
 		fileName = <string>$C(req).get('params.file'),
-		token = <string>$C(req).get('session.figma.accessToken');
+		session = <Dictionary>req.session,
+		token = <string>$C(session).get('figma.accessToken');
 
 	if (token && fileName) {
 		const
 			data = await getFigmaDesignSystem(fileName, token);
 
-		if (data && data.designSystem) {
-			//writeDsFile(<DesignSystem>data.designSystem).catch(console.log);
-		}
-
+		(<Dictionary>session.figma).data = data;
 		res.send(data);
 		return;
 	}

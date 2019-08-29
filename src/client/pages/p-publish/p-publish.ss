@@ -27,45 +27,42 @@
 					:data = data.designSystem
 				.
 
-				{{ console.log(data.designSystem) }}
-
-		< template v-else-if = stage === 'commit'
-			< .&__content
-				< h3.&__form-title
-					Update package
-
-				< b-form &
-					:classes = provide.classes({form: true}) |
-					:dataProvider = 'publish.Git' |
-					:method = 'post' |
-					@onSubmitSuccess = router.push('/')
-				.
-					< b-input-hidden &
-						:name = 'endpoint' |
-						:value = 'commit'
+				< .&__control-panel
+					< b-form.&__form-component &
+						:classes = provide.classes({form: true}) |
+						:dataProvider = 'publish.Git' |
+						:method = 'post' |
+						@onSubmitSuccess = router.push('/')
 					.
+						< b-input-hidden &
+							:name = 'endpoint' |
+							:value = 'commit'
+						.
 
-					< b-input &
-						:name = 'message' |
-						:placeholder = 'Type a commit message' |
-						:width = 'full' |
-						:validators = [['required', {showMsg: false}]] |
-						@onValidationEnd = onValidationEnd
-					.
+						< b-input &
+							:name = 'message' |
+							:placeholder = 'Type a commit message' |
+							:validators = [['required', {showMsg: false}]] |
+							@onValidationEnd = onValidationEnd
+						.
 
-					< b-button.&__commit-submit &
-						ref = formSubmit |
-						:type = 'submit' |
-						:exterior = 'dark' |
-						:rounding = 'small' |
-						:disabled = true
+						< b-button.&__commit-submit &
+							ref = commitSubmit |
+							:type = 'submit' |
+							:exterior = 'primary' |
+							:disabled = true
+						.
+							Save changes
+
+					< b-button.&__control-panel-btn &
+						:exterior = 'light' |
+						@click = onResetChanges
 					.
-						Save changes
+						Cancel
 
 		< template v-else
 			< .&__content
 				< b-form &
-					v-once |
 					ref = files |
 					:id = dom.getId('fileForm') |
 					:method = 'get' |
@@ -85,6 +82,7 @@
 					.
 
 					< b-button &
+						v-func = false |
 						ref = formSubmit |
 						:type = 'submit' |
 						:exterior = 'dark' |

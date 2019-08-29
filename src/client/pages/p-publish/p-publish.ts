@@ -49,7 +49,9 @@ export default class pPublish<D extends object = Dictionary> extends iDynamicPag
 		const
 			{formSubmit} = this.$refs;
 
+		console.log(3230);
 		if (formSubmit) {
+			console.log(result, 1111);
 			formSubmit.setMod('disabled', !result);
 		}
 	}
@@ -61,5 +63,13 @@ export default class pPublish<D extends object = Dictionary> extends iDynamicPag
 	protected onPublishSuccess(res: Dictionary): void {
 		this.field.set('data', res);
 		this.stage = 'preview';
+	}
+
+	/**
+	 * Handler: on reset changes button click
+	 */
+	protected async onResetChanges(): Promise<void> {
+		await this.get({endpoint: 'reset'});
+		this.stage = undefined;
 	}
 }
