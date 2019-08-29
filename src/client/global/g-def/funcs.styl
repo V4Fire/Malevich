@@ -15,20 +15,20 @@
  * @param {boolean=} [$isVars]
  */
 ds-styles($field, $isVars = false)
-	$vars = getDSOptions($field, $isVars)
+	$values = getDSOptions($field, $isVars)
 
 	if $field == "rounding"
-		for $key, $val in $vars
+		for $key, $val in $values
 			&_size_{$key}
 				border-radius $val
 
 	if $field == "colors"
-		for $key, $val in $vars
+		for $key, $val in $values
 			for $option, $i in $val
 				&_{$key}_{$i}
 					color type($option) == "string" ? convert($option) : $option
 
 	if $field == "text"
-		for $key, $val in $vars
+		for $key, $val in $values
 			&_style_{$key}
 				interpolate-props($val)
