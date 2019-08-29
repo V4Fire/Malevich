@@ -9,10 +9,19 @@
 @import "@super/global/g-def/g-def.styl"
 
 .color
-	ds-styles-vars(colors)
+	ds-styles(colors)
+
+	&_diff_true ^[0]
+		ds-styles(colors, true)
 
 .text
-	ds-styles-vars(text)
+	ds-styles(text)
+
+	&_diff_true ^[0]
+		ds-styles(text, true)
 
 .rounding
-	ds-styles-vars(rounding)
+	ds-styles(rounding)
+
+	&_diff_true ^[0]
+		ds-styles(rounding, true)

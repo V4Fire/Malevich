@@ -8,8 +8,14 @@
 
 @import "@super/global/g-def/funcs.styl"
 
-ds-styles-vars($field)
-	$vars = getDSOptions($field, true)
+/**
+ * Generates styles for common Design System fields
+ *
+ * @param {string} $field
+ * @param {boolean=} [$isVars]
+ */
+ds-styles($field, $isVars = false)
+	$vars = getDSOptions($field, $isVars)
 
 	if $field == "rounding"
 		for $key, $val in $vars
@@ -18,9 +24,9 @@ ds-styles-vars($field)
 
 	if $field == "colors"
 		for $key, $val in $vars
-			for $index, $option in $val
-				&_{$key}_{$index}
-					color $option
+			for $option, $i in $val
+				&_{$key}_{$i}
+					color type($option) == "string" ? convert($option) : $option
 
 	if $field == "text"
 		for $key, $val in $vars
