@@ -57,10 +57,11 @@ export default {
 				if (layer) {
 					const
 						borderColor = $C(layer).get('strokes.0'),
-						backgroundFill = $C(layer).get('fills.0');
+						backgroundFill = $C(layer).get('fills.0'),
+						bgBox = el.absoluteBoundingBox;
 
-					el.absoluteBoundingBox.x -= layer.strokeWeight;
-					el.absoluteBoundingBox.y -= layer.strokeWeight;
+					bgBox.x += layer.strokeWeight;
+					bgBox.y += layer.strokeWeight;
 
 					Object.assign(res, {
 						border: `${layer.strokeWeight.px} solid ${mixins.calcColor(borderColor)}`,
