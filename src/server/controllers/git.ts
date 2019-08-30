@@ -46,13 +46,13 @@ export default {
 
 async function push(req: ExpressTypes.Request, res: ExpressTypes.Response): Promise<void> {
 	const
-		sessionData = $C(req).get('session.figma.data');
+		sessionDS = $C(req).get('session.figma.data.designSystem');
 
-	if (req.body && req.body.message && sessionData) {
+	if (req.body && req.body.message && sessionDS) {
 		let
 			next = 0;
 
-		await writeDsFile(sessionData);
+		await writeDsFile(sessionDS);
 
 		await git.tags(['list']).then((tags) => {
 			const
@@ -72,9 +72,15 @@ async function push(req: ExpressTypes.Request, res: ExpressTypes.Response): Prom
 
 		// @ts-ignore
 		req.session.destroy();
+		res.send({status: 'ok'});
 	}
 
-	res.send({error: {name: 'Please enter the commit message for your changes'}});
+	const
+		errorsMsg = !req.body || !req.body.message ?
+			'Please enter the commit message for your changes' :
+			'Session has no Design System';
+
+	res.send({error: {name: errorsMsg}});
 }
 
 async function reset(req: ExpressTypes.Request, res: ExpressTypes.Response): Promise<void> {

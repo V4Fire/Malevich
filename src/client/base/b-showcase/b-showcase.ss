@@ -45,7 +45,9 @@
 					< .&__text-additional
 						< .&__props[.text_style_base]
 							< p v-for = v, prop in diff.text[key]
-								{{ prop }}: {{ v }}
+								{{ prop }}:
+								< span :class = provide.elClasses({propValue: {highlight: textStyles[key][prop] !== v}})
+									{{ v }}
 
 			< h1.&__header
 				Colors

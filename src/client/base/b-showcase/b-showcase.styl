@@ -15,6 +15,7 @@ $p = {
 	labelColor: c(grey 3)
 	additionalColor: c(grey 2)
 	additionalBorderColor: c(grey 6)
+	highlightColor: c(yellow 1)
 	rounding: getDSOptions("rounding.small")
 }
 
@@ -84,3 +85,6 @@ b-showcase extends i-block
 
 	&__rounding-wrap
 		flex-row flex-start center
+
+	&__prop-value_highlight_true
+		background-color $p.highlightColor

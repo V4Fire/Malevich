@@ -32,7 +32,7 @@
 						:classes = provide.classes({form: true}) |
 						:dataProvider = 'publish.Git' |
 						:method = 'post' |
-						@onSubmitSuccess = router.push('/')
+						@onSubmitSuccess = onCommitFormSubmitSuccess
 					.
 						< b-input-hidden &
 							:name = 'endpoint' |
@@ -47,7 +47,7 @@
 						.
 
 						< b-button.&__commit-submit &
-							ref = commitSubmit |
+							ref = formSubmit |
 							:type = 'submit' |
 							:exterior = 'primary' |
 							:disabled = true

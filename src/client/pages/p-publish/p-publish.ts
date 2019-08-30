@@ -70,4 +70,14 @@ export default class pPublish<D extends object = Dictionary> extends iDynamicPag
 		await this.get({endpoint: 'reset'});
 		this.stage = undefined;
 	}
+
+	/**
+	 * Handler: on commit change form success
+	 * @param res
+	 */
+	protected onCommitFormSubmitSuccess(res: Dictionary): void {
+		if (!res.error) {
+			this.router.push('/').catch(stderr);
+		}
+	}
 }
