@@ -15,7 +15,7 @@ $p = {
 	labelColor: c(grey 3)
 	additionalColor: c(grey 2)
 	additionalBorderColor: c(grey 6)
-	highlightColor: c(#FFF300)
+	highlightColor: c(yellow 1)
 	rounding: getDSOptions("rounding.small")
 }
 
@@ -45,6 +45,13 @@ b-showcase extends i-block
 		display table-cell
 		padding 8px
 		width 50%
+
+		&_old-version_true
+			opacity 0.4
+			transition opacity 0.2s ease-in
+
+			&:hover
+				opacity 1
 
 	&__text-additional
 		padding 16px

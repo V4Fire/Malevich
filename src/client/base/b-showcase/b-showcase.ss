@@ -27,15 +27,19 @@
 					< .&__label
 						{{ key }}
 
-					< . :class = createTextClasses(key)
-						The quick brown fox jumps over the lazy dog
+					< .text[.&_diff_true]
+						< . :class = createTextClasses(key)
+							The quick brown fox jumps over the lazy dog
 
 					< .&__text-additional
 						< .&__props[.text_style_base]
 							< p v-for = v, prop in value
 								{{ prop }}: {{ v }}
 
-				< .&__container[.&_type_text] v-if = field.get('diff.text.' + key)
+				< . &
+					v-if = field.get('diff.text.' + key) |
+					:class = provide.elClasses({container: {type: 'text', oldVersion: true}})
+				.
 					< .&__label
 						{{ key }}
 
@@ -46,6 +50,7 @@
 						< .&__props[.text_style_base]
 							< p v-for = v, prop in diff.text[key]
 								{{ prop }}:
+
 								< span :class = provide.elClasses({propValue: {highlight: textStyles[key][prop] !== v}})
 									{{ v }}
 
@@ -64,7 +69,7 @@
 
 								< .&__color-description
 									< .&__color-name
-										{{ name + '/' + index }}
+										{{ name + '/' + (index + 1) }}
 
 									< .&__color-value
 										{{ c }}
@@ -72,18 +77,38 @@
 				< .&__container[.&_type_colors]
 					+= self.colors('colors')
 
-				< .&__container[.&_type_colors] v-if = field.get('diff.colors')
+				< . &
+					v-if = field.get('diff.colors') |
+					:class = provide.elClasses({container: {type: 'colors', oldVersion: true}})
+				.
 					+= self.colors('diff.colors')
 
 			< h1.&__header
 				Rounding
 
 			< .&__row
-				< .&__rounding-wrap v-for = val, key in rounding
-					< .&__rounding :style = {borderRadius: val}
+				< .&__container
+					< .&__rounding-wrap v-for = val, key in rounding
+						< .&__rounding :style = {borderRadius: val}
 
-					< .&__rounding-name
-						{{ key }}
+						< .&__rounding-name
+							< b
+								{{ key }}:
+							{{ val }}
+
+				< . &
+					v-if = field.get('diff.rounding') |
+					:class = provide.elClasses({container: {type: 'colors', oldVersion: true}})
+				.
+					< .&__rounding-wrap v-for = val, key in field.get('diff.rounding')
+						< .&__rounding :style = {borderRadius: val}
+
+						< .&__rounding-name
+							< b
+								{{ key }}:
+
+							< span :class = provide.elClasses({propValue: {highlight: true}})
+								{{ val }}
 
 			< h1.&__header
 				Components
@@ -97,6 +122,24 @@
 						< b-button &
 							v-func = false |
 							slot-scope = {ctx} |
+							:exterior = 'primary' |
+							@statusReady = ctx.debug |
+							${defAttrs}
+						.
+							Some text
+
+				< . &
+					v-if = field.get('diff.components.bButton') |
+					:class = provide.elClasses({container: {type: 'colors', oldVersion: true}})
+				.
+					< h2.&__text[.text_style_heading4]
+						Button
+
+					< b-v4-component-demo
+						< b-button &
+							v-func = false |
+							slot-scope = {ctx} |
+							:diff = true |
 							:exterior = 'primary' |
 							@statusReady = ctx.debug |
 							${defAttrs}

@@ -59,6 +59,9 @@ export default {
 						borderColor = $C(layer).get('strokes.0'),
 						backgroundFill = $C(layer).get('fills.0');
 
+					el.absoluteBoundingBox.x -= layer.strokeWeight;
+					el.absoluteBoundingBox.y -= layer.strokeWeight;
+
 					Object.assign(res, {
 						border: `${layer.strokeWeight.px} solid ${mixins.calcColor(borderColor)}`,
 						backgroundColor: mixins.calcColor(backgroundFill)
@@ -71,6 +74,7 @@ export default {
 
 		return res;
 	},
+
 	size(el: Figma.Node): Dictionary {
 		const
 			placeholder = $C(el.children).one.get((c) => c.name === 'placeholder'),

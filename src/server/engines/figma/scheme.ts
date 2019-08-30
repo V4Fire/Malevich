@@ -154,7 +154,7 @@ export function writeComponent(name: string, el: Figma.Node): void {
 }
 
 /**
- * Check diff changes and writes to storage
+ * Check diff changes and writes old value to storage
  *
  * @param pathToField
  * @param value
@@ -164,20 +164,10 @@ export function setDiff(pathToField: string, value: unknown): void {
 		latestStableDS = require(path.resolve(process.cwd(), 'repository')),
 		latest = $C(latestStableDS).get(pathToField);
 
-	let
-		result;
-
 	if (latest) {
 		if (!Object.fastCompare(latest, value)) {
-			result = latest;
+			h.set(pathToField, latest, DIFFS);
 		}
-
-	} else {
-		result = value;
-	}
-
-	if (result) {
-		h.set(pathToField, result, DIFFS);
 	}
 }
 
@@ -220,6 +210,11 @@ function storeBorderRadius<T extends Figma.NodeType>(
 	parent: Figma.Node
 ): void {
 	if (Object.isNumber(rect.cornerRadius) && DS.rounding) {
-		DS.rounding[parent.name.split('/')[1]] = <string>rect.cornerRadius.px;
+		const
+			name = parent.name.split('/')[1],
+			value = <string>rect.cornerRadius.px;
+
+		DS.rounding[name] = value;
+		setDiff(`rounding.${name}`, value);
 	}
 }

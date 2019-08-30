@@ -6,7 +6,9 @@
  * https://github.com/V4Fire/Malevich/blob/master/LICENSE
  */
 
-import iBlock, { component, system, prop } from 'super/i-block/i-block';
+import iBlock, { component, system, prop, watch } from 'super/i-block/i-block';
+import $C = require('collection.js');
+
 export * from 'super/i-dynamic-page/i-dynamic-page';
 
 @component()
@@ -28,7 +30,7 @@ export default class bShowcase extends iBlock {
 	protected dataStore!: DesignSystem;
 
 	/**
-	 * Data
+	 * Data for showing
 	 */
 	protected get data(): DesignSystem {
 		return this.dataStore;
@@ -67,5 +69,31 @@ export default class bShowcase extends iBlock {
 			componentClasses = this.provide.elClasses({text: {style: name}});
 
 		return Object.freeze([...componentClasses, commonClass]);
+	}
+
+	/**
+	 * Writes values into css variables
+	 *
+	 * @param data
+	 * @param [path]
+	 */
+	protected setVariables(data: unknown, path?: string): void {
+		$C(data).forEach((el, key) => {
+			if (Object.isObject(el)) {
+				return this.setVariables(el, `${path ? `${path}.${key}` : key}`);
+			}
+
+			if (path) {
+				document.documentElement.style.setProperty(`--${path.split('.').join('-')}-${key}`, el);
+			}
+		});
+	}
+
+	/**
+	 * Runs css variable setter
+	 */
+	@watch({field: 'diff', immediate: true})
+	protected initializeDiff(): void {
+		this.setVariables(this.data);
 	}
 }

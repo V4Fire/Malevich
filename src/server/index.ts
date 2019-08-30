@@ -40,6 +40,7 @@ if (needInit && DS_PACKAGE) {
 		.catch(console.log);
 
 } else {
+	git.reset('hard').catch(console.log);
 	git.pull().catch(console.log);
 }
 
@@ -52,7 +53,7 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(session({
 	secret: process.env.SESSION_SECRET,
-	resave: true,
+	resave: false,
 	saveUninitialized: false,
 	cookie: {
 		maxAge: 60000
