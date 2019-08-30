@@ -99,7 +99,7 @@ export default {
 		return {
 			...result,
 			...simpleSize(el),
-			placeholderStyle: placeholder && $C(RAW.styles).get(`${placeholder.styles.text}.name`),
+			placeholderStyle: placeholder && $C(RAW.styles).get(`${placeholder.styles.text}.name`)
 		};
 	},
 
