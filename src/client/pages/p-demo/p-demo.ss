@@ -15,4 +15,4 @@
 	- block body
 		+= self.getTpl('b-header/')()
 
-		< b-showcase
+		< b-showcase :data = currentDesignSystem

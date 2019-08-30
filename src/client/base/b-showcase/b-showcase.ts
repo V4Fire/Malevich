@@ -7,7 +7,6 @@
  */
 
 import iBlock, { component, system, prop } from 'super/i-block/i-block';
-
 export * from 'super/i-dynamic-page/i-dynamic-page';
 
 @component()
