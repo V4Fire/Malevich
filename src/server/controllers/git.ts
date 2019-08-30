@@ -13,6 +13,7 @@ import fs = require('fs');
 import path = require('upath');
 import prettier = require('prettier');
 import gitPromise = require('simple-git/promise');
+import $C = require('collection.js');
 
 const
 	dsRepoLocalPath = path.resolve(process.cwd(), 'repository');

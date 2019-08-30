@@ -49,9 +49,7 @@ export default class pPublish<D extends object = Dictionary> extends iDynamicPag
 		const
 			{formSubmit} = this.$refs;
 
-		console.log(3230);
 		if (formSubmit) {
-			console.log(result, 1111);
 			formSubmit.setMod('disabled', !result);
 		}
 	}

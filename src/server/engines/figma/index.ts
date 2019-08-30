@@ -169,7 +169,7 @@ function parseNode(data: Figma.Node, t: PageType, name: string): void {
 								RAW.data[c.id].style
 							) {
 								h.set(chunks.join(''), RAW.data[c.id].style, DS.text);
-								setDiff(chunks.join(''), <Dictionary>RAW.data[c.id].style);
+								setDiff(`text.${chunks.join('')}`, <Dictionary>RAW.data[c.id].style);
 							}
 						}
 					});
