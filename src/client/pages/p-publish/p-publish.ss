@@ -42,6 +42,7 @@
 						< b-input &
 							:name = 'message' |
 							:placeholder = 'Type a commit message' |
+							v-func = false |
 							:validators = [['required', {showMsg: false}]] |
 							@onValidationEnd = onValidationEnd
 						.

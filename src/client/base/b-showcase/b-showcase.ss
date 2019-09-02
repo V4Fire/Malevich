@@ -12,12 +12,6 @@
 
 - template index() extends ['i-block'].index
 	- block body
-		: defAttrs = { &
-			':info': "'Some info text'",
-			':error': "'Some error text'",
-			':mods': '{showInfo: false, showError: false}'
-		} .
-
 		< main.&__content
 			< h1.&__header
 				Typography
@@ -113,49 +107,35 @@
 			< h1.&__header
 				Components
 
-			< .&__row
+			< .&__row v-for = b in blockNames && !blackList.has(b)
 				< .&__container
 					< h2.&__text[.text_style_heading4]
-						Button
+						{{ b.replace('b-', '').toUpperCase() }}
 
 					< b-v4-component-demo
-						< b-button &
+						< component &
 							v-func = false |
 							slot-scope = {ctx} |
-							:exterior = 'primary' |
-							@statusReady = ctx.debug |
-							${defAttrs}
+							:is = b |
+							:v-attrs = blockAttrs[b] |
+							@statusReady = ctx.debug
 						.
 							Some text
 
 				< . &
-					v-if = field.get('diff.components.bButton') |
-					:class = provide.elClasses({container: {type: 'colors', oldVersion: true}})
+					v-if = field.get('diff.components.' + b.camelize()) |
+					:class = provide.elClasses({container: {type: 'component', oldVersion: true}})
 				.
 					< h2.&__text[.text_style_heading4]
-						Button
+						{{ b.replace('b-', '').toUpperCase() }}
 
 					< b-v4-component-demo
-						< b-button &
+						< component &
 							v-func = false |
 							slot-scope = {ctx} |
+							:is = b |
 							:diff = true |
-							:exterior = 'primary' |
-							@statusReady = ctx.debug |
-							${defAttrs}
+							:v-attrs = blockAttrs[b] |
+							@statusReady = ctx.debug
 						.
 							Some text
-
-			< .&__row
-				< .&__container
-					< h2.&__text[.text_style_heading3]
-						Input
-
-					< b-v4-component-demo
-						< b-input &
-							v-func = false |
-							slot-scope = {ctx} |
-							:placeholder = 'Input here...' |
-							@statusReady = ctx.debug |
-							${defAttrs}
-						.
