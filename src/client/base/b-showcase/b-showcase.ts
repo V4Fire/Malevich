@@ -111,7 +111,7 @@ export default class bShowcase extends iBlock {
 	 * @param data
 	 * @param [path]
 	 */
-	protected setVariables(data: unknown, path?: string): void {
+	protected setVariables<T extends Dictionary>(data: T, path?: string): void {
 		Object.forEach(<Dictionary>data, (el, key) => {
 			if (Object.isObject(el)) {
 				return this.setVariables(el, `${path ? `${path}.${key}` : key}`);
