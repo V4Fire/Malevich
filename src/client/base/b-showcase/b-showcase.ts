@@ -7,7 +7,6 @@
  */
 
 import iBlock, { component, system, prop, watch } from 'super/i-block/i-block';
-import $C = require('collection.js');
 
 export * from 'super/i-dynamic-page/i-dynamic-page';
 
@@ -113,13 +112,13 @@ export default class bShowcase extends iBlock {
 	 * @param [path]
 	 */
 	protected setVariables(data: unknown, path?: string): void {
-		$C(data).forEach((el, key) => {
+		Object.forEach(<Dictionary>data, (el, key) => {
 			if (Object.isObject(el)) {
 				return this.setVariables(el, `${path ? `${path}.${key}` : key}`);
 			}
 
 			if (path) {
-				document.documentElement.style.setProperty(`--${path.split('.').join('-')}-${key}`, el);
+				document.documentElement.style.setProperty(`--${path.split('.').join('-')}-${key}`, <string>el);
 			}
 		});
 	}
