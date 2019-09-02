@@ -107,10 +107,13 @@
 			< h1.&__header
 				Components
 
-			< .&__row v-for = b in blockNames && !blackList.has(b)
+			< .&__row &
+				v-for = b in blockNames |
+				v-if = !blackList.has(b)
+			.
 				< .&__container
 					< h2.&__text[.text_style_heading4]
-						{{ b.replace('b-', '').toUpperCase() }}
+						{{ b.replace('b-', '').camelize() }}
 
 					< b-v4-component-demo
 						< component &
