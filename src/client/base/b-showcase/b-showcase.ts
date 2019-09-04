@@ -35,21 +35,15 @@ export default class bShowcase extends iBlock {
 	protected dataStore!: DesignSystem;
 
 	/**
-	 * Available blocks
-	 */
-	@system()
-	protected blockNames: string[] = BLOCK_NAMES || [];
-
-	/**
 	 * Additional attributes for components
 	 */
 	@system()
 	protected blockAttrs: Dictionary = {
-		'b-button': {
+		bButton: {
 			exterior: 'primary'
 		},
 
-		'b-input': {
+		bInput: {
 			info: 'Some info text',
 			error: 'Some error text',
 			mods: {showInfo: false, showError: false},
@@ -62,6 +56,16 @@ export default class bShowcase extends iBlock {
 	 */
 	@system()
 	protected blackList: Set<string> = new Set(BLACK_LIST);
+
+	/**
+	 * Names of blocks with styles for showing
+	 */
+	protected get blockNames(): string[] {
+		const
+			{components = {}} = this.data;
+
+		return Object.keys(components);
+	}
 
 	/**
 	 * Data for showing

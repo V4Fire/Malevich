@@ -113,30 +113,30 @@
 			.
 				< .&__container
 					< h2.&__text[.text_style_heading4]
-						{{ b.replace('b-', '').camelize() }}
+						{{ b }}
 
 					< b-v4-component-demo
 						< component &
 							v-func = false |
 							slot-scope = {ctx} |
-							:is = b |
+							:is = b.dasherize() |
 							:v-attrs = blockAttrs[b] |
 							@statusReady = ctx.debug
 						.
 							Some text
 
 				< . &
-					v-if = field.get('diff.components.' + b.camelize()) |
+					v-if = field.get('diff.components.' + b) |
 					:class = provide.elClasses({container: {type: 'component', oldVersion: true}})
 				.
 					< h2.&__text[.text_style_heading4]
-						{{ b.replace('b-', '').toUpperCase() }}
+						{{ b }}
 
 					< b-v4-component-demo
 						< component &
 							v-func = false |
 							slot-scope = {ctx} |
-							:is = b |
+							:is = b.dasherize() |
 							:diff = true |
 							:v-attrs = blockAttrs[b] |
 							@statusReady = ctx.debug
