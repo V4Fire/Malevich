@@ -7,14 +7,7 @@
  */
 
 import iBlock, { component, system, prop, watch } from 'super/i-block/i-block';
-
 export * from 'super/i-dynamic-page/i-dynamic-page';
-
-const BLACK_LIST = [
-	'b-v4-component-demo', 'b-form', 'b-showcase', 'b-dynamic-page', 'b-skeleton', 'b-progress-icon',
-	'b-header', 'b-remote-provider', 'b-window-form', 'b-option', 'b-router', 'b-input-hidden',
-	'b-input-birthday', 'b-input-number', 'b-input-time', 'b-notifier', 'b-up',  'b-component-renderer', 'b-progress'
-];
 
 @component()
 export default class bShowcase extends iBlock {
@@ -50,12 +43,6 @@ export default class bShowcase extends iBlock {
 			placeholder: 'Input text here...'
 		}
 	};
-
-	/**
-	 * Components black list for hiding
-	 */
-	@system()
-	protected blackList: Set<string> = new Set(BLACK_LIST);
 
 	/**
 	 * Names of blocks with styles for showing
@@ -111,26 +98,39 @@ export default class bShowcase extends iBlock {
 
 	/**
 	 * Writes values into css variables
-	 *
 	 * @param data
-	 * @param [path]
 	 */
-	protected setVariables<T extends Dictionary>(data: T, path?: string): void {
-		Object.forEach(<Dictionary>data, (el, key) => {
-			if (Object.isObject(el)) {
-				return this.setVariables(el, `${path ? `${path}.${key}` : key}`);
-			}
+	protected setVariables<T extends Dictionary>(data: T): void {
+		const rec = (d, path?: string) => {
+			Object.forEach(<Dictionary>d, (el, key) => {
+				if (Object.isObject(el)) {
+					return rec(el, `${path ? `${path}.${key}` : key}`);
+				}
 
-			if (path) {
-				document.documentElement.style.setProperty(`--${path.split('.').join('-')}-${key}`, <string>el);
-			}
-		});
+				if (path) {
+					const
+						{style} = document.documentElement,
+						variable = `--${path.split('.').join('-')}-${key}`;
+
+					if (this.diff) {
+						const
+							diff = this.field.get(`${path}.${key}`, this.diff);
+
+						style.setProperty(`${variable}-diff`, <string>(diff || el));
+					}
+
+					style.setProperty(variable, <string>el);
+				}
+			});
+		};
+
+		rec(data);
 	}
 
 	/**
-	 * Runs css variable setter
+	 * Runs css variable setter for components data
 	 */
-	@watch({field: 'diff', immediate: true})
+	@watch({field: 'data', immediate: true})
 	protected initializeDiff(): void {
 		this.setVariables(this.data);
 	}
