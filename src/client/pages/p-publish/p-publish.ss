@@ -40,9 +40,9 @@
 						.
 
 						< b-input &
-							:name = 'message' |
-							:placeholder = 'Type a commit message' |
 							v-func = false |
+							:key = :name, 'message' |
+							:placeholder = 'Type a commit message' |
 							:validators = [['required', {showMsg: false}]] |
 							@onValidationEnd = onValidationEnd
 						.
@@ -64,10 +64,8 @@
 		< template v-else
 			< .&__content
 				< b-form &
-					ref = files |
-					:id = dom.getId('fileForm') |
-					:method = 'get' |
 					:dataProvider = 'convert.Adapters' |
+					:method = 'get' |
 					@onSubmitSuccess = onPublishSuccess
 				.
 					< b-input-hidden &
@@ -76,7 +74,8 @@
 					.
 
 					< b-input &
-						:name = 'file' |
+						v-func = false |
+						:key = :name, 'file' |
 						:validators = [['required', {showMsg: false}]] |
 						:placeholder = 'Enter a file key' |
 						@onValidationEnd = onValidationEnd
