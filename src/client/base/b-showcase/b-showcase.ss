@@ -129,7 +129,7 @@
 					< h2.&__text[.text_style_heading4]
 						{{ b }}
 
-					< b-v4-component-demo
+					< b-v4-component-demo :highlight = highlightedMods[b]
 						< component &
 							v-func = false |
 							slot-scope = {ctx} |

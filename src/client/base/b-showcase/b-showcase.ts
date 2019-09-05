@@ -28,6 +28,13 @@ export default class bShowcase extends iBlock {
 	protected dataStore!: DesignSystem;
 
 	/**
+	 * Mods, that needs to highlight into the interface
+	 * (grouped by component name)
+	 */
+	@system()
+	protected highlightedMods: Dictionary = {};
+
+	/**
 	 * Additional attributes for components
 	 */
 	@system()
@@ -131,7 +138,38 @@ export default class bShowcase extends iBlock {
 	 * Runs css variable setter for components data
 	 */
 	@watch({field: 'data', immediate: true})
-	protected initializeDiff(): void {
+	protected initializeVariables(): void {
 		this.setVariables(this.data);
+	}
+
+	/**
+	 * Extracts mods, that needs to highlighting in the interface
+	 */
+	@watch({field: 'diff', immediate: true})
+	protected initializeHighlights(): void {
+		const
+			components = <Dictionary>this.field.get('diff.components');
+
+		if (components) {
+			Object.forEach(components, (_, name: string) => {
+				const
+					mods = this.field.get(`${name}.mods`, components);
+
+				if (mods) {
+					const
+						compMods = this.highlightedMods[name] = {};
+
+					Object.forEach(mods, (value, modName: string) => {
+						compMods[modName] = {};
+
+						if (Object.isObject(value)) {
+							Object.keys(value).forEach((modValue) => {
+								compMods[modName][modValue] = true;
+							});
+						}
+					});
+				}
+			});
+		}
 	}
 }

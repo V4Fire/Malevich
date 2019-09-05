@@ -20,9 +20,7 @@ module.exports = config.createConfig({dirs: [__dirname, 'client']}, {
 			...super.runtime(),
 
 			'ds-diff': true,
-			'ds-vars': true,
-
-			'blockNames': true
+			'ds-vars': true
 		};
 	},
 
