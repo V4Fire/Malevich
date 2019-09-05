@@ -11,9 +11,15 @@ export * from 'super/i-dynamic-page/i-dynamic-page';
 
 @component()
 export default class bShowcase extends iBlock {
+	/**
+	 * Difference between data and stable Design system
+	 */
 	@prop({type: Object, required: false})
 	diff?: DesignSystem;
 
+	/**
+	 * Design System data for showing
+	 */
 	@prop({type: Object, required: false})
 	dataProp?: DesignSystem;
 
