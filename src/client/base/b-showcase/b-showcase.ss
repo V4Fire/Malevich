@@ -45,7 +45,7 @@
 							< p v-for = v, prop in diff.text[key]
 								{{ prop }}:
 
-								< span :class = provide.elClasses({propValue: {highlight: textStyles[key][prop] !== v}})
+								< span :class = provide.elClasses({propValue: {highlighted: textStyles[key][prop] !== v}})
 									{{ v }}
 
 			< h1.&__header
@@ -101,7 +101,7 @@
 							< b
 								{{ key }}:
 
-							< span :class = provide.elClasses({propValue: {highlight: true}})
+							< span :class = provide.elClasses({propValue: {highlighted: true}})
 								{{ val }}
 
 			< h1.&__header
@@ -117,7 +117,7 @@
 							v-func = false |
 							slot-scope = {ctx} |
 							:is = b.dasherize() |
-							:diff = false |
+							:diff = field.get('diff') ? false : undefined |
 							:v-attrs = blockAttrs[b] |
 							@statusReady = ctx.debug
 						.
@@ -130,7 +130,7 @@
 					< h2.&__text[.text_style_heading4]
 						{{ b }}
 
-					< b-v4-component-demo :highlight = highlightedMods[b]
+					< b-v4-component-demo :highlighting = highlightedMods[b]
 						< component &
 							v-func = false |
 							slot-scope = {ctx} |
