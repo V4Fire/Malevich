@@ -19,8 +19,7 @@ module.exports = config.createConfig({dirs: [__dirname, 'client']}, {
 		return {
 			...super.runtime(),
 
-			'ds-diff': true,
-			'ds-vars': true
+			'ds-diff': true
 		};
 	},
 

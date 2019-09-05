@@ -117,6 +117,7 @@
 							v-func = false |
 							slot-scope = {ctx} |
 							:is = b.dasherize() |
+							:diff = false |
 							:v-attrs = blockAttrs[b] |
 							@statusReady = ctx.debug
 						.
