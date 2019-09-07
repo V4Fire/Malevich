@@ -20,10 +20,13 @@ export const DIFFS = {};
 export default {
 	text: {
 		style: {
+			// Store field as is
 			fontFamily: true,
 			fontWeight: true,
+
 			fontSize: ({fontSize}) => fontSize.px,
 			letterSpacing: ({letterSpacing}) => letterSpacing.px,
+
 			textDecoration: mixins.textDecoration,
 			lineHeightPx: mixins.lineHeight,
 			textCase: mixins.textTransform
@@ -31,9 +34,6 @@ export default {
 	},
 
 	radius: storeBorderRadius,
-
-	// For group with "@Colors" name.
-	// forEach by children and use the calcColor mixin for it's child's "fills" color
 	color: storeColor
 };
 
@@ -43,7 +43,7 @@ export default {
  * @param name
  * @param el
  */
-export function writeComponent(name: string, el: Figma.Node): void {
+export function storeComponent(name: string, el: Figma.Node): void {
 	const
 		[prefix, ...componentArgs] = el.name.split('/');
 
@@ -194,10 +194,7 @@ export function storeTextStyle(name: string, style: Dictionary): void {
  * @param color
  * @param layer
  */
-function storeColor<T extends Figma.NodeType>(
-	{color}: {color: Figma.Color},
-	layer: Figma.Node
-): string {
+function storeColor({color}: {color: Figma.Color}, layer: Figma.Node): string {
 	if (!DS.colors) {
 		DS.colors = {};
 	}
@@ -229,9 +226,7 @@ function storeColor<T extends Figma.NodeType>(
  * Stores border radius from api rectangle
  * @param layer
  */
-function storeBorderRadius<T extends Figma.NodeType>(
-	layer: Figma.Node
-): CanUndef<string> {
+function storeBorderRadius(layer: Figma.Node): CanUndef<string> {
 	if (Object.isNumber(layer.cornerRadius)) {
 		if (!DS.rounding) {
 			DS.rounding = {};

@@ -8,7 +8,7 @@
 
 import $C = require('collection.js');
 
-import { DS, DIFFS, writeComponent } from './scheme';
+import { DS, DIFFS, storeComponent } from './scheme';
 import converters, { RAW, ERRORS, WARNINGS } from './converters';
 
 const
@@ -81,7 +81,7 @@ function parseNode(data: Figma.Node, name: string): void {
 		isComponent = master.test(data.name) || (BLOCK_CHECKER.test(data.name) && data.type === 'COMPONENT');
 
 	if (isComponent) {
-		writeComponent(name, data);
+		storeComponent(name, data);
 		return;
 	}
 
@@ -94,7 +94,7 @@ function parseNode(data: Figma.Node, name: string): void {
 			parseNode(c, name);
 
 		} else {
-			writeComponent(name, c);
+			storeComponent(name, c);
 		}
 	});
 }
