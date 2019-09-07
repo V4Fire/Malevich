@@ -73,7 +73,7 @@ export default {
 	size: simpleSize,
 
 	hover: buttonState,
-	focus: buttonState,
+	focused: buttonState,
 	active: buttonState,
 	disabled: buttonState,
 

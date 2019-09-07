@@ -146,6 +146,6 @@ export default {
 		};
 	},
 
-	focus: (el: Figma.Node) => ({true: borderedBlockState(el)}),
+	focused: (el: Figma.Node) => ({true: borderedBlockState(el)}),
 	valid: (el: Figma.Node) => validState(el, 'bInput')
 };

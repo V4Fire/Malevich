@@ -86,7 +86,7 @@ export default {
 		return common;
 	},
 
-	focus: (el: Figma.Node) => checkboxCommon(el.children),
+	focused: (el: Figma.Node) => checkboxCommon(el.children),
 	disabled: (el: Figma.Node) => checkboxCommon(el.children),
 	valid: (el: Figma.Node) => validState(el, 'bCheckbox', 'checkerBack'),
 	exterior(el: Figma.Node): Dictionary {
