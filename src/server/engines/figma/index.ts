@@ -8,9 +8,8 @@
 
 import $C = require('collection.js');
 
-import scheme, { DS, DIFFS, setDiff, writeComponent } from './scheme';
-import { RAW, ERRORS, WARNINGS } from './converters';
-import * as h from './helpers';
+import { DS, DIFFS, writeComponent } from './scheme';
+import converters, { RAW, ERRORS, WARNINGS } from './converters';
 
 const
 	BLOCK_CHECKER = /^b([A-Z].*)/;
@@ -55,22 +54,24 @@ export default function (data: Figma.File): {
  */
 function findSubjects(canvas: Figma.Node): void {
 	const
-		i = /^i([A-Z].*)/;
+		name = canvas.name.toLowerCase();
 
-	$C(canvas.children).forEach((p) => {
-		const
-			matchB = canvas.name.match(BLOCK_CHECKER),
-			matchI = canvas.name.match(i);
+	if (Object.isFunction(converters.common[name])) {
+		converters.common[name](canvas);
+		return;
+	}
 
-		if (matchI && matchI[1] || matchB && matchB[1]) {
-			parseNode(p, matchI ? 'interface' : 'block', matchI ? matchI[0] : matchB[0]);
-		}
-	});
+	const
+		block = canvas.name.match(BLOCK_CHECKER);
+
+	if (block) {
+		$C(canvas.children).forEach((p) => {
+			parseNode(p, block ? block[0] : canvas.name);
+		});
+	}
 }
 
-type PageType = 'interface' | 'block';
-
-function parseNode(data: Figma.Node, t: PageType, name: string): void {
+function parseNode(data: Figma.Node, name: string): void {
 	if (/^!/.test(data.name)) {
 		return;
 	}
@@ -79,126 +80,21 @@ function parseNode(data: Figma.Node, t: PageType, name: string): void {
 		master = /^Master(?:$|\/)/,
 		isComponent = master.test(data.name) || (BLOCK_CHECKER.test(data.name) && data.type === 'COMPONENT');
 
-	if (t === 'block' && isComponent) {
+	if (isComponent) {
 		writeComponent(name, data);
 		return;
 	}
 
 	$C(data.children).forEach((c) => {
-		if (t === 'interface') {
-			switch (c.type) {
-				case 'COMPONENT':
-				case 'INSTANCE':
-				case 'GROUP':
-					if (h.checkFieldName(c.name, '@Color') && c.name.split('/').length === 3) {
-						const
-							rect = c.children[0];
-
-						if (!rect) {
-							ERRORS.push({
-								name: 'No color rectangle',
-								description: `${c.name} has no color definition rectangle`
-							});
-
-							break;
-						}
-
-						RAW.data[c.id] = {
-							type: c.type,
-							name: c.name,
-							value: <string>scheme.color(rect.fills[0], c)
-						};
-
-						break;
-					}
-
-					parseNode(c, t, name);
-					break;
-
-				case 'RECTANGLE':
-				case 'VECTOR':
-					if (h.checkFieldName(data.name, '@Radius')) {
-						scheme.radius(c, data);
-						RAW.data[c.id] = {
-							type: c.type,
-							name: data.name,
-							value: DS.rounding && DS.rounding[data.name.split('/').slice(0)]
-						};
-					}
-
-					break;
-
-				case 'TEXT':
-					RAW.data[c.id] = {
-						type: c.type,
-						name: data.name,
-						style: {}
-					};
-
-					const
-						chunks = data.name.toLowerCase().split('/');
-
-					$C(scheme.text).forEach((value, key) => {
-						if (c[key]) {
-							if (Object.isObject(value)) {
-								$C(value).forEach((v, k) => {
-									if (Object.isFunction(v)) {
-										if (c[key][k]) {
-											const
-												result = v(c[key]);
-
-											Object.assign(
-												RAW.data[c.id].style,
-												Object.isObject(result) ? result : {[k]: result});
-										}
-
-									} else if (v) {
-										(<Dictionary>RAW.data[c.id].style)[k] = c[key][k];
-									}
-								});
-
-							} else if (Object.isFunction(value)) {
-								Object.assign(RAW.data[c.id].style, (<Function>value)(c, data));
-							}
-
-							if (
-								!data.name.match(/@/) &&
-								(chunks.length === 1 || parseInt(chunks[chunks.length - 1], 10)) &&
-								RAW.data[c.id].style
-							) {
-								h.set(chunks.join(''), RAW.data[c.id].style, DS.text);
-								setDiff(`text.${chunks.join('')}`, <Dictionary>RAW.data[c.id].style);
-							}
-						}
-					});
-
-					break;
-
-				default:
-					ERRORS.push({
-						name: 'Type is not registered',
-						description: `${c.type} is not registered at design system loader`
-					});
-
-					return;
-			}
+		if (c.type === 'TEXT') {
 			return;
 		}
 
-		if (t === 'block') {
-			if (c.type === 'TEXT') {
-				return;
-			}
+		if (c.type === 'GROUP' && !new RegExp('Master|^m:').test(c.name)) {
+			parseNode(c, name);
 
-			if (
-				c.type === 'GROUP' &&
-				!new RegExp('Master|^m:').test(c.name)
-			) {
-				parseNode(c, t, name);
-
-			} else {
-				writeComponent(name, c);
-			}
+		} else {
+			writeComponent(name, c);
 		}
 	});
 }

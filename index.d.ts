@@ -12,16 +12,16 @@
 /// <reference types="figma"/>
 
 interface DesignSystem extends Dictionary {
-	colors: {
-		[key: string]: string[];
+	colors?: {
+		[key: string]: string | string[];
 	},
 
 	rounding?: {
 		[key: string]: string;
 	},
 
-	text: Dictionary<string>;
-	components: Record<string, Dictonary<string>>;
+	text?: Dictionary<string>;
+	components?: Record<string, Dictonary<string>>;
 }
 
 interface ContentError {

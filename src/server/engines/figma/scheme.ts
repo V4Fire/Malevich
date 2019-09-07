@@ -13,12 +13,7 @@ import path = require('upath');
 import * as mixins from './mixins';
 import * as h from './helpers';
 
-export const DS: DesignSystem = {
-	components: {},
-	colors: {},
-	text: {},
-	rounding: {}
-};
+export const DS: DesignSystem = {};
 
 export const DIFFS = {};
 
@@ -51,6 +46,10 @@ export default {
 export function writeComponent(name: string, el: Figma.Node): void {
 	const
 		[prefix, ...componentArgs] = el.name.split('/');
+
+	if (!DS.components) {
+		DS.components = {};
+	}
 
 	if (!DS.components[name]) {
 		DS.components[name] = {
@@ -171,50 +170,75 @@ export function setDiff(pathToField: string, value: unknown): void {
 	}
 }
 
+export function storeTextStyle(name: string, style?: Dictionary): void {
+	const
+		chunks = name.split('/');
+
+	if (style) {
+		if (!DS.text) {
+			DS.text = {};
+		}
+
+		h.set(chunks.join(''), style, DS.text);
+		setDiff(`text.${chunks.join('')}`, style);
+	}
+}
+
 /**
  * Stores color to kit with a key that specified at the name
  *
  * @param color
- * @param parent
+ * @param layer
  */
 function storeColor<T extends Figma.NodeType>(
 	{color}: {color: Figma.Color},
-	parent: Figma.Node
+	layer: Figma.Node
 ): string {
+	if (!DS.colors) {
+		DS.colors = {};
+	}
+
 	const
-		[, hue, num] = parent.name.split('/');
+		[hue, num] = layer.name.split('/');
 
 	const
 		{colors} = DS,
 		value = mixins.calcColor({color});
 
-	if (!colors[hue]) {
-		colors[hue] = [value];
+	if (hue && num) {
+		if (!colors[hue]) {
+			colors[hue] = [];
+		}
+
+		(<string[]>colors[hue])[num - 1] = value;
+		setDiff(`colors.${hue}.${num - 1}`, value);
 
 	} else {
-		colors[hue][num - 1] = value;
+		colors[layer.name] = value;
+		setDiff(`colors.${layer.name}`, value);
 	}
 
-	setDiff(`colors.${hue}.${num - 1}`, value);
 	return value;
 }
 
 /**
  * Stores border radius from api rectangle
- *
- * @param rect
- * @param parent
+ * @param layer
  */
 function storeBorderRadius<T extends Figma.NodeType>(
-	rect: Figma.RECTANGLE,
-	parent: Figma.Node
-): void {
-	if (Object.isNumber(rect.cornerRadius) && DS.rounding) {
-		const
-			name = parent.name.split('/')[1],
-			value = <string>rect.cornerRadius.px;
+	layer: Figma.Node
+): CanUndef<string> {
+	if (Object.isNumber(layer.cornerRadius)) {
+		if (!DS.rounding) {
+			DS.rounding = {};
+		}
 
-		DS.rounding[name] = value;
-		setDiff(`rounding.${name}`, value);
+		const
+			value = <string>layer.cornerRadius.px;
+
+		DS.rounding[layer.name] = value;
+		setDiff(`rounding.${layer.name}`, value);
+
+		return value;
 	}
 }

@@ -35,7 +35,7 @@ export default class bShowcase extends iBlock {
 
 	/**
 	 * Mods, that needs to highlight into the interface
-	 * (grouped by component name)
+	 * (grouped by a component name)
 	 */
 	@system()
 	protected highlightedMods: Dictionary = {};
@@ -86,14 +86,14 @@ export default class bShowcase extends iBlock {
 	/**
 	 * Colors kits
 	 */
-	protected get colors(): Dictionary {
+	protected get colors(): CanUndef<Dictionary> {
 		return this.data.colors;
 	}
 
 	/**
 	 * All text styles
 	 */
-	protected get textStyles(): Dictionary {
+	protected get textStyles(): CanUndef<Dictionary> {
 		return this.data.text;
 	}
 
