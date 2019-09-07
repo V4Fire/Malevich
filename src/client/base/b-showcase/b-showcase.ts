@@ -46,12 +46,14 @@ export default class bShowcase extends iBlock {
 	@system()
 	protected blockAttrs: Dictionary = {
 		bButton: {
-			exterior: 'primary'
+			exterior: 'primary',
+			size: 'm'
 		},
 
 		bInput: {
 			info: 'Some info text',
 			error: 'Some error text',
+			size: 'm',
 			mods: {showInfo: false, showError: false},
 			placeholder: 'Input text here...'
 		}
