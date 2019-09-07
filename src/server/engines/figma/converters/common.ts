@@ -71,7 +71,9 @@ export default {
 						Object.assign(RAW.data[id].style, (<Function>value)(c));
 					}
 
-					storeTextStyle(c.name, RAW.data[id].style);
+					if (Object.isObject(RAW.data[id].style)) {
+						storeTextStyle(c.name, <Dictionary>RAW.data[id].style);
+					}
 				}
 			});
 		});

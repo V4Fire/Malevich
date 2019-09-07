@@ -170,18 +170,22 @@ export function setDiff(pathToField: string, value: unknown): void {
 	}
 }
 
-export function storeTextStyle(name: string, style?: Dictionary): void {
+/**
+ * Stores text styles to the Design System by the specified name
+ *
+ * @param name
+ * @param style
+ */
+export function storeTextStyle(name: string, style: Dictionary): void {
 	const
 		chunks = name.split('/');
 
-	if (style) {
-		if (!DS.text) {
-			DS.text = {};
-		}
-
-		h.set(chunks.join(''), style, DS.text);
-		setDiff(`text.${chunks.join('')}`, style);
+	if (!DS.text) {
+		DS.text = {};
 	}
+
+	h.set(chunks.join(''), style, DS.text);
+	setDiff(`text.${chunks.join('')}`, style);
 }
 
 /**
