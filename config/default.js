@@ -19,7 +19,8 @@ module.exports = config.createConfig({dirs: [__dirname, 'client']}, {
 		return {
 			...super.runtime(),
 
-			'ds-diff': true
+			'ds-diff': true,
+			'passDesignSystem': true
 		};
 	},
 
