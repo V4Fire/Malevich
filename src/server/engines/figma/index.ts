@@ -19,9 +19,7 @@ const
  * Parses file for generate DS
  * @param data
  */
-export default function parse(
-	data: Figma.File
-): {
+export default function (data: Figma.File): {
 	errors: ContentError[];
 	warnings: ContentError[];
 	designSystem: DesignSystem;

@@ -43,7 +43,7 @@ function buttonState(el: Figma.Node, parent: Figma.Node): Dictionary {
 		result: Dictionary = {};
 
 	result.backgroundColor = !IGNORE_BLEND.has[mode] ? blend(childColor, parentColor, mode) : mixins.calcColor(childColor);
-	return result;
+	return {true: result};
 }
 
 function buttonWithIcon(el: Figma.Node, pos: 'pre' | 'post' = 'pre'): Dictionary {
@@ -62,8 +62,10 @@ function buttonWithIcon(el: Figma.Node, pos: 'pre' | 'post' = 'pre'): Dictionary
 		{absoluteBoundingBox: t} = text;
 
 	return {
-		iconSize: i.width.px,
-		offset: (Math.abs(i.x - t.x) - (pos === 'post' ? t.width : i.width)).px
+		true: {
+			iconSize: i.width.px,
+			offset: (Math.abs(i.x - t.x) - (pos === 'post' ? t.width : i.width)).px
+		}
 	};
 }
 

@@ -34,12 +34,14 @@ function inputWithIcon(el: Figma.Node): Dictionary {
 		strokeWeight = $C(bgLayer).get('strokeWeight');
 
 	return {
-		iconSize: i.width.px,
-		offset: Math.abs(i.x - b.x).px,
+		true: {
+			iconSize: i.width.px,
+			offset: Math.abs(i.x - b.x).px,
 
-		base: {
-			backgroundColor: mixins.calcColor(fill),
-			border: `${strokeWeight.px} solid ${mixins.calcColor(stroke)}`
+			base: {
+				backgroundColor: mixins.calcColor(fill),
+				border: `${strokeWeight.px} solid ${mixins.calcColor(stroke)}`
+			}
 		}
 	};
 }
@@ -136,12 +138,14 @@ export default {
 		}
 
 		return {
-			color,
-			backgroundColor,
-			borderColor
+			true: {
+				color,
+				backgroundColor,
+				borderColor
+			}
 		};
 	},
 
-	focus: borderedBlockState,
+	focus: (el: Figma.Node) => ({true: borderedBlockState(el)}),
 	valid: (el: Figma.Node) => validState(el, 'bInput')
 };

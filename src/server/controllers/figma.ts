@@ -15,7 +15,7 @@ import querystring = require('querystring');
 import https = require('https');
 import $C = require('collection.js');
 
-import parse from '../engines/figma';
+import create from '../engines/figma';
 
 const {
 
@@ -146,7 +146,7 @@ async function getFigmaDesignSystem(file: string, token: string): Promise<CanUnd
 
 	try {
 		response = JSON.parse(str);
-		result = parse(response);
+		result = create(response);
 
 		if (result && result.approved) {
 			return {
