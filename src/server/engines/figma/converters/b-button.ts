@@ -42,6 +42,15 @@ function buttonState(el: Figma.Node, parent: Figma.Node): Dictionary {
 	const
 		result: Dictionary = {};
 
+	if (!parentColor) {
+		parentColor = {
+			r: 0,
+			g: 0,
+			b: 0,
+			a: 0
+		};
+	}
+
 	result.backgroundColor = !IGNORE_BLEND.has[mode] ? blend(childColor, parentColor, mode) : mixins.calcColor(childColor);
 	return {true: result};
 }

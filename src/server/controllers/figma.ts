@@ -155,11 +155,11 @@ async function getFigmaDesignSystem(file: string, token: string): Promise<CanUnd
 			};
 		}
 
-	} catch {
+	} catch (e) {
 		return {
 			errors: [{
 				name: 'Cannot parse response from Figma API',
-				description: `I can't parse JSON string for the file with id ${file}`
+				description: `I can't parse JSON string for the file with id ${file}. Stacktrace: ${JSON.stringify(e)}`
 			}]
 		};
 	}
