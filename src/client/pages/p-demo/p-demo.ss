@@ -15,4 +15,4 @@
 	- block body
 		+= self.getTpl('b-header/')()
 
-		< b-showcase :data = data
+		< b-showcase :data = r.designSystem

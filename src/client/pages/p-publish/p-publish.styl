@@ -9,9 +9,19 @@
 @import "super/i-dynamic-page/i-dynamic-page.styl"
 
 $p = {
-	panelHeight: 64px
-	panelBgColor: #FFF
+	panelHeight: 75px
 	panelShadow: 0 -2px 2px alpha(#333, 0.2)
+	panelBgColor: #FFF
+
+	commitBtnBgColor: #1E7DCD
+	commitBtnColor: #FFF
+
+	rejectBtnBgColor: #EFEFEF
+	rejectBtnColor: #000
+
+	createBtnBgColor: #303134
+	createBtnColor: #FFF
+	inputBorder: 1px solid #D0D0D0
 }
 
 p-publish extends i-dynamic-page
@@ -52,6 +62,7 @@ p-publish extends i-dynamic-page
 
 	&__form-component
 		display inline-block
+		vertical-align middle
 
 	&__control-panel
 		position fixed
@@ -67,13 +78,27 @@ p-publish extends i-dynamic-page
 		box-shadow $p.panelShadow
 
 	&__control-panel-btn
+		vertical-align middle
+
 		& + &
 			margin-left 16px
 
 	&__commit-button
-		padding 16px
-		background-color c(#303134)
+		padding 12px 16px
+		background-color $p.commitBtnBgColor
+		color $p.commitBtnColor
 
-	&__button
-		padding 8px 12px
-		background-color c(#358FCD)
+	&__create-button
+		padding 12px 16px
+		background-color $p.createBtnBgColor
+		color $p.createBtnColor
+
+	&__reject-button
+		padding 12px 16px
+		background-color $p.rejectBtnBgColor
+		color $p.rejectBtnColor
+
+	&__input
+		padding 10px 16px
+		border $p.inputBorder
+		border-radius 4px

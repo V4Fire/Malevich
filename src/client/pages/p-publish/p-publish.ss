@@ -43,6 +43,7 @@
 							v-func = false |
 							:key = :name, 'message' |
 							:placeholder = 'Type a commit message' |
+							:classes = provide.classes({wrapper: 'input'}) |
 							:validators = [['required', {showMsg: false}]] |
 							@onValidationEnd = onValidationEnd
 						.
@@ -56,7 +57,7 @@
 							Save changes
 
 					< b-button.&__control-panel-btn &
-						:classes = provide.classes({button: true}) |
+						:classes = provide.classes({button: 'reject-button'}) |
 						@click = onResetChanges
 					.
 						Cancel
@@ -76,6 +77,7 @@
 					< b-input &
 						v-func = false |
 						:key = :name, 'file' |
+						:classes = provide.classes({wrapper: 'input'}) |
 						:validators = [['required', {showMsg: false}]] |
 						:placeholder = 'Enter a file key' |
 						@onValidationEnd = onValidationEnd
@@ -84,7 +86,7 @@
 					< b-button &
 						v-func = false |
 						ref = formSubmit |
-						:classes = provide.classes({button: true}) |
+						:classes = provide.classes({button: 'create-button'}) |
 						:type = 'submit' |
 						:rounding = 'small' |
 						:disabled = true

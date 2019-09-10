@@ -19,5 +19,8 @@
 					< img.&__logo :src = require('assets/img/logo-full.svg')
 
 				< nav.&__nav
-					< a.&__nav-item href = \/demo
+					< a.&__nav-item &
+						v-if = r.designSystem |
+						href = \/demo
+					.
 						Demo

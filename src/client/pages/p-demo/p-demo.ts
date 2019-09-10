@@ -6,11 +6,8 @@
  * https://github.com/V4Fire/Malevich/blob/master/LICENSE
  */
 
-import iDynamicPage, { component, system } from 'super/i-dynamic-page/i-dynamic-page';
+import iDynamicPage, { component } from 'super/i-dynamic-page/i-dynamic-page';
 export * from 'super/i-dynamic-page/i-dynamic-page';
 
 @component()
-export default class pDemo extends iDynamicPage {
-	@system()
-	data?: DesignSystem = DS;
-}
+export default class pDemo extends iDynamicPage {}
