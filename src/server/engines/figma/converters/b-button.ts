@@ -88,24 +88,29 @@ export default {
 
 	exterior(el: Figma.Node): Dictionary {
 		const
-			result: Dictionary = {
-				mods: {}
+			result: Record<string, Dictionary> = {
+				mods: {},
+				base: {}
 			};
 
 		$C(el.children).forEach((c) => {
 			if (c.name === 'background') {
 				if ($C(c).get('fills.0')) {
-					result.backgroundColor = mixins.calcColor(c.fills[0]);
+					result.base.backgroundColor = mixins.calcColor(c.fills[0]);
 
 				} else if ($C(c).get('children.0.children.0.fills.0')) {
-					result.backgroundColor = mixins.calcColor($C(c).get('children.0.children.0.fills.0'));
+					result.base.backgroundColor = mixins.calcColor($C(c).get('children.0.children.0.fills.0'));
+				}
+
+				if ($C(c).get('strokes.0')) {
+					result.base.border = `${c.strokeWeight.px} solid ${mixins.calcColor(c.strokes[0])}`;
 				}
 
 				return;
 			}
 
 			if (c.name.toLowerCase() === 'text') {
-				result.color = mixins.calcColor(c.fills[0]);
+				result.base.color = mixins.calcColor(c.fills[0]);
 				return;
 			}
 

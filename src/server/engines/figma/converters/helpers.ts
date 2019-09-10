@@ -39,8 +39,14 @@ export function simpleSize(el: Figma.Node): Dictionary {
 	}
 
 	return {
-		horOffset: Math.abs(b.y - t.y).px,
-		vertOffset: Math.abs(b.x - t.x).px,
+		offset: {
+			left: Math.abs(b.x - t.x).px,
+			right: Math.abs((b.x + b.width) - (t.x + b.width)).px,
+
+			top: Math.abs(b.y - t.y).px,
+			bottom: Math.abs((b.y + b.height) - (t.y + t.height)).px
+		},
+
 		textHeight: t.height.px,
 		height: b.height.px,
 		textStyle
