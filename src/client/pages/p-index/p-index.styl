@@ -9,7 +9,8 @@
 @import "super/i-dynamic-page/i-dynamic-page.styl"
 
 $p = {
-
+	figmaImportBgColor: #303134
+	figmaImportColor: #FFF
 }
 
 p-index extends i-dynamic-page
@@ -32,3 +33,8 @@ p-index extends i-dynamic-page
 
 	&__form
 		padding-top 20px
+
+	&__figma-import-button
+		padding 8px 16px
+		background-color $p.figmaImportBgColor
+		color $p.figmaImportColor

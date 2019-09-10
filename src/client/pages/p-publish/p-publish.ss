@@ -49,14 +49,14 @@
 
 						< b-button.&__commit-submit &
 							ref = formSubmit |
+							:classes = provide.classes({button: 'commit-button'}) |
 							:type = 'submit' |
-							:exterior = 'primary' |
 							:disabled = true
 						.
 							Save changes
 
 					< b-button.&__control-panel-btn &
-						:exterior = 'light' |
+						:classes = provide.classes({button: true}) |
 						@click = onResetChanges
 					.
 						Cancel
@@ -84,8 +84,8 @@
 					< b-button &
 						v-func = false |
 						ref = formSubmit |
+						:classes = provide.classes({button: true}) |
 						:type = 'submit' |
-						:exterior = 'dark' |
 						:rounding = 'small' |
 						:disabled = true
 					.

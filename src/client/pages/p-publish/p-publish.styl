@@ -10,8 +10,8 @@
 
 $p = {
 	panelHeight: 64px
-	panelBgColor: c(white 1)
-	panelShadow: 0 -2px 2px alpha(c(grey 1), 0.2)
+	panelBgColor: #FFF
+	panelShadow: 0 -2px 2px alpha(#333, 0.2)
 }
 
 p-publish extends i-dynamic-page
@@ -69,3 +69,11 @@ p-publish extends i-dynamic-page
 	&__control-panel-btn
 		& + &
 			margin-left 16px
+
+	&__commit-button
+		padding 16px
+		background-color c(#303134)
+
+	&__button
+		padding 8px 12px
+		background-color c(#358FCD)

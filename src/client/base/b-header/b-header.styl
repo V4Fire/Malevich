@@ -9,8 +9,8 @@
 @import "super/i-block/i-block.styl"
 
 $p = {
-	navItemColor: c(grey 1)
-	navItemHoverColor: c(grey 3)
+	navItemColor: #4E4E4E
+	navItemHoverColor: #6B6B6B
 }
 
 b-header extends i-block
@@ -30,7 +30,8 @@ b-header extends i-block
 
 	&__nav-item
 		color $p.navItemColor
-		interpolate-props(getDSOptions("text.base"))
+		font-size 16px
+		line-height 1.2
 
 		text-transform uppercase
 		text-decoration none

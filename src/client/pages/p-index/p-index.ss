@@ -21,7 +21,7 @@
 
 			< form.&__form
 				< b-button &
-					:exterior = 'dark' |
+					:classes = provide.classes({button: 'figma-import-button'}) |
 					:rounding = 'small' |
 					@click = onFigmaImportClick
 				.
