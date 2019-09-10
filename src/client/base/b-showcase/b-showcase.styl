@@ -9,14 +9,14 @@
 @import "super/i-block/i-block.styl"
 
 $p = {
-	roundingsBgColor: #565656
+	roundingBorder: 1px solid #DBDBDB
 	contentColor: #2C2C2C
 	headerColor: #2C2C2C
 	labelColor: #737373
 	additionalColor: #2C2C2C
 	additionalBorderColor: #E6E6E6
 	highlightColor: #FF0
-	rounding: 4px
+	rounding: 2px
 }
 
 b-showcase extends i-block
@@ -88,7 +88,7 @@ b-showcase extends i-block
 	&__rounding
 		margin 16px
 		size 60px
-		background-color $p.roundingsBgColor
+		border $p.roundingBorder
 
 	&__rounding-wrap
 		flex-row flex-start center

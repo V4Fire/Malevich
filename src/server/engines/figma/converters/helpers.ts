@@ -32,6 +32,11 @@ export function simpleSize(el: Figma.Node): Dictionary {
 		t = text.absoluteBoundingBox,
 		fontOptions = RAW.styles[text.styles.text];
 
+	if ($C(background).get('strokes.0')) {
+		b.height -= $C(background).get('strokeWeight') * 2;
+		b.width -= $C(background).get('strokeWeight') * 2;
+	}
+
 	let textStyle;
 
 	if (fontOptions) {
