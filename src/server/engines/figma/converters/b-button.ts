@@ -21,7 +21,7 @@ function buttonState(el: Figma.Node, parent: Figma.Node): Dictionary {
 
 	const
 		parentLayer = $C(parent.children).one.get((c) => c.name === 'background'),
-		parentFill = $C(parentLayer).get('children.0.children.0.fills.0');
+		parentFill = $C(parentLayer).get('fills.0');
 
 	let
 		childColor;
