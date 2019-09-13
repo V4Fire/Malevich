@@ -178,7 +178,7 @@ export function setDiff(pathToField: string, value: unknown): void {
  */
 export function storeTextStyle(name: string, style: Dictionary): void {
 	const
-		styleName = name.split('/').join('');
+		styleName = name.split(/[\/| ]/).join('-');
 
 	if (!DS.text) {
 		DS.text = {};
