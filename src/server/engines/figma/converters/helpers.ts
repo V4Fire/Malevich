@@ -16,7 +16,7 @@ import $C = require('collection.js');
  * Returns sizes calculations for the specified el
  * @param el
  */
-export function simpleSize(el: Figma.Node): Dictionary {
+export function simpleSize(el: Figma.Node): CanUndef<Dictionary> {
 	const
 		background = $C(el.children).one.get((c) => c.name === 'background'),
 		text = $C(el.children).one.get((c) => c.name.toLowerCase() === 'text' || c.name.toLowerCase() === 'value');
@@ -25,6 +25,8 @@ export function simpleSize(el: Figma.Node): Dictionary {
 		WARNINGS.push({
 			name: `No text or background for ${el.name}`
 		});
+
+		return;
 	}
 
 	const
@@ -59,7 +61,7 @@ export function simpleSize(el: Figma.Node): Dictionary {
 }
 
 /**
- * Run adapter for the specified block mod
+ * Runs adapter for the specified block mod
  *
  * @param mod
  * @param el
@@ -82,7 +84,7 @@ export function convertMod(mod: string, el: Figma.Node, block: string, parent?: 
  */
 export function borderedBlockState(el: Figma.Node): CanUndef<Dictionary> {
 	const
-		ch = $C(el).get('children.0.children.0');
+		ch = $C(el).get('children.0');
 
 	if (!ch) {
 		ERRORS.push({
@@ -157,14 +159,9 @@ export function validState(
 		const
 			b = back.absoluteBoundingBox;
 
-		if (back.children[0]) {
-			const
-				ch = back.children[0];
-
-			Object.assign(store.style, {
-				border: `${ch.strokeWeight.px} solid ${mixins.calcColor(ch.strokes[0])}`
-			});
-		}
+		Object.assign(store.style, {
+			border: `${back.strokeWeight.px} solid ${mixins.calcColor(back.strokes[0])}`
+		});
 
 		$C(valueGroup.children).forEach((layer) => {
 			const

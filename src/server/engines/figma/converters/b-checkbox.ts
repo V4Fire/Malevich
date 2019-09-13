@@ -27,13 +27,12 @@ function checkboxCommon(els: Figma.Node[]): Dictionary {
 
 		if (ch.name === 'checkerBack') {
 			const
-				layer = $C(ch).get('children.0'),
 				effect = $C(ch).get('effects.0'),
 				shadowOffset = $C(effect).get('offset');
 
 			let
-				strokeColor = $C(layer).get('strokes.0'),
-				backgroundColor = $C(layer).get('fills.0'),
+				strokeColor = $C(ch).get('strokes.0'),
+				backgroundColor = $C(ch).get('fills.0'),
 				boxShadow;
 
 			if (shadowOffset) {
@@ -50,8 +49,8 @@ function checkboxCommon(els: Figma.Node[]): Dictionary {
 
 			res.checkbox = {
 				backgroundColor,
-				border: layer.strokeWeight && `${layer.strokeWeight.px} solid ${strokeColor}` || undefined,
-				borderRadius: layer.cornerRadius && layer.cornerRadius.px || undefined,
+				border: ch.strokeWeight && `${ch.strokeWeight.px} solid ${strokeColor}` || undefined,
+				borderRadius: ch.cornerRadius && ch.cornerRadius.px || undefined,
 				boxShadow
 			};
 		}

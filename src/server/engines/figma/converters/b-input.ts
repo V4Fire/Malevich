@@ -54,22 +54,17 @@ export default {
 		$C(els).forEach((el) => {
 			if (el.name === 'background') {
 				const
-					layer = $C(el).get('children.0');
+					borderColor = $C(el).get('strokes.0'),
+					backgroundFill = $C(el).get('fills.0'),
+					bgBox = el.absoluteBoundingBox;
 
-				if (layer) {
-					const
-						borderColor = $C(layer).get('strokes.0'),
-						backgroundFill = $C(layer).get('fills.0'),
-						bgBox = el.absoluteBoundingBox;
+				bgBox.x += el.strokeWeight;
+				bgBox.y += el.strokeWeight;
 
-					bgBox.x += layer.strokeWeight;
-					bgBox.y += layer.strokeWeight;
-
-					Object.assign(res, {
-						border: `${layer.strokeWeight.px} solid ${mixins.calcColor(borderColor)}`,
-						backgroundColor: mixins.calcColor(backgroundFill)
-					});
-				}
+				Object.assign(res, {
+					border: `${el.strokeWeight.px} solid ${mixins.calcColor(borderColor)}`,
+					backgroundColor: mixins.calcColor(backgroundFill)
+				});
 
 				return res;
 			}
@@ -122,8 +117,8 @@ export default {
 
 		let
 			color = $C(value).get('fills.0'),
-			backgroundColor = $C(base).get('children.0.fills.0'),
-			borderColor = $C(base).get('children.0.strokes.0');
+			backgroundColor = $C(base).get('fills.0'),
+			borderColor = $C(base).get('strokes.0');
 
 		if (color) {
 			color = mixins.calcColor(color);
