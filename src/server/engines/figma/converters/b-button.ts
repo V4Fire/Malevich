@@ -15,8 +15,8 @@ import $C = require('collection.js');
 
 function buttonState(el: Figma.Node, parent: Figma.Node): Dictionary {
 	const
-		childLayer = el.children[0],
-		mode = childLayer.blendMode,
+		childLayer = $C(el.children).one.get((c) => c.name === 'background'),
+		mode = childLayer.blendMode.camelize(false),
 		childFill = $C(childLayer).get('fills.0');
 
 	const
@@ -51,11 +51,11 @@ function buttonState(el: Figma.Node, parent: Figma.Node): Dictionary {
 		};
 	}
 
-	if ($C(parentLayer).get('strokes.0')) {
-		result.border = `${parentLayer.strokeWeight.px} solid ${mixins.calcColor(parentLayer.strokes[0])}`;
+	if ($C(childLayer).get('strokes.0')) {
+		result.border = `${childLayer.strokeWeight.px} solid ${mixins.calcColor(childLayer.strokes[0])}`;
 	}
 
-	result.backgroundColor = !IGNORE_BLEND.has(mode) ?
+	result.backgroundColor = !IGNORE_BLEND.has(childLayer.blendMode) ?
 		blend(childColor, parentColor, mode) :
 		mixins.calcColor({color: childColor});
 
@@ -124,6 +124,8 @@ export default {
 			if (/m:\w+/.test(c.name)) {
 				const
 					name = c.name.replace('m:', '');
+
+				console.log(name, c, el.name);
 
 				(<Dictionary>result.mods)[name] = convertMod(name, c, 'bButton', el);
 				return;
