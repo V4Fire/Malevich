@@ -16,7 +16,7 @@ import $C = require('collection.js');
 function buttonState(el: Figma.Node, parent: Figma.Node): Dictionary {
 	const
 		childLayer = el.children[0],
-		mode = childLayer.blendMode.camelize(false),
+		mode = childLayer.blendMode,
 		childFill = $C(childLayer).get('fills.0');
 
 	const
@@ -55,7 +55,9 @@ function buttonState(el: Figma.Node, parent: Figma.Node): Dictionary {
 		result.border = `${parentLayer.strokeWeight.px} solid ${mixins.calcColor(parentLayer.strokes[0])}`;
 	}
 
-	result.backgroundColor = !IGNORE_BLEND.has[mode] ? blend(childColor, parentColor, mode) : mixins.calcColor(childColor);
+	result.backgroundColor = !IGNORE_BLEND.has(mode) ?
+		blend(childColor, parentColor, mode) :
+		mixins.calcColor({color: childColor});
 
 	return {true: result};
 }
