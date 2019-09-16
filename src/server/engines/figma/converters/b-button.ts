@@ -51,7 +51,12 @@ function buttonState(el: Figma.Node, parent: Figma.Node): Dictionary {
 		};
 	}
 
+	if ($C(parentLayer).get('strokes.0')) {
+		result.border = `${parentLayer.strokeWeight.px} solid ${mixins.calcColor(parentLayer.strokes[0])}`;
+	}
+
 	result.backgroundColor = !IGNORE_BLEND.has[mode] ? blend(childColor, parentColor, mode) : mixins.calcColor(childColor);
+
 	return {true: result};
 }
 

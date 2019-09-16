@@ -73,6 +73,8 @@ async function push(req: ExpressTypes.Request, res: ExpressTypes.Response): Prom
 		// @ts-ignore
 		req.session.destroy();
 		res.send({status: 'ok'});
+
+		return;
 	}
 
 	const
