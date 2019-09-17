@@ -27,7 +27,8 @@ export default function (data: Figma.File): {
 } {
 	const
 		pages = data.document.children,
-		ds = pages.find((p) => p.name === 'DS');
+		dsPages = {'ds': true, 'design system': true},
+		ds = pages.find((p) => dsPages[p.name.toLowerCase()]);
 
 	ds.children.sort((a, b) => a.name < b.name ? 1 : a.name > b.name ? -1 : 0);
 

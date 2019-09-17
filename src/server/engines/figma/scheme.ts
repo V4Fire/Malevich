@@ -6,8 +6,10 @@
  * https://github.com/V4Fire/Malevich/blob/master/LICENSE
  */
 
-import $C = require('collection.js');
 import converters, { WARNINGS } from './converters';
+import { textNameNormalizer } from './converters/helpers';
+
+import $C = require('collection.js');
 import path = require('upath');
 
 import * as mixins from './mixins';
@@ -178,7 +180,7 @@ export function setDiff(pathToField: string, value: unknown): void {
  */
 export function storeTextStyle(name: string, style: Dictionary): void {
 	const
-		styleName = name.split(/[\/| ]/).join('-');
+		styleName = textNameNormalizer(name);
 
 	if (!DS.text) {
 		DS.text = {};

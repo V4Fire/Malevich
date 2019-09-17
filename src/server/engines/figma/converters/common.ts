@@ -9,6 +9,7 @@
 import $C = require('collection.js');
 import scheme, { storeTextStyle } from '../scheme';
 import { RAW } from './const';
+import { textNameNormalizer } from './helpers';
 
 const
 	mark = /^@/;
@@ -44,7 +45,7 @@ export default {
 
 			RAW.data[id] = {
 				type: c.type,
-				name: c.name,
+				name: textNameNormalizer(c.name),
 				style: {}
 			};
 

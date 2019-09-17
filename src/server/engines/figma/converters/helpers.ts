@@ -42,7 +42,7 @@ export function simpleSize(el: Figma.Node): CanUndef<Dictionary> {
 	let textStyle;
 
 	if (fontOptions) {
-		textStyle = (<Figma.Style>fontOptions).name;
+		textStyle = textNameNormalizer((<Figma.Style>fontOptions).name);
 	}
 
 	return {
@@ -58,6 +58,14 @@ export function simpleSize(el: Figma.Node): CanUndef<Dictionary> {
 		height: b.height.px,
 		textStyle
 	};
+}
+
+/**
+ * Returns a normalized text style name
+ * @param name
+ */
+export function textNameNormalizer(name: string): string {
+	return name.split(/[\/ ]/).join('-');
 }
 
 /**
