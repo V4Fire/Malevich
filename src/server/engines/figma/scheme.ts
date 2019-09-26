@@ -22,9 +22,11 @@ export const DIFFS = {};
 export default {
 	text: {
 		style: {
-			// Store field as is
+			// Store field "as is"
 			fontFamily: true,
 			fontWeight: true,
+
+			italic: ({italic}) => italic ? {fontStyle: 'italic'} : undefined,
 
 			fontSize: ({fontSize}) => fontSize.px,
 			letterSpacing: ({letterSpacing}) => letterSpacing.px,

@@ -54,7 +54,7 @@ export function simpleSize(el: Figma.Node): CanUndef<Dictionary> {
 			bottom: Math.abs((b.y + b.height) - (t.y + t.height)).px
 		},
 
-		textHeight: t.height.px,
+		lineHeight: t.height.px,
 		height: b.height.px,
 		textStyle
 	};

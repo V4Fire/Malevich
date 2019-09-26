@@ -125,8 +125,6 @@ export default {
 				const
 					name = c.name.replace('m:', '');
 
-				console.log(name, c, el.name);
-
 				(<Dictionary>result.mods)[name] = convertMod(name, c, 'bButton', el);
 				return;
 			}
