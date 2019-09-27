@@ -28,7 +28,7 @@ function buttonState(el: Figma.Node, parent: Figma.Node): Dictionary {
 
 	if (childFill) {
 		childColor = childFill.color;
-		childColor.a = Math.min(childFill.opacity || 1, childColor.a);
+		childColor.a = Math.min(childFill.opacity || childLayer.opacity || 1, childColor.a);
 	}
 
 	let
@@ -52,7 +52,17 @@ function buttonState(el: Figma.Node, parent: Figma.Node): Dictionary {
 	}
 
 	if ($C(childLayer).get('strokes.0')) {
-		result.border = `${childLayer.strokeWeight.px} solid ${mixins.calcColor(childLayer.strokes[0])}`;
+		const
+			chBorderColor = $C(childLayer).get('strokes.0.color'),
+			parBorderColor = $C(parentLayer).get('strokes.0.color');
+
+		chBorderColor.a = Math.min(childLayer.opacity || 1, chBorderColor.a);
+
+		const borderColor = !IGNORE_BLEND.has(childLayer.blendMode) ?
+			blend(chBorderColor, parBorderColor, mode) :
+			mixins.calcColor({color: chBorderColor});
+
+		result.border = `${childLayer.strokeWeight.px} solid ${borderColor}`;
 	}
 
 	result.backgroundColor = !IGNORE_BLEND.has(childLayer.blendMode) ?

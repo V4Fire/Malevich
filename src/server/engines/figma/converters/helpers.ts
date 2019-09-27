@@ -32,12 +32,8 @@ export function simpleSize(el: Figma.Node): CanUndef<Dictionary> {
 	const
 		b = background.absoluteBoundingBox,
 		t = text.absoluteBoundingBox,
-		fontOptions = RAW.styles[text.styles.text];
-
-	if ($C(background).get('strokes.0')) {
-		b.height -= $C(background).get('strokeWeight') * 2;
-		b.width -= $C(background).get('strokeWeight') * 2;
-	}
+		fontOptions = RAW.styles[text.styles.text],
+		strokeWeight = background.strokeWeight || 0;
 
 	let textStyle;
 
@@ -50,8 +46,8 @@ export function simpleSize(el: Figma.Node): CanUndef<Dictionary> {
 			left: Math.abs(b.x - t.x).px,
 			right: Math.abs((b.x + b.width) - (t.x + b.width)).px,
 
-			top: Math.abs(b.y - t.y).px,
-			bottom: Math.abs((b.y + b.height) - (t.y + t.height)).px
+			top: Math.abs(b.y + strokeWeight - t.y).px,
+			bottom: Math.abs((b.y + b.height) - (t.y + t.height) - strokeWeight).px
 		},
 
 		lineHeight: t.height.px,
