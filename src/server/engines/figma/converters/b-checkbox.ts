@@ -25,23 +25,27 @@ function checkboxCommon(els: Figma.Node[]): Dictionary {
 			}
 		}
 
+		const
+			{width, height} = ch.absoluteBoundingBox;
+
+		let
+			backgroundColor = $C(ch).get('fills.0');
+
+		if (backgroundColor) {
+			backgroundColor = mixins.calcColor(backgroundColor);
+		}
+
 		if (ch.name === 'checkerBack') {
 			const
 				effect = $C(ch).get('effects.0'),
-				shadowOffset = $C(effect).get('offset'),
-				{width, height} = ch.absoluteBoundingBox;
+				shadowOffset = $C(effect).get('offset');
 
 			let
 				strokeColor = $C(ch).get('strokes.0'),
-				backgroundColor = $C(ch).get('fills.0'),
 				boxShadow;
 
 			if (shadowOffset) {
 				boxShadow = `${shadowOffset.x.px} ${shadowOffset.y.px} ${mixins.calcColor(effect)}`;
-			}
-
-			if (backgroundColor) {
-				backgroundColor = mixins.calcColor(backgroundColor);
 			}
 
 			if (strokeColor) {
@@ -57,6 +61,14 @@ function checkboxCommon(els: Figma.Node[]): Dictionary {
 
 				backgroundColor,
 				boxShadow
+			};
+		}
+
+		if (ch.name === 'check') {
+			res.check = {
+				width: width.px,
+				height: height.px,
+				backgroundColor
 			};
 		}
 
