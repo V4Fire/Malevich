@@ -28,7 +28,8 @@ function checkboxCommon(els: Figma.Node[]): Dictionary {
 		if (ch.name === 'checkerBack') {
 			const
 				effect = $C(ch).get('effects.0'),
-				shadowOffset = $C(effect).get('offset');
+				shadowOffset = $C(effect).get('offset'),
+				{width, height} = ch.absoluteBoundingBox;
 
 			let
 				strokeColor = $C(ch).get('strokes.0'),
@@ -48,9 +49,13 @@ function checkboxCommon(els: Figma.Node[]): Dictionary {
 			}
 
 			res.checkbox = {
-				backgroundColor,
+				width: width.px,
+				height: height.px,
+
 				border: ch.strokeWeight && `${ch.strokeWeight.px} solid ${strokeColor}` || undefined,
 				borderRadius: ch.cornerRadius && ch.cornerRadius.px || undefined,
+
+				backgroundColor,
 				boxShadow
 			};
 		}
@@ -85,8 +90,9 @@ export default {
 		return common;
 	},
 
-	focused: (el: Figma.Node) => checkboxCommon(el.children),
-	disabled: (el: Figma.Node) => checkboxCommon(el.children),
+	checked: (el: Figma.Node) => ({true: checkboxCommon(el.children)}),
+	focused: (el: Figma.Node) => ({true: checkboxCommon(el.children)}),
+	disabled: (el: Figma.Node) => ({true: checkboxCommon(el.children)}),
 	valid: (el: Figma.Node) => validState(el, 'bCheckbox', 'checkerBack'),
 	exterior(el: Figma.Node): Dictionary {
 		return {};
