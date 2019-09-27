@@ -68,7 +68,7 @@ function checkboxCommon(els: Figma.Node[]): Dictionary {
 			res.check = {
 				width: width.px,
 				height: height.px,
-				backgroundColor
+				color: backgroundColor
 			};
 		}
 
