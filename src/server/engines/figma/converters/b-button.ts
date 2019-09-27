@@ -103,7 +103,7 @@ export default {
 	active: buttonState,
 	disabled: buttonState,
 
-	exterior(el: Figma.Node): Dictionary {
+	exterior(name: string, el: Figma.Node): Dictionary {
 		const
 			result: Record<string, Dictionary> = {
 				mods: {},

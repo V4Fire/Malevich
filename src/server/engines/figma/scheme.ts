@@ -146,8 +146,8 @@ export function storeComponent(name: string, el: Figma.Node): void {
 				// Calculates exterior from nested Master component
 				const
 					component = el.children.length === 1 ? el.children[0] : el,
-					calculated = adapter(component, el),
-					value = componentArgs[0].toLowerCase();
+					value = componentArgs[0].toLowerCase(),
+					calculated = adapter(value, component, el);
 
 				link.exterior[value] = calculated;
 				setDiff(`components.${name}.exterior.${value}`, calculated);

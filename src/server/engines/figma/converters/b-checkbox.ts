@@ -6,7 +6,7 @@
  * https://github.com/V4Fire/Malevich/blob/master/LICENSE
  */
 
-import { validState } from './helpers';
+import { validState, convertMod } from './helpers';
 import { RAW } from './const';
 import * as mixins from '../mixins';
 
@@ -25,11 +25,18 @@ function checkboxCommon(els: Figma.Node[]): Dictionary {
 			}
 		}
 
-		const
-			{width, height} = ch.absoluteBoundingBox;
-
 		let
+			strokeColor = $C(ch).get('strokes.0'),
 			backgroundColor = $C(ch).get('fills.0');
+
+		if (strokeColor) {
+			strokeColor = mixins.calcColor(strokeColor);
+		}
+
+		const
+			{width, height} = ch.absoluteBoundingBox,
+			border = ch.strokeWeight && strokeColor && `${ch.strokeWeight.px} solid ${strokeColor}` || undefined,
+			borderRadius = ch.cornerRadius && ch.cornerRadius.px || undefined;
 
 		if (backgroundColor) {
 			backgroundColor = mixins.calcColor(backgroundColor);
@@ -41,23 +48,18 @@ function checkboxCommon(els: Figma.Node[]): Dictionary {
 				shadowOffset = $C(effect).get('offset');
 
 			let
-				strokeColor = $C(ch).get('strokes.0'),
 				boxShadow;
 
 			if (shadowOffset) {
 				boxShadow = `${shadowOffset.x.px} ${shadowOffset.y.px} ${mixins.calcColor(effect)}`;
 			}
 
-			if (strokeColor) {
-				strokeColor = mixins.calcColor(strokeColor);
-			}
-
 			res.checkbox = {
 				width: width.px,
 				height: height.px,
 
-				border: ch.strokeWeight && `${ch.strokeWeight.px} solid ${strokeColor}` || undefined,
-				borderRadius: ch.cornerRadius && ch.cornerRadius.px || undefined,
+				border,
+				borderRadius,
 
 				backgroundColor,
 				boxShadow
@@ -68,6 +70,10 @@ function checkboxCommon(els: Figma.Node[]): Dictionary {
 			res.check = {
 				width: width.px,
 				height: height.px,
+
+				border,
+				borderRadius,
+
 				color: backgroundColor
 			};
 		}
@@ -106,7 +112,39 @@ export default {
 	focused: (el: Figma.Node) => ({true: checkboxCommon(el.children)}),
 	disabled: (el: Figma.Node) => ({true: checkboxCommon(el.children)}),
 	valid: (el: Figma.Node) => validState(el, 'bCheckbox', 'checkerBack'),
-	exterior(el: Figma.Node): Dictionary {
-		return {};
+	exterior(name: string, el: Figma.Node, parent: Figma.Node): Dictionary {
+		const
+			res = checkboxCommon(el.children);
+
+		if (name === 'switch') {
+			$C(el.children).forEach((c) => {
+				if (c.name === 'check') {
+					const
+						chBox = c.absoluteBoundingBox,
+						backBox = parent.absoluteBoundingBox;
+
+					const checkStyles = {
+						backgroundColor: (<Dictionary>res.check).color,
+						marginLeft: (chBox.x - backBox.x).px,
+						marginTop: (chBox.y - backBox.y).px
+					};
+
+					Object.assign(<Dictionary>res.check, checkStyles);
+				}
+
+				if (/m:\w+/.test(c.name)) {
+					const
+						name = c.name.replace('m:', '');
+
+					if (!res.mods) {
+						res.mods = {};
+					}
+
+					(<Dictionary>res.mods)[name] = convertMod(name, c, 'bCheckbox', el);
+				}
+			});
+		}
+
+		return res;
 	}
 };
