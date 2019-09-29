@@ -114,7 +114,9 @@ export default {
 	valid: (el: Figma.Node) => validState(el, 'bCheckbox', 'checkerBack'),
 	exterior(name: string, el: Figma.Node, parent: Figma.Node): Dictionary {
 		const
-			res = checkboxCommon(el.children);
+			res: {block: Dictionary; mods?: Dictionary} = {
+				block: checkboxCommon(el.children)
+			};
 
 		if (name === 'switch') {
 			$C(el.children).forEach((c) => {
@@ -124,12 +126,12 @@ export default {
 						backBox = parent.absoluteBoundingBox;
 
 					const checkStyles = {
-						backgroundColor: (<Dictionary>res.check).color,
+						backgroundColor: (<Dictionary>res.block.check).color,
 						marginLeft: (chBox.x - backBox.x).px,
 						marginTop: (chBox.y - backBox.y).px
 					};
 
-					Object.assign(<Dictionary>res.check, checkStyles);
+					Object.assign(<Dictionary>res.block.check, checkStyles);
 				}
 
 				if (/m:\w+/.test(c.name)) {
