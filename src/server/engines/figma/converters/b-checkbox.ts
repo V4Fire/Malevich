@@ -72,7 +72,7 @@ function checkboxCommon(els: Figma.Node[]): Dictionary {
 				height: height.px,
 
 				border,
-				borderRadius,
+				borderRadius: borderRadius || ch.type === 'ELLIPSE' ? '100%' : 'none',
 
 				color: backgroundColor
 			};
@@ -143,6 +143,20 @@ export default {
 					}
 
 					(<Dictionary>res.mods)[name] = convertMod(name, c, 'bCheckbox', el);
+
+					if (name === 'checked') {
+						const
+							back = <Figma.Node>$C(c.children).one.get((el) => el.name === 'checkerBack'),
+							check = <Figma.Node>$C(c.children).one.get((el) => el.name === 'check');
+
+						if (back && check) {
+							const
+								x = (check.absoluteBoundingBox.x - back.absoluteBoundingBox.x).px;
+
+							// @ts-ignore
+							res.mods.checked.true.check.transform = `translateX(${x})`;
+						}
+					}
 				}
 			});
 		}
