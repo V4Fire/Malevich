@@ -4,6 +4,7 @@ package('b-showcase')
 		'b-header',
 		'b-button',
 		'b-calendar',
+		'b-checkbox-group',
 		'b-checkbox',
 		'b-radio-button',
 		'b-input',

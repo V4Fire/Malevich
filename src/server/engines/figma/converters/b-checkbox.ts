@@ -59,7 +59,7 @@ function checkboxCommon(els: Figma.Node[]): Dictionary {
 				height: height.px,
 
 				border,
-				borderRadius: borderRadius || ch.type === 'ELLIPSE' ? '100%' : 'none',
+				borderRadius: borderRadius || (ch.type === 'ELLIPSE' ? '100%' : 'none'),
 
 				backgroundColor,
 				boxShadow
@@ -72,9 +72,8 @@ function checkboxCommon(els: Figma.Node[]): Dictionary {
 				height: height.px,
 
 				border,
-				borderRadius: borderRadius || ch.type === 'ELLIPSE' ? '100%' : 'none',
+				borderRadius: borderRadius || (ch.type === 'ELLIPSE' ? '100%' : 'none'),
 
-				backgroundColor,
 				color: backgroundColor
 			};
 		}
@@ -146,7 +145,7 @@ export default {
 
 						if (back && check) {
 							const
-								x = (check.absoluteBoundingBox.x - back.absoluteBoundingBox.x).px;
+								x = (check.absoluteBoundingBox.x - (back.absoluteBoundingBox.x + (back.strokeWeight || 0))).px;
 
 							// @ts-ignore
 							res.mods.checked.true.check.transform = `translateX(${x})`;
