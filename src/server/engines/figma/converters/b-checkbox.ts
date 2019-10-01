@@ -59,7 +59,7 @@ function checkboxCommon(els: Figma.Node[]): Dictionary {
 				height: height.px,
 
 				border,
-				borderRadius,
+				borderRadius: borderRadius || ch.type === 'ELLIPSE' ? '100%' : 'none',
 
 				backgroundColor,
 				boxShadow
@@ -74,6 +74,7 @@ function checkboxCommon(els: Figma.Node[]): Dictionary {
 				border,
 				borderRadius: borderRadius || ch.type === 'ELLIPSE' ? '100%' : 'none',
 
+				backgroundColor,
 				color: backgroundColor
 			};
 		}
@@ -112,7 +113,7 @@ export default {
 	focused: (el: Figma.Node) => ({true: checkboxCommon(el.children)}),
 	disabled: (el: Figma.Node) => ({true: checkboxCommon(el.children)}),
 	valid: (el: Figma.Node) => validState(el, 'bCheckbox', 'checkerBack'),
-	exterior(name: string, el: Figma.Node, parent: Figma.Node): Dictionary {
+	exterior(name: string, el: Figma.Node): Dictionary {
 		const
 			res: {block: Dictionary; mods?: Dictionary} = {
 				block: checkboxCommon(el.children)
@@ -121,14 +122,8 @@ export default {
 		if (name === 'switch') {
 			$C(el.children).forEach((c) => {
 				if (c.name === 'check') {
-					const
-						chBox = c.absoluteBoundingBox,
-						backBox = parent.absoluteBoundingBox;
-
 					const checkStyles = {
-						backgroundColor: (<Dictionary>res.block.check).color,
-						marginLeft: (chBox.x - backBox.x).px,
-						marginTop: (chBox.y - backBox.y).px
+						backgroundColor: (<Dictionary>res.block.check).color
 					};
 
 					Object.assign(<Dictionary>res.block.check, checkStyles);
