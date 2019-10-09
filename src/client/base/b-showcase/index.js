@@ -4,10 +4,9 @@ package('b-showcase')
 		'b-header',
 		'b-button',
 		'b-calendar',
-		'b-checkbox-group',
 		'b-checkbox',
-		'b-radio-button',
+		'b-checkbox-group',
 		'b-input',
+		'b-radio-button',
 		'b-v4-component-demo',
-		'b-checkbox-group'
 	);

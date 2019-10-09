@@ -6,7 +6,7 @@
  * https://github.com/V4Fire/Malevich/blob/master/LICENSE
  */
 
-import { validState, convertMod } from './helpers';
+import { validState, convertMod, textNameNormalizer } from './helpers';
 import { RAW } from './const';
 import * as mixins from '../mixins';
 
@@ -92,8 +92,11 @@ export default {
 
 		$C(els).forEach((el) => {
 			if (el.name === 'label') {
+				const
+					style = <string>$C(RAW.styles).get(`${el.styles.text}.name`);
+
 				labelBound = $C(el).get('absoluteBoundingBox');
-				common.textStyle = $C(RAW.styles).get(`${el.styles.text}.name`);
+				common.textStyle = textNameNormalizer(style);
 			}
 
 			if (el.name === 'checkerBack') {
