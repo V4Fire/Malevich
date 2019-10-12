@@ -32,16 +32,16 @@ if (!fs.existsSync(dsRepoLocalPath)) {
 }
 
 const
-	git = gitPromise(dsRepoLocalPath);
+	dsRepoGit = gitPromise(dsRepoLocalPath);
 
 if (needInit && DS_PACKAGE) {
-	git
+	dsRepoGit
 		.clone(DS_PACKAGE, dsRepoLocalPath)
 		.catch(console.log);
 
 } else {
-	git.reset('hard').catch(console.log);
-	git.pull().catch(console.log);
+	dsRepoGit.reset('hard').catch(console.log);
+	dsRepoGit.pull().catch(console.log);
 }
 
 const
