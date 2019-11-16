@@ -10,8 +10,12 @@
 
 const
 	nodemon = require('gulp-nodemon'),
+	plumber = require('gulp-plumber'),
 	{src} = require('config'),
 	{config} = require('@pzlr/build-core');
+
+const
+	defineRequire = include('build/require.gulp');
 
 module.exports = function (gulp = require('gulp')) {
 	require('@v4fire/client/gulpfile')(gulp);
@@ -19,10 +23,15 @@ module.exports = function (gulp = require('gulp')) {
 	gulp.task('build:server', () => {
 		const
 			ts = require('gulp-typescript'),
-			tsProject = ts.createProject('tsconfig.json', {noLib: false});
+			defReq = `(${defineRequire.toString()})();\n`,
+			header = require('gulp-header'),
+			tsProject = ts.createProject('server.tsconfig.json');
 
 		return gulp.src(['*.d.ts', `${config.serverDir}/**/*.ts`])
+			.pipe(plumber())
 			.pipe(tsProject())
+			.js
+			.pipe(header(defReq))
 			.pipe(gulp.dest(src.serverOutput()));
 	});
 
@@ -33,10 +42,11 @@ module.exports = function (gulp = require('gulp')) {
 
 	gulp.task('watch:server', (done) => {
 		const
+			dest = src.serverOutput(),
 			stream = nodemon({
-				script: src.serverOutput(),
+				script: dest,
 				ext: 'js',
-				watch: [src.serverOutput()],
+				watch: [dest],
 				done
 			});
 

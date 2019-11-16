@@ -9,7 +9,7 @@
 /// <reference types="@v4fire/client"/>
 /// <reference types="@types/node"/>
 /// <reference types="@types/express"/>
-/// <reference types="figma"/>
+/// <reference types="./figma"/>
 
 interface DesignSystem extends Dictionary {
 	colors?: {

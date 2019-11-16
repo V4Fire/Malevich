@@ -46,6 +46,8 @@ Icon
 /dist
 .env
 tsconfig.json
+server.tsconfig.json
+/src/server/tsconfig.json
 
 # Log
 *.log
