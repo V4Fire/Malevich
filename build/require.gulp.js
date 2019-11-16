@@ -15,7 +15,8 @@ module.exports = function () {
 
 	const
 		{config} = require('@pzlr/build-core'),
-		dest = config.serverDir,
+		{src} = require('config'),
+		dest = src.serverOutput(),
 		lib = path.join(dest, 'node_modules'),
 		deps = config.dependencies,
 		cache = Object.create(null);
