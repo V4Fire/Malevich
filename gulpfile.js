@@ -9,10 +9,17 @@
  */
 
 const
+	$C = require('collection.js'),
+	path = require('upath'),
+	isPathInside = require('is-path-inside');
+
+const
 	nodemon = require('gulp-nodemon'),
-	plumber = require('gulp-plumber'),
+	plumber = require('gulp-plumber');
+
+const
 	{src} = require('config'),
-	{config} = require('@pzlr/build-core');
+	{config, resolve} = require('@pzlr/build-core');
 
 const
 	defineRequire = include('build/require.gulp');
@@ -25,14 +32,28 @@ module.exports = function (gulp = require('gulp')) {
 			ts = require('gulp-typescript'),
 			defReq = `(${defineRequire.toString()})();\n`,
 			header = require('gulp-header'),
+			isDep = new RegExp(`(^.*?(?:^|[\\/])(${config.dependencies.map((el) => RegExp.escape(el)).join('|')}))(?:$|[\\/])`),
 			tsProject = ts.createProject('server.tsconfig.json');
 
-		return gulp.src(['*.d.ts', `${config.serverDir}/**/*.ts`])
+		function dest(file) {
+			const
+				out = src.serverOutput(),
+				depDecl = isDep.exec(file.path);
+
+			if (depDecl) {
+				file.base = $C(resolve.rootDependencies).one.get((el) => isPathInside(el, depDecl[1]));
+				return path.join(out, 'node_modules', depDecl[2]);
+			}
+
+			return out;
+		}
+
+		return gulp.src(['*.d.ts', `${config.serverDir}/**/*.ts`, ...resolve.rootDependencies.map((el) => `${el}/**/*.ts`)])
 			.pipe(plumber())
 			.pipe(tsProject())
 			.js
 			.pipe(header(defReq))
-			.pipe(gulp.dest(src.serverOutput()));
+			.pipe(gulp.dest(dest));
 	});
 
 	gulp.task('watch:server.build', (done) => {
