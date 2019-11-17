@@ -6,5 +6,5 @@
  * https://github.com/V4Fire/Malevich/blob/master/LICENSE
  */
 
-import './number';
-import './object';
+import 'core/prelude/number';
+import 'core/prelude/object';

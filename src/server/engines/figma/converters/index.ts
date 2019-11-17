@@ -10,8 +10,8 @@ import fs = require('fs');
 import $C = require('collection.js');
 import path = require('upath');
 
-export * from './helpers';
-export * from './const';
+export * from 'engines/figma/converters/helpers';
+export * from 'engines/figma/converters/const';
 
 const
 	files = fs.readdirSync(path.resolve(__dirname), {withFileTypes: false});

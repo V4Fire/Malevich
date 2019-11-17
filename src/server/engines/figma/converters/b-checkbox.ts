@@ -6,9 +6,9 @@
  * https://github.com/V4Fire/Malevich/blob/master/LICENSE
  */
 
-import { validState, convertMod, textNameNormalizer } from './helpers';
-import { RAW } from './const';
-import * as mixins from '../mixins';
+import { validState, convertMod, textNameNormalizer } from 'engines/figma/converters/helpers';
+import { RAW } from 'engines/figma/converters/const';
+import * as mixins from 'engines/figma/mixins';
 
 import $C = require('collection.js');
 

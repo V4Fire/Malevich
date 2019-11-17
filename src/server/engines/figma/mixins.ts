@@ -6,7 +6,7 @@
  * https://github.com/V4Fire/Malevich/blob/master/LICENSE
  */
 
-import { createRGBAString, convertFloatColor } from '../helpers/blend-modes';
+import { createRGBAString, convertFloatColor } from 'engines/helpers/blend-modes';
 type Declaration = Partial<CSSStyleDeclaration> | void;
 
 /**

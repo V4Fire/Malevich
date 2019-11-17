@@ -9,7 +9,7 @@
 // tslint:disable:binary-expression-operand-order
 // tslint:disable:no-bitwise
 
-import extend from './extend';
+import extend from 'core/prelude/extend';
 
 /**
  * Returns string: number + 'em'

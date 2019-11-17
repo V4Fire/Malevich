@@ -7,7 +7,7 @@
  */
 
 import $C = require('collection.js');
-import { WARNINGS } from './const';
+import { WARNINGS } from 'engines/figma/converters/const';
 
 export default {
 	size(el: Figma.Node): CanUndef<Dictionary> {

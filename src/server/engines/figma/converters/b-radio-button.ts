@@ -6,6 +6,6 @@
  * https://github.com/V4Fire/Malevich/blob/master/LICENSE
  */
 
-import checkbox from './b-checkbox';
+import checkbox from 'engines/figma/converters/b-checkbox';
 
 export default checkbox;

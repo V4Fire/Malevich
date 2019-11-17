@@ -6,8 +6,8 @@
  * https://github.com/V4Fire/Malevich/blob/master/LICENSE
  */
 
-import { WARNINGS, ERRORS, RAW } from './const';
-import * as mixins from '../mixins';
+import { WARNINGS, ERRORS, RAW } from 'engines/figma/converters/const';
+import * as mixins from 'engines/figma/mixins';
 
 import path = require('upath');
 import $C = require('collection.js');

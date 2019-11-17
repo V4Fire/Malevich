@@ -7,9 +7,9 @@
  */
 
 import $C = require('collection.js');
-import scheme, { storeTextStyle } from '../scheme';
-import { RAW } from './const';
-import { textNameNormalizer } from './helpers';
+import scheme, { storeTextStyle } from 'engines/figma/scheme';
+import { RAW } from 'engines/figma/converters/const';
+import { textNameNormalizer } from 'engines/figma/converters/helpers';
 
 const
 	mark = /^@/;

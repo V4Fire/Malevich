@@ -6,9 +6,9 @@
  * https://github.com/V4Fire/Malevich/blob/master/LICENSE
  */
 
-import { simpleSize, borderedBlockState, validState } from './helpers';
-import { WARNINGS, RAW } from './const';
-import * as mixins from '../mixins';
+import { simpleSize, borderedBlockState, validState } from 'engines/figma/converters/helpers';
+import { WARNINGS, RAW } from 'engines/figma/converters/const';
+import * as mixins from 'engines/figma/mixins';
 
 import $C = require('collection.js');
 

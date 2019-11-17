@@ -6,8 +6,8 @@
  * https://github.com/V4Fire/Malevich/blob/master/LICENSE
  */
 
-import { ControllersKit } from '../interfaces/controllers';
-import { get } from './git';
+import { ControllersKit } from 'interfaces/controllers';
+import { get } from 'controllers/git';
 
 import * as ExpressTypes from 'express';
 
@@ -15,7 +15,7 @@ import querystring = require('querystring');
 import https = require('https');
 import $C = require('collection.js');
 
-import create from '../engines/figma';
+import create from 'engines/figma';
 
 const {
 

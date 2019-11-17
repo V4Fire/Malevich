@@ -8,8 +8,8 @@
 
 import $C = require('collection.js');
 
-import { DS, DIFFS, storeComponent } from './scheme';
-import converters, { RAW, ERRORS, WARNINGS } from './converters';
+import { DS, DIFFS, storeComponent } from 'engines/figma/scheme';
+import converters, { RAW, ERRORS, WARNINGS } from 'engines/figma/converters';
 
 const
 	BLOCK_CHECKER = /^b([A-Z].*)/;

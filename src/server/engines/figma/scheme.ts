@@ -6,14 +6,14 @@
  * https://github.com/V4Fire/Malevich/blob/master/LICENSE
  */
 
-import converters, { WARNINGS } from './converters';
-import { textNameNormalizer } from './converters/helpers';
+import converters, { WARNINGS } from 'engines/figma/converters';
+import { textNameNormalizer } from 'engines/figma/converters/helpers';
 
 import $C = require('collection.js');
 import path = require('upath');
 
-import * as mixins from './mixins';
-import * as h from './helpers';
+import * as mixins from 'engines/figma/mixins';
+import * as h from 'engines/figma/helpers';
 
 export const DS: DesignSystem = {};
 

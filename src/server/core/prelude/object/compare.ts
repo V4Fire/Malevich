@@ -6,7 +6,7 @@
  * https://github.com/V4Fire/Malevich/blob/master/LICENSE
  */
 
-import extend from '../extend';
+import extend from 'core/prelude/extend';
 
 /**
  * Compares two specified objects using JSON.stringify/parse strategy and returns the result

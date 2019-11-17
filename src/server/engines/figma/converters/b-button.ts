@@ -6,10 +6,10 @@
  * https://github.com/V4Fire/Malevich/blob/master/LICENSE
  */
 
-import blend from '../../helpers/blend-modes';
-import { simpleSize, convertMod } from './helpers';
-import { WARNINGS, IGNORE_BLEND } from './const';
-import * as mixins from '../mixins';
+import blend from 'engines/helpers/blend-modes';
+import { simpleSize, convertMod } from 'engines/figma/converters/helpers';
+import { WARNINGS, IGNORE_BLEND } from 'engines/figma/converters/const';
+import * as mixins from 'engines/figma/mixins';
 
 import $C = require('collection.js');
 

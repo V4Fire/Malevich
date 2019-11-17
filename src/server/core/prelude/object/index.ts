@@ -6,4 +6,4 @@
  * https://github.com/V4Fire/Malevich/blob/master/LICENSE
  */
 
-import './compare';
+import 'core/prelude/object/compare';
