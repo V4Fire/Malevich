@@ -5,7 +5,6 @@ package('b-showcase')
 		'b-button',
 		'b-calendar',
 		'b-checkbox',
-		'b-checkbox-group',
 		'b-input',
 		'b-radio-button',
 		'b-v4-component-demo',
