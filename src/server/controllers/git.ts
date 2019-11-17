@@ -7,7 +7,7 @@
  */
 
 import * as ExpressTypes from 'express';
-import { ControllersKit } from '../interfaces/controllers';
+import { ControllersKit } from 'interfaces/controllers';
 
 import fs = require('fs');
 import path = require('upath');
