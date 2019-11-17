@@ -6,7 +6,9 @@
  * https://github.com/V4Fire/Malevich/blob/master/LICENSE
  */
 
-import 'core/prelude';
+import 'core/prelude/object';
+import 'core/prelude/number';
+
 import express = require('express');
 import config = require('config');
 import $C = require('collection.js');
