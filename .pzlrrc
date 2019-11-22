@@ -1,7 +1,7 @@
 {
   "projectType": "ts",
   "blockDir": "",
-  "sourceDir": "src",
+  "sourceDir": "src/client",
   "serverDir": "src/server",
   "disclaimer": "disclaimer.txt",
   "designSystem": "@v4fire/design-system",

@@ -50,7 +50,7 @@ export default function (data: Figma.File): {
 }
 
 /**
- * Finds subjects in pages list
+ * Finds subjects in the pages list
  * @param canvas
  */
 function findSubjects(canvas: Figma.Node): void {
