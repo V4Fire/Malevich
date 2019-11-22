@@ -12,7 +12,8 @@ import { get } from 'controllers/git';
 import * as ExpressTypes from 'express';
 
 import querystring = require('querystring');
-import https = require('https');
+import request = require('request-promise-native');
+
 import $C = require('collection.js');
 
 import create from 'engines/figma';
@@ -69,51 +70,27 @@ async function authorize(req: Dictionary, res: ExpressTypes.Response): Promise<v
 		query = <Dictionary>req.query;
 
 	if (query && query.code && query.state) {
-		await new Promise((resolve, reject) => {
-			const postData = querystring.stringify({
-				client_id: FIGMA_CLIENT_ID,
-				client_secret: FIGMA_CLIENT_SECRET,
-				redirect_uri: FIGMA_REDIRECT_URI,
-				code: <string>query.code,
-				grant_type: 'authorization_code'
-			});
+		const body = {
+			client_id: FIGMA_CLIENT_ID,
+			client_secret: FIGMA_CLIENT_SECRET,
+			redirect_uri: FIGMA_REDIRECT_URI,
+			code: <string>query.code,
+			grant_type: 'authorization_code'
+		};
 
-			const request = https.request({
-					method: 'POST',
-					protocol: 'https:',
-					host: 'www.figma.com',
-					path: '/api/oauth/token'
-				},
-				(r) => {
-					r.setEncoding('utf8');
-					r.on('data', (rr) => {
-						try {
-							if (rr) {
-								rr = JSON.parse(rr);
+		const tokenRequest = await request.post({
+			uri: 'https://www.figma.com/api/oauth/token',
+			json: true,
+			body
+		}).catch(console.log);
 
-								(<Dictionary>req.session).figma = {
-									accessToken: rr.access_token,
-									expiresIn: rr.expires_in,
-									refreshToken: rr.refresh_token
-								};
-							}
-
-						} catch (e) {
-							reject(e);
-						}
-
-						resolve();
-					});
-				});
-
-			request.on('error', (e) => {
-				console.error(`problem with request: ${e.message}`);
-				reject(e.message);
-			});
-
-			request.write(postData);
-			request.end();
-		});
+		if (tokenRequest) {
+			(<Dictionary>req.session).figma = {
+				accessToken: tokenRequest.access_token,
+				expiresIn: tokenRequest.expires_in,
+				refreshToken: tokenRequest.refresh_token
+			};
+		}
 	}
 
 	res.redirect('/publish');

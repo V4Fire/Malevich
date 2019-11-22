@@ -6,7 +6,7 @@
  * https://github.com/V4Fire/Malevich/blob/master/LICENSE
  */
 
-import https = require('https');
+import request = require('request-promise-native');
 
 /**
  * Returns file data for the specified filename
@@ -15,43 +15,22 @@ import https = require('https');
  * @param token
  */
 export async function getFile(file: string, token: string): Promise<CanUndef<Figma.File | ErrorResponse>> {
-	let str = '';
-
-	await new Promise((resolve, reject) => {
-		https.request({
-				method: 'GET',
-				host: 'api.figma.com',
-				path: `/v1/files/${file}`,
-				headers: {
-					Authorization: `Bearer ${token}`
-				}
-			},
-			(res) => {
-				res.setEncoding('utf8');
-				res.on('data', (r) => {
-					str += r;
-				});
-
-				res.on('end', resolve);
-			}).on('error', reject).end();
-	});
-
-	let
-		response;
-
 	try {
-		response = JSON.parse(str);
-
+		return await request({
+			uri: `https://api.figma.com/v1/files/${file}`,
+			json: true,
+			headers: {
+				Authorization: `Bearer ${token}`
+			}
+		});
 	} catch (e) {
 		return {
 			err: [{
 				name: 'Cannot parse response from Figma API',
-				description: `I can't parse JSON string for the file with id ${file}. Stacktrace: ${JSON.stringify(e)}`
+				description: `I can't parse JSON string for the file with id ${file}. Message: ${e.message}`
 			}]
 		};
 	}
-
-	return response;
 }
 
 export type AssetFormat = 'jpg' | 'png' | 'svg' | 'pdf';
@@ -73,40 +52,21 @@ export async function getImages(
 	token: string,
 	format: AssetFormat = 'svg'
 ): Promise<CanUndef<ImagesResponse | ErrorResponse>> {
-	let
-		str = '',
-		response;
-
-	await new Promise((resolve, reject) => {
-		https.request({
-				method: 'GET',
-				host: 'api.figma.com',
-				path: `/v1/images/${file}/?ids=${ids.join(',')}&format=${format}`,
-				headers: {
-					Authorization: `Bearer ${token}`
-				}
-			},
-			(res) => {
-				res.setEncoding('utf8');
-				res.on('data', (r) => {
-					str += r;
-				});
-
-				res.on('end', resolve);
-			}).on('error', reject).end();
-	});
-
 	try {
-		response = JSON.parse(str);
+		return await request({
+			uri: `https://api.figma.com/v1/images/${file}/?ids=${ids.join(',')}&format=${format}`,
+			json: true,
+			headers: {
+				Authorization: `Bearer ${token}`
+			}
+		});
 
 	} catch (e) {
 		return {
 			err: [{
 				name: 'Cannot parse response from Figma API',
-				description: `I can't parse JSON string for the file with id ${file}. Stacktrace: ${JSON.stringify(e)}`
+				description: `I can't parse JSON string for the file with id ${file}. Message: ${e.message}`
 			}]
 		};
 	}
-
-	return response;
 }

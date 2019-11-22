@@ -37,6 +37,8 @@
     "express": "^4.17.1",
     "express-session": "^1.17.0",
     "prettier": "^1.19.1",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.8",
     "simple-git": "^1.126.0",
     "upath": "^1.2.0"
   },
