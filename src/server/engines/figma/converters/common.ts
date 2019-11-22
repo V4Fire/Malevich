@@ -10,6 +10,7 @@ import $C = require('collection.js');
 import scheme, { storeTextStyle } from 'engines/figma/scheme';
 import { RAW } from 'engines/figma/converters/const';
 import { textNameNormalizer } from 'engines/figma/converters/helpers';
+import { getImages, ImagesResponse } from 'engines/figma/endpoints';
 
 const
 	mark = /^@/;
@@ -30,6 +31,33 @@ export default {
 				};
 			}
 		});
+	},
+
+	async icons(canvas: Figma.Node, {file, token}: {file: string; token: string}): Promise<void> {
+		const icons = $C(canvas.children).to({}).reduce((res, c: Figma.Node) => {
+			if (c.type === 'INSTANCE' || c.type === 'COMPONENT') {
+				res[c.id] = c.name;
+			}
+
+			return res;
+		});
+
+		const
+			ids = Object.keys(icons);
+
+		const
+			response = await getImages({file, ids}, token);
+
+		if (response) {
+			if (response.err) {
+				console.log(response.err);
+
+			} else {
+				$C((<ImagesResponse>response).images).forEach((value, key) => {
+					console.log(key, value);
+				});
+			}
+		}
 	},
 
 	typography(canvas: Figma.Node): void {

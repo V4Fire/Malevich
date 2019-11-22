@@ -16,15 +16,17 @@ const
 
 /**
  * Parses file for generate DS
+ *
  * @param data
+ * @param meta
  */
-export default function (data: Figma.File): {
-	errors: ContentError[];
+export default async function (data: Figma.File, meta: Dictionary): Promise<{
+	err: ContentError[];
 	warnings: ContentError[];
 	designSystem: DesignSystem;
 	diff: Record<string, Dictionary | true>;
 	approved: boolean;
-} {
+}> {
 	const
 		pages = data.document.children,
 		dsPages = {'ds': true, 'design system': true},
@@ -34,14 +36,14 @@ export default function (data: Figma.File): {
 
 	RAW.styles = data.styles;
 
-	$C(ds.children).forEach((el) => {
+	await $C(ds.children).async.forEach(async (el) => {
 		if (el.type === 'FRAME') {
-			findSubjects(el);
+			await findSubjects(el, meta);
 		}
 	});
 
 	return {
-		errors: ERRORS,
+		err: ERRORS,
 		warnings: WARNINGS,
 		designSystem: DS,
 		diff: DIFFS,
@@ -51,14 +53,16 @@ export default function (data: Figma.File): {
 
 /**
  * Finds subjects in the pages list
+ *
  * @param canvas
+ * @param meta
  */
-function findSubjects(canvas: Figma.Node): void {
+async function findSubjects(canvas: Figma.Node, meta: Dictionary): Promise<void> {
 	const
 		name = canvas.name.toLowerCase();
 
 	if (Object.isFunction(converters.common[name])) {
-		converters.common[name](canvas);
+		await converters.common[name](canvas, meta);
 		return;
 	}
 

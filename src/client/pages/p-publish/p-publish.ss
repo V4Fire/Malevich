@@ -18,7 +18,7 @@
 		< template v-if = stage === 'preview'
 			< template v-if = data
 				< .&__errors v-if = Boolean(field.get('data.errors.length'))
-					< .&__error v-for = el in data.errors
+					< .&__error v-for = el in data.err
 						{{ el.name }}, {{ el.description }}
 
 				< b-showcase &

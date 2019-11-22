@@ -28,3 +28,7 @@ interface ContentError {
 	name: string;
 	description?: string;
 }
+
+interface ErrorResponse {
+	err: ContentError[];
+}

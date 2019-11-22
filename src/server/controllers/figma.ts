@@ -16,6 +16,7 @@ import https = require('https');
 import $C = require('collection.js');
 
 import create from 'engines/figma';
+import { getFile } from 'engines/figma/endpoints';
 
 const {
 
@@ -37,7 +38,7 @@ export default {
 		{
 			url: 'files/:file',
 			method: 'get',
-			fn: getFiles
+			fn: files
 		},
 
 		{
@@ -118,56 +119,7 @@ async function authorize(req: Dictionary, res: ExpressTypes.Response): Promise<v
 	res.redirect('/publish');
 }
 
-async function getFigmaDesignSystem(file: string, token: string): Promise<CanUndef<Dictionary>> {
-	let str = '';
-
-	await new Promise((resolve, reject) => {
-		https.request({
-				method: 'GET',
-				host: 'api.figma.com',
-				path: `/v1/files/${file}`,
-				headers: {
-					Authorization: `Bearer ${token}`
-				}
-			},
-			(res) => {
-				res.setEncoding('utf8');
-				res.on('data', (r) => {
-					str += r;
-				});
-
-				res.on('end', resolve);
-			}).on('error', reject).end();
-	});
-
-	let
-		result,
-		response;
-
-	try {
-		response = JSON.parse(str);
-		result = create(response);
-
-		if (result && result.approved) {
-			return {
-				...result,
-				meta: Object.select(response, ['thumbnailUrl', 'lastModified', 'version'])
-			};
-		}
-
-	} catch (e) {
-		return {
-			errors: [{
-				name: 'Cannot parse response from Figma API',
-				description: `I can't parse JSON string for the file with id ${file}. Stacktrace: ${JSON.stringify(e)}`
-			}]
-		};
-	}
-
-	return;
-}
-
-async function getFiles(req: Dictionary, res: ExpressTypes.Response): Promise<void> {
+async function files(req: Dictionary, res: ExpressTypes.Response): Promise<void> {
 	const
 		fileName = <string>$C(req).get('params.file'),
 		session = <Dictionary>req.session,
@@ -175,15 +127,35 @@ async function getFiles(req: Dictionary, res: ExpressTypes.Response): Promise<vo
 
 	if (token && fileName) {
 		const
-			data = await getFigmaDesignSystem(fileName, token);
+			data = await getFile(fileName, token);
 
-		(<Dictionary>session.figma).data = data;
-		res.send(data);
+		let
+			response;
+
+		if (data) {
+			if ((<ErrorResponse>data).err) {
+				response = (<ErrorResponse>data).err;
+
+			} else {
+				const
+					result = await create(<Figma.File>data, {token, file: fileName});
+
+				if (result) {
+					response = {
+						...result,
+						meta: Object.select(<Figma.File>data, ['thumbnailUrl', 'lastModified', 'version'])
+					};
+				}
+			}
+		}
+
+		(<Dictionary>session.figma).data = response;
+		res.send(response);
 		return;
 	}
 
 	res.send({
-		errors: [{
+		err: [{
 			name: 'Error while getting file by name from Figma',
 			description: 'I can\'t find token or filename'
 		}]
