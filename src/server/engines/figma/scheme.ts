@@ -10,7 +10,7 @@ import converters, { WARNINGS } from 'engines/figma/converters';
 import { textNameNormalizer } from 'engines/figma/converters/helpers';
 
 import $C = require('collection.js');
-import path = require('upath');
+import { DS_REPO_PATH } from 'core/const';
 
 import * as mixins from 'engines/figma/mixins';
 import * as h from 'engines/figma/helpers';
@@ -164,7 +164,7 @@ export function storeComponent(name: string, el: Figma.Node): void {
  */
 export function setDiff(pathToField: string, value: unknown): void {
 	const
-		latestStableDS = require(path.resolve(process.cwd(), 'repository')),
+		latestStableDS = require(DS_REPO_PATH),
 		latest = $C(latestStableDS).get(pathToField);
 
 	if (latest) {

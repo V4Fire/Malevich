@@ -82,7 +82,7 @@ async function authorize(req: Dictionary, res: ExpressTypes.Response): Promise<v
 			uri: 'https://www.figma.com/api/oauth/token',
 			json: true,
 			body
-		}).catch(console.log);
+		});
 
 		if (tokenRequest) {
 			(<Dictionary>req.session).figma = {

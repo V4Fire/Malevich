@@ -15,11 +15,10 @@ import prettier = require('prettier');
 import gitPromise = require('simple-git/promise');
 import $C = require('collection.js');
 
-const
-	dsRepoLocalPath = path.resolve(process.cwd(), 'repository');
+import { DS_REPO_PATH } from 'core/const';
 
 const
-	git = gitPromise(dsRepoLocalPath);
+	git = gitPromise(DS_REPO_PATH);
 
 export default {
 	namespace: 'api/git',
@@ -107,7 +106,7 @@ export async function get(req: Dictionary, res: ExpressTypes.Response): Promise<
 
 async function writeDsFile(data: Dictionary): Promise<void> {
 	const
-		filePath = path.resolve(process.cwd(), 'repository', 'index.js'),
+		filePath = path.join(DS_REPO_PATH, 'index.js'),
 		str = `module.exports = ${JSON.stringify(data)}`;
 
 	return fs.promises.writeFile(filePath, prettier.format(str));

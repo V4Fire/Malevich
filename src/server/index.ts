@@ -21,24 +21,25 @@ import path = require('upath');
 import fs = require('fs');
 import gitPromise = require('simple-git/promise');
 
+import { DS_REPO_PATH } from 'core/const';
+
 const
-	{DS_PACKAGE} = process.env,
-	dsRepoLocalPath = path.resolve(process.cwd(), 'repository');
+	{DS_PACKAGE} = process.env;
 
 let
 	needInit = false;
 
-if (!fs.existsSync(dsRepoLocalPath)) {
+if (!fs.existsSync(DS_REPO_PATH)) {
 	needInit = true;
-	fs.mkdirSync(dsRepoLocalPath);
+	fs.mkdirSync(DS_REPO_PATH);
 }
 
 const
-	dsRepoGit = gitPromise(dsRepoLocalPath);
+	dsRepoGit = gitPromise(DS_REPO_PATH);
 
 if (needInit && DS_PACKAGE) {
 	dsRepoGit
-		.clone(DS_PACKAGE, dsRepoLocalPath)
+		.clone(DS_PACKAGE, DS_REPO_PATH)
 		.catch(console.log);
 
 } else {

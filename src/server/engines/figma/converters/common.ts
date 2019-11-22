@@ -7,10 +7,14 @@
  */
 
 import $C = require('collection.js');
+import request = require('request');
+import fs = require('fs');
+import path = require('upath');
+
 import scheme, { storeTextStyle } from 'engines/figma/scheme';
-import { RAW } from 'engines/figma/converters/const';
-import { textNameNormalizer } from 'engines/figma/converters/helpers';
+import { RAW, ERRORS, textNameNormalizer } from 'engines/figma/converters';
 import { getImages, ImagesResponse } from 'engines/figma/endpoints';
+import { DS_REPO_PATH } from 'core/const';
 
 const
 	mark = /^@/;
@@ -43,19 +47,32 @@ export default {
 		});
 
 		const
-			ids = Object.keys(icons);
-
-		const
+			ids = Object.keys(icons),
 			response = await getImages({file, ids}, token);
 
 		if (response) {
 			if (response.err) {
-				console.log(response.err);
+				ERRORS.push({
+					name: 'Error while getting icons pack',
+					description: response.err
+				});
 
 			} else {
-				$C((<ImagesResponse>response).images).forEach((value, key) => {
-					console.log(key, value);
-				});
+				await Promise.all(
+					$C((<ImagesResponse>response).images)
+						.to([])
+						.reduce((res, value, key) => {
+							const
+								iconPath = path.join(DS_REPO_PATH, `${icons[key]}.svg`);
+
+							if (!fs.existsSync(path.dirname(iconPath))) {
+								fs.mkdirSync(path.dirname(iconPath), {recursive: true});
+							}
+
+							res.push(request(value).pipe(fs.createWriteStream(iconPath)));
+							return res;
+						})
+				);
 			}
 		}
 	},
