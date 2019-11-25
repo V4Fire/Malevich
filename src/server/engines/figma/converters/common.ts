@@ -7,8 +7,8 @@
  */
 
 import $C = require('collection.js');
-import request = require('request');
-import fs = require('fs');
+import request = require('request-promise-native');
+import fs = require('fs-extra-promise');
 import path = require('upath');
 
 import scheme, { storeTextStyle } from 'engines/figma/scheme';
@@ -58,21 +58,24 @@ export default {
 				});
 
 			} else {
-				await Promise.all(
-					$C((<ImagesResponse>response).images)
-						.to([])
-						.reduce((res, value, key) => {
-							const
-								iconPath = path.join(DS_REPO_PATH, `${icons[key]}.svg`);
+				await Promise.all($C((<ImagesResponse>response).images).reduce((res, value, key) => {
+					const
+						iconPath = path.join(DS_REPO_PATH, `${icons[key]}.svg`);
 
-							if (!fs.existsSync(path.dirname(iconPath))) {
-								fs.mkdirSync(path.dirname(iconPath), {recursive: true});
-							}
+					if (!fs.existsSync(path.dirname(iconPath))) {
+						fs.mkdirSync(path.dirname(iconPath), {recursive: true});
+					}
 
-							res.push(request(value).pipe(fs.createWriteStream(iconPath)));
-							return res;
-						})
-				);
+					const result = new Promise((resolve, reject) => {
+						request(value)
+							.then((data) => fs.writeFileAsync(iconPath, data))
+							.then(resolve)
+							.catch(reject);
+					});
+
+					(<Promise<void | Dictionary>[]>res).push(result);
+					return res;
+				}, [])).catch(console.log);
 			}
 		}
 	},
