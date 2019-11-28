@@ -54,7 +54,11 @@ export async function getImages(
 ): Promise<CanUndef<ImagesResponse | ErrorResponse>> {
 	try {
 		return await request({
-			uri: `https://api.figma.com/v1/images/${file}/?ids=${ids.join(',')}&format=${format}`,
+			uri: `https://api.figma.com/v1/images/${file}`,
+			qs: {
+				ids: ids.join(','),
+				format
+			},
 			json: true,
 			headers: {
 				Authorization: `Bearer ${token}`
