@@ -60,7 +60,7 @@ export default {
 			} else {
 				await Promise.all($C((<ImagesResponse>response).images).reduce((res, value, key) => {
 					const
-						iconPath = path.join(DS_REPO_PATH, `${icons[key]}.svg`);
+						iconPath = path.join(DS_REPO_PATH, `${icons[key].toLowerCase()}.svg`);
 
 					if (!fs.existsSync(path.dirname(iconPath))) {
 						fs.mkdirSync(path.dirname(iconPath), {recursive: true});
