@@ -63,7 +63,7 @@ async function push(req: ExpressTypes.Request, res: ExpressTypes.Response): Prom
 			}
 		});
 
-		await git.add(['index.js']);
+		await git.add('./*');
 		await git.commit(req.body.message);
 		await git.addAnnotatedTag(`v.${next}`, req.body.message);
 		await git.pushTags();
