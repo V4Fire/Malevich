@@ -9,19 +9,22 @@
 import iBlock, { component, system, prop, watch } from 'super/i-block/i-block';
 export * from 'super/i-dynamic-page/i-dynamic-page';
 
+/**
+ * Component for showing a design system data
+ */
 @component()
 export default class bShowcase extends iBlock {
 	/**
 	 * Difference between data and stable Design system
 	 */
 	@prop({type: Object, required: false})
-	diff?: DesignSystem;
+	readonly diff?: DesignSystem;
 
 	/**
 	 * Design System data for showing
 	 */
 	@prop({type: Object, required: false})
-	dataProp?: DesignSystem;
+	readonly dataProp?: DesignSystem;
 
 	/**
 	 * Component value store
