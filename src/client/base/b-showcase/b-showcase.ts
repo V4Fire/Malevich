@@ -118,7 +118,7 @@ export default class bShowcase extends iBlock {
 	protected setVariables<T extends Dictionary>(data: T): void {
 		const rec = (d, path?: string) => {
 			Object.forEach(<Dictionary>d, (el, key) => {
-				if (Object.isObject(el)) {
+				if (Object.isDictionary(el)) {
 					return rec(el, `${path ? `${path}.${key}` : key}`);
 				}
 
@@ -170,7 +170,7 @@ export default class bShowcase extends iBlock {
 					Object.forEach(mods, (value, modName: string) => {
 						compMods[modName] = {};
 
-						if (Object.isObject(value)) {
+						if (Object.isDictionary(value)) {
 							Object.keys(value).forEach((modValue) => {
 								compMods[modName][modValue] = true;
 							});

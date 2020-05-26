@@ -105,7 +105,7 @@ export default {
 
 			$C(scheme.text).forEach((value, key) => {
 				if (c[key]) {
-					if (Object.isObject(value)) {
+					if (Object.isDictionary(value)) {
 						$C(value).forEach((v, k) => {
 							if (Object.isFunction(v)) {
 								if (c[key][k]) {
@@ -114,7 +114,7 @@ export default {
 
 									Object.assign(
 										RAW.data[id].style,
-										Object.isObject(result) ? result : {[k]: result});
+										Object.isDictionary(result) ? result : {[k]: result});
 								}
 
 							} else if (v) {
@@ -126,7 +126,7 @@ export default {
 						Object.assign(RAW.data[id].style, (<Function>value)(c));
 					}
 
-					if (Object.isObject(RAW.data[id].style)) {
+					if (Object.isDictionary(RAW.data[id].style)) {
 						storeTextStyle(c.name, <Dictionary>RAW.data[id].style);
 					}
 				}
