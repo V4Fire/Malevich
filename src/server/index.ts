@@ -6,7 +6,9 @@
  * https://github.com/V4Fire/Malevich/blob/master/LICENSE
  */
 
+import 'core/prelude/types';
 import 'core/prelude/object';
+import 'core/prelude/function';
 import 'core/prelude/number';
 
 import express = require('express');
