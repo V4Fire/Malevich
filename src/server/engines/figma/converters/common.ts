@@ -20,7 +20,7 @@ const
 	mark = /^@/;
 
 export default {
-	colors(canvas: Figma.Node): void {
+	colors(canvas: Figma.CANVAS): void {
 		$C(canvas.children).forEach((c) => {
 			if (mark.test(c.name)) {
 				const
@@ -53,8 +53,7 @@ export default {
 		if (response) {
 			if (response.err) {
 				ERRORS.push({
-					name: 'Error while getting icons pack',
-					description: response.err
+					name: 'Error while getting icons pack'
 				});
 
 			} else {
@@ -73,7 +72,7 @@ export default {
 							.catch(reject);
 					});
 
-					(<Promise<void | Dictionary>[]>res).push(result);
+					(<Promise<unknown | Dictionary>[]>res).push(result);
 					return res;
 				}, [])).catch(console.log);
 			}
@@ -84,6 +83,13 @@ export default {
 		$C(canvas.children).forEach((c) => {
 			if (!mark.test(c.name)) {
 				return;
+			}
+
+			if (!c.styles || !c.styles.text) {
+				ERRORS.push({
+					name: 'Error while creating typography styles',
+					description: `${c.name} layer has no styles identifier`
+				});
 			}
 
 			const
