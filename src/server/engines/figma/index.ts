@@ -28,19 +28,29 @@ export default async function (data: Figma.File, meta: Dictionary): Promise<{
 	approved: boolean;
 }> {
 	const
-		pages = data.document.children,
-		dsPages = {'ds': true, 'design system': true},
-		ds = pages.find((p) => dsPages[p.name.toLowerCase()]);
+		pages = data.document.children;
 
-	ds.children.sort((a, b) => a.name < b.name ? 1 : a.name > b.name ? -1 : 0);
+	let
+		tasks = [];
 
 	RAW.styles = data.styles;
 
-	await $C(ds.children).async.forEach(async (el) => {
-		if (el.type === 'FRAME') {
-			await findSubjects(el, meta);
-		}
-	});
+	try {
+		pages.forEach((p) => {
+			tasks = tasks.concat(tasks, p.children.map(async (el) => {
+				if (el.type === 'FRAME') {
+					await findSubjects(el, meta);
+				}
+			}));
+		});
+
+		await Promise.all(tasks);
+
+	} catch (e) {
+		ERRORS.push({
+			name: 'Incorrect file'
+		});
+	}
 
 	return {
 		err: ERRORS,
