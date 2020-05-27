@@ -9,19 +9,22 @@
 import iBlock, { component, system, prop, watch } from 'super/i-block/i-block';
 export * from 'super/i-dynamic-page/i-dynamic-page';
 
+/**
+ * Component for showing a design system data
+ */
 @component()
 export default class bShowcase extends iBlock {
 	/**
 	 * Difference between data and stable Design system
 	 */
 	@prop({type: Object, required: false})
-	diff?: DesignSystem;
+	readonly diff?: DesignSystem;
 
 	/**
 	 * Design System data for showing
 	 */
 	@prop({type: Object, required: false})
-	dataProp?: DesignSystem;
+	readonly dataProp?: DesignSystem;
 
 	/**
 	 * Component value store
@@ -118,7 +121,7 @@ export default class bShowcase extends iBlock {
 	protected setVariables<T extends Dictionary>(data: T): void {
 		const rec = (d, path?: string) => {
 			Object.forEach(<Dictionary>d, (el, key) => {
-				if (Object.isObject(el)) {
+				if (Object.isDictionary(el)) {
 					return rec(el, `${path ? `${path}.${key}` : key}`);
 				}
 
@@ -170,7 +173,7 @@ export default class bShowcase extends iBlock {
 					Object.forEach(mods, (value, modName: string) => {
 						compMods[modName] = {};
 
-						if (Object.isObject(value)) {
+						if (Object.isDictionary(value)) {
 							Object.keys(value).forEach((modValue) => {
 								compMods[modName][modValue] = true;
 							});

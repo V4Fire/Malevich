@@ -15,7 +15,7 @@ import bButton from 'form/b-button/b-button';
 export * from 'super/i-dynamic-page/i-dynamic-page';
 
 @component()
-export default class pPublish<D extends object = Dictionary> extends iDynamicPage<D> {
+export default class pPublish extends iDynamicPage {
 	/** @override */
 	readonly dataProvider: string = 'publish.Git';
 
