@@ -41,6 +41,39 @@ export default {
 		const icons = $C(canvas.children).to({}).reduce((res, c: Figma.Node) => {
 			if (c.type === 'INSTANCE' || c.type === 'COMPONENT') {
 				res[c.id] = c.name;
+
+			} else if (c.type === 'COMPONENT_SET') {
+				const
+					iconName = c.name;
+
+				$C(c.children).forEach((variant) => {
+					const
+						head: string[] = [],
+						tail: string[] = [],
+						mods = variant.name.split(', ');
+
+					mods.forEach((modString) => {
+						const
+							[name, value] = modString.split('=');
+
+						if (name.toLowerCase() === 'size' && Object.isNumber(Number(value))) {
+							// This is the size (first level folder)
+							head.push(value);
+							head.push(iconName);
+
+						} else {
+							tail.push(value);
+						}
+					});
+
+					if (head.length === 0) {
+						// No size in the design system object
+						head.push(iconName);
+					}
+
+					// 24/arrow/foo/right
+					res[variant.id] = [].concat(head, tail).join('/');
+				});
 			}
 
 			return res;
