@@ -71,8 +71,8 @@ export default {
 						head.push(iconName);
 					}
 
-					// 24/arrow/foo/right
-					res[variant.id] = [].concat(head, tail).join('/');
+					// icons/24/arrow/foo/right.svg
+					res[variant.id] = ['icons'].concat(head, tail).join('/');
 				});
 			}
 
