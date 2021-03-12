@@ -59,7 +59,6 @@ export default {
 						if (name.toLowerCase() === 'size' && Object.isNumber(Number(value))) {
 							// This is the size (first level folder)
 							head.push(value);
-							head.push(iconName);
 
 						} else {
 							tail.push(value);
