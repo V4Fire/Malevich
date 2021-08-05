@@ -10,6 +10,9 @@ import $C = require('collection.js');
 
 import { DS, DIFFS, storeComponent } from 'engines/figma/scheme';
 import converters, { RAW, ERRORS, WARNINGS } from 'engines/figma/converters';
+import { ResponseMeta } from 'engines/figma/interface';
+
+export * from 'engines/figma/interface';
 
 const
 	BLOCK_CHECKER = /^b([A-Z].*)/;
@@ -20,7 +23,7 @@ const
  * @param data
  * @param meta
  */
-export default async function (data: Figma.File, meta: Dictionary): Promise<{
+export default async function (data: Figma.File, meta: ResponseMeta): Promise<{
 	err: ContentError[];
 	warnings: ContentError[];
 	designSystem: DesignSystem;
@@ -67,7 +70,7 @@ export default async function (data: Figma.File, meta: Dictionary): Promise<{
  * @param canvas
  * @param meta
  */
-async function findSubjects(canvas: Figma.Node, meta: Dictionary): Promise<void> {
+async function findSubjects(canvas: Figma.Node, meta: ResponseMeta): Promise<void> {
 	const
 		name = canvas.name.toLowerCase();
 

@@ -15,6 +15,8 @@ import scheme, { storeTextStyle } from 'engines/figma/scheme';
 import { RAW, ERRORS, textNameNormalizer } from 'engines/figma/converters';
 import { getImages, ImagesResponse } from 'engines/figma/endpoints';
 import { DS_REPO_PATH } from 'core/const';
+import { ExternalAssetsOpts } from 'engines/figma/converters/interface';
+import { ResponseMeta } from 'engines/figma/interface';
 
 const
 	mark = /^@/;
@@ -37,78 +39,12 @@ export default {
 		});
 	},
 
-	async icons(canvas: Figma.Node, {file, token}: {file: string; token: string}): Promise<void> {
-		const icons = $C(canvas.children).to({}).reduce((res, c: Figma.Node) => {
-			if (c.type === 'INSTANCE' || c.type === 'COMPONENT') {
-				res[c.id] = c.name;
+	illustrations(canvas: Figma.Node, meta: ResponseMeta): Promise<void> {
+		return getExternalAssets(canvas, meta, {type: 'illustrations'});
+	},
 
-			} else if (c.type === 'COMPONENT_SET') {
-				const
-					iconName = c.name;
-
-				$C(c.children).forEach((variant) => {
-					const
-						head: string[] = [],
-						tail: string[] = [],
-						mods = variant.name.split(', ');
-
-					mods.forEach((modString) => {
-						const
-							[name, value] = modString.split('=');
-
-						if (name.toLowerCase() === 'size' && Object.isNumber(Number(value))) {
-							// This is the size (first level folder)
-							head.push(value);
-
-						} else {
-							tail.push(value);
-						}
-					});
-
-					if (head.length === 0) {
-						// No size in the design system object
-						head.push(iconName);
-					}
-
-					// icons/24/arrow/foo/right.svg
-					res[variant.id] = ['icons'].concat(head, tail).join('/');
-				});
-			}
-
-			return res;
-		});
-
-		const
-			ids = Object.keys(icons),
-			response = await getImages({file, ids}, token);
-
-		if (response) {
-			if (response.err) {
-				ERRORS.push({
-					name: 'Error while getting icons pack'
-				});
-
-			} else {
-				await Promise.all($C((<ImagesResponse>response).images).reduce((res, value, key) => {
-					const
-						iconPath = path.join(DS_REPO_PATH, `${icons[key].toLowerCase()}.svg`);
-
-					if (!fs.existsSync(path.dirname(iconPath))) {
-						fs.mkdirSync(path.dirname(iconPath), {recursive: true});
-					}
-
-					const result = new Promise((resolve, reject) => {
-						request(value)
-							.then((data) => fs.writeFileAsync(iconPath, data))
-							.then(resolve)
-							.catch(reject);
-					});
-
-					(<Promise<unknown | Dictionary>[]>res).push(result);
-					return res;
-				}, [])).catch(console.log);
-			}
-		}
+	icons(canvas: Figma.Node, info: ResponseMeta): Promise<void> {
+		return getExternalAssets(canvas, info, {type: 'icons'});
 	},
 
 	typography(canvas: Figma.Node): void {
@@ -180,3 +116,83 @@ export default {
 		});
 	}
 };
+
+async function getExternalAssets(
+	canvas: Figma.Node,
+	{file, token}: ResponseMeta,
+	opts: ExternalAssetsOpts
+): Promise<void> {
+
+	const items = $C(canvas.children).to({}).reduce((res, c: Figma.Node) => {
+		if (c.type === 'INSTANCE' || c.type === 'COMPONENT') {
+			res[c.id] = c.name;
+
+		} else if (c.type === 'COMPONENT_SET') {
+			const
+				iconName = c.name;
+
+			$C(c.children).forEach((variant) => {
+				const
+					head: string[] = [],
+					tail: string[] = [],
+					mods = variant.name.split(', ');
+
+				mods.forEach((modString) => {
+					const
+						[name, value] = modString.split('=');
+
+					if (name.toLowerCase() === 'size' && Object.isNumber(Number(value))) {
+						// This is the size (first level folder)
+						head.push(value);
+
+					} else {
+						tail.push(value);
+					}
+				});
+
+				if (head.length === 0) {
+					// No size in the design system object
+					head.push(iconName);
+				}
+
+				// icons/24/arrow/foo/right.svg
+				res[variant.id] = [opts.type].concat(head, tail).join('/');
+			});
+		}
+
+		return res;
+	});
+	console.log(213, file, items, opts);
+
+	const
+		ids = Object.keys(items),
+		response = await getImages({file, ids}, token);
+
+	if (response) {
+		if (response.err) {
+			ERRORS.push({
+				name: 'Error while getting assets pack'
+			});
+
+		} else {
+			await Promise.all($C((<ImagesResponse>response).images).reduce((res, value, key) => {
+				const
+					assetPath = path.join(DS_REPO_PATH, `${items[key].toLowerCase()}.svg`);
+
+				if (!fs.existsSync(path.dirname(assetPath))) {
+					fs.mkdirSync(path.dirname(assetPath), {recursive: true});
+				}
+
+				const result = new Promise((resolve, reject) => {
+					request(value)
+						.then((data) => fs.writeFileAsync(assetPath, data))
+						.then(resolve)
+						.catch(reject);
+				});
+
+				(<Promise<unknown | Dictionary>[]>res).push(result);
+				return res;
+			}, [])).catch(console.log);
+		}
+	}
+}

@@ -7,17 +7,6 @@
  */
 
 /**
- * Returns true, if the name separated by "/"
- * starts from target string
- *
- * @param name
- * @param target
- */
-export function checkFieldName(name: string, target: string): boolean {
-	return name.split('/')[0] === target;
-}
-
-/**
  * Sets a property to the specified object
  *
  * @param path - path to the property (bla.baz.foo)
