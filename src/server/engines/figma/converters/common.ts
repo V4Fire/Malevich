@@ -162,7 +162,6 @@ async function getExternalAssets(
 
 		return res;
 	});
-	console.log(213, file, items, opts);
 
 	const
 		ids = Object.keys(items),
