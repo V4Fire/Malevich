@@ -4,7 +4,7 @@
   "homepage": "https://github.com/V4Fire/Malevich#readme",
   "main": "src/server/index.ts",
   "license": "MIT",
-  "version": "0.2.0",
+  "version": "0.1.1",
   "typings": "index.d.ts",
   "author": {
     "name": "dmitrybrovka",
