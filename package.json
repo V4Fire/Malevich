@@ -39,7 +39,7 @@
     "prettier": "1.19.1",
     "request": "2.88.2",
     "request-promise-native": "1.0.8",
-    "simple-git": "1.132.0",
+    "simple-git": "3.3.0",
     "upath": "1.2.0"
   },
   "optionalDependencies": {
