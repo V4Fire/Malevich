@@ -34,7 +34,7 @@
     "@v4fire/design-system": "git+https://github.com/V4Fire/DesignSystem.git",
     "config": "1.31.0",
     "cookie-parser": "1.4.5",
-    "express": "4.17.1",
+    "express": "4.17.3",
     "express-session": "1.17.1",
     "prettier": "1.19.1",
     "request": "2.88.2",
