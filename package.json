@@ -29,7 +29,7 @@
   "dependencies": {
     "@types/express": "4.17.6",
     "@types/node": "11.15.14",
-    "@v4fire/client": "3.0.0-rc.20",
+    "@v4fire/client": "3.38.0",
     "@v4fire/core": "3.17.3",
     "@v4fire/design-system": "git+https://github.com/V4Fire/DesignSystem.git",
     "config": "1.31.0",
